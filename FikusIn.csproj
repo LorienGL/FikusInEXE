@@ -8,7 +8,7 @@
     <UseWPF>true</UseWPF>
     <Platforms>AnyCPU;x64</Platforms>
     <ApplicationIcon>f.ico</ApplicationIcon>
-    <BaseOutputPath>..\bin64\</BaseOutputPath>
+    <BaseOutputPath>..\..\bin64\</BaseOutputPath>
     <SignAssembly>False</SignAssembly>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>FikusIn</Title>
