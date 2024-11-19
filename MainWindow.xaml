@@ -23,6 +23,162 @@
     ContentRendered="wMain_ContentRendered"
     SizeChanged="wMain_SizeChanged">
 
+    <Window.Resources>
+        <Style x:Key="WindowsButtons" TargetType="{x:Type Button}">
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="Margin" Value="0,0,0,0"/>
+            <Setter Property="Width" Value="46"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="FontSize" Value="32"/>
+            <Setter Property="FontWeight" Value="Light"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Opacity" Value="0.5"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="TextBlock.Foreground" Value="LightGray"/>
+            <Setter Property="TextBlock.Opacity" Value="1"/>
+            <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="White"/>
+                    <Setter Property="TextBlock.Foreground" Value="DimGray"/>
+                    <Setter Property="Opacity" Value="1"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="WindowsButtonsX" TargetType="{x:Type Button}" BasedOn="{StaticResource WindowsButtons}">
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#E81123"/>
+                    <Setter Property="TextBlock.Foreground" Value="White"/>
+                    <Setter Property="Opacity" Value="1"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="MenuButtons" TargetType="{x:Type Button}">
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="Width" Value="50"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="FontSize" Value="42"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="#BBBBBB"/>
+            <Setter Property="TextBlock.Foreground" Value="#555555"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#DDDDDD"/>
+                </Trigger>
+            </Style.Triggers>
+            <Style.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="25" />
+                </Style>
+            </Style.Resources>
+        </Style>
+        <Style x:Key="TabCloseButton" TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Margin" Value="5,0,5,0"/>
+            <Setter Property="TextBlock.Foreground" Value="#999999"/>
+            <Setter Property="Height" Value="Auto"/>
+            <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="TextBlock.Foreground" Value="#FFFFFF"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="TabButtonStyle" TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="#222222"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Height" Value="Auto"/>
+            <Setter Property="Margin" Value="2,2,2,0"/>
+            <Setter Property="TextBlock.Foreground" Value="#999999"/>
+            <Setter Property="TextBlock.VerticalAlignment" Value="Center"/>
+            <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}" BorderThickness="2">
+                            <StackPanel Orientation="Horizontal" Margin="20,0,0,3">
+                                <TextBlock Text="{Binding Name}" FontSize="16" Margin="0,0,10,0"/>
+                                <Button Style="{StaticResource TabCloseButton}">
+                                    <TextBlock Text="❎"/>
+                                </Button>
+                            </StackPanel>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                <Setter Property="Background" Value="#111111" />
+                                <Setter Property="TextBlock.Foreground" Value="#FFFFFF"/>
+                            </DataTrigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#111111"/>
+                                <Setter Property="TextBlock.Foreground" Value="#FFFFFF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="TabButton" TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="#222222"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Height" Value="Auto"/>
+            <Setter Property="Margin" Value="2,2,2,0"/>
+            <Setter Property="TextBlock.Foreground" Value="#999999"/>
+            <Setter Property="TextBlock.VerticalAlignment" Value="Center"/>
+            <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#111111"/>
+                    <Setter Property="TextBlock.Foreground" Value="#FFFFFF"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="TabButton_ActiveDoc" TargetType="{x:Type Button}" BasedOn="{StaticResource TabButton}">
+            <Setter Property="Background" Value="#111111"/>
+            <Setter Property="TextBlock.Foreground" Value="#FFFFFF"/>
+        </Style>
+    </Window.Resources>
+
     <WindowChrome.WindowChrome>
         <WindowChrome 
             CaptionHeight="32"  
@@ -48,6 +204,7 @@
         </Border.Style>
 
         <Grid Background="#111111">
+
             <DockPanel
                 x:Name="pnlTop"
                 HorizontalAlignment="Stretch" 
@@ -82,7 +239,19 @@
                         Visibility="Visible"
                         DockPanel.Dock="Left"
                         Grid.Column="1">
-                        <Button Style="{StaticResource TabButton_ActiveDoc}">
+                        <!--<Button Style="{StaticResource TabButtonStyle}"/>
+                        <Button Style="{StaticResource TabButtonStyle}"/>-->
+                        <ItemsControl x:Name="tabsItemsControl" ItemsSource="{Binding DocumentTabs}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Style="{StaticResource TabButtonStyle}">
+                                        <TextBlock Text="{Binding Name}" />
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        
+                        <!--<Button Style="{StaticResource TabButton_ActiveDoc}">
                             <StackPanel Orientation="Horizontal" Margin="10,3,0,3">
                                 <TextBlock Text="New Job"/>
                                 <Button Style="{StaticResource TabCloseButton}">
@@ -97,7 +266,7 @@
                                     <TextBlock Text="❎"/>
                                 </Button>
                             </StackPanel>
-                        </Button>
+                        </Button>-->
 
                     </StackPanel>
                     <StackPanel 
@@ -140,9 +309,7 @@
             ClipToBounds="False"
             IsHitTestVisible="True"
             Height="Auto" 
-            Width="Auto"
-            VerticalAlignment="Stretch"
-            HorizontalAlignment="Stretch">
+            Width="Auto">
                 <Viewport3D.Camera>
                     <OrthographicCamera 
                     x:Name="v3dCamera" 

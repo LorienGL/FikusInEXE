@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Collections.ObjectModel;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -12,6 +13,26 @@ using System.Windows.Shapes;
 
 namespace FikusIn
 {
+    public class DocumentTabItem
+    {
+        public required int Id { get; set; }
+        public required string Name { get; set; }
+        public required bool IsActive { get; set; }
+
+        public override bool Equals(object? obj)
+        {
+            if (obj is not DocumentTabItem item)
+                return false;
+
+            return Id.Equals(item.Id);
+        }
+
+        public override int GetHashCode()
+        {
+            return this.Id.GetHashCode();
+        }
+    }
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -19,11 +40,17 @@ namespace FikusIn
     {
         GraphicEngine.GraphicEngine gfxEngine;
 
+        public ObservableCollection<DocumentTabItem> DocumentTabs { get; set; }
+
+
         public MainWindow()
         {
             InitializeComponent();
 
             pnlSubMenu.Visibility = Visibility.Collapsed;
+
+            tabsItemsControl.DataContext = this;
+            DocumentTabs = [new DocumentTabItem { Id = 0, Name = "New Job", IsActive = true }, new DocumentTabItem { Id = 1, Name = "Old Job", IsActive = false }];
 
             gfxEngine = new GraphicEngine.GraphicEngine(v3dMain, v3dCamera, [v3dLightTop, v3dLightRight, v3dLightLeft]);
 
@@ -82,7 +109,7 @@ namespace FikusIn
                 pnlSubMenu.Height = double.NaN;
                 pnlSubMenu.Orientation = Orientation.Vertical;
             }
-            pnlSubMenu.UpdateLayout();
+            //pnlSubMenu.UpdateLayout();
         }
 
         private void ShowMenu()
@@ -239,5 +266,6 @@ namespace FikusIn
         {
             SetMenuOrientation();
         }
+
     }
 }
