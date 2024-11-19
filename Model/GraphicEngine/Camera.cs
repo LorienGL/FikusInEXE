@@ -8,7 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Media3D;
 
-namespace FikusIn.GraphicEngine
+namespace FikusIn.Model.GraphicEngine
 {
     internal class Camera
     {
@@ -22,7 +22,7 @@ namespace FikusIn.GraphicEngine
 
         public Point3D Position
         {
-            get { return orthoCamera.Position; }            
+            get { return orthoCamera.Position; }
         }
 
         public Transform3D Transform
@@ -42,7 +42,7 @@ namespace FikusIn.GraphicEngine
             Vector3D up = orthoCamera.UpDirection;
             Vector3D right = Vector3D.CrossProduct(orthoCamera.LookDirection, up);
 
-            orthoCamera.Position -= (right * offset.X - up * offset.Y) * (orthoCamera.Width / windowWidth * 2.0) * (invert? -1: 1) * (microPrecision ? 0.1: 1);
+            orthoCamera.Position -= (right * offset.X - up * offset.Y) * (orthoCamera.Width / windowWidth * 2.0) * (invert ? -1 : 1) * (microPrecision ? 0.1 : 1);
             OnPositionChanged();
         }
 
@@ -68,10 +68,10 @@ namespace FikusIn.GraphicEngine
 
             // Move mouse cursor world position to 0,0
             Point mouseDispl = new((cursorPos.X - windowWidth / 2.0) * s2w, -(cursorPos.Y - windowHeight / 2.0) * s2w);
-            orthoCamera.Position += (right * mouseDispl.X + up * mouseDispl.Y);
+            orthoCamera.Position += right * mouseDispl.X + up * mouseDispl.Y;
 
             // Zoom
-            orthoCamera.Width *= 1 + ZOOM_FACTOR * delta * (invert? -1: 1) * (microPrecision? 0.1: 1);
+            orthoCamera.Width *= 1 + ZOOM_FACTOR * delta * (invert ? -1 : 1) * (microPrecision ? 0.1 : 1);
 
             // Set new position according to mouse position
             double s2wAfter = orthoCamera.Width / windowWidth;
@@ -86,17 +86,17 @@ namespace FikusIn.GraphicEngine
             // This is magic tbh :D
             Transform3DGroup txGrp = new();
 
-            if(offset.X != 0)
+            if (offset.X != 0)
                 txGrp.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(orthoCamera.UpDirection, -offset.X), pivot));
 
             Vector3D right = Vector3D.CrossProduct(orthoCamera.LookDirection, orthoCamera.UpDirection);
-            if(offset.Y != 0)
+            if (offset.Y != 0)
                 txGrp.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(right, -offset.Y), pivot));
 
             // This is a workaround for a bug in WPF
             // If it uses only transform, it accumulates all transforms and crashes after a bit, thus we use only the value of last
-            txGrp.Children.Add(new MatrixTransform3D(orthoCamera.Transform.Value)); 
-            
+            txGrp.Children.Add(new MatrixTransform3D(orthoCamera.Transform.Value));
+
             orthoCamera.Transform = txGrp;
             OnPositionChanged();
         }

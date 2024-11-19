@@ -38,7 +38,7 @@ namespace FikusIn
     /// </summary>
     public partial class MainWindow : Window
     {
-        GraphicEngine.GraphicEngine gfxEngine;
+        Model.GraphicEngine.GraphicEngine gfxEngine;
 
         public ObservableCollection<DocumentTabItem> DocumentTabs { get; set; }
 
@@ -52,7 +52,7 @@ namespace FikusIn
             tabsItemsControl.DataContext = this;
             DocumentTabs = [new DocumentTabItem { Id = 0, Name = "New Job", IsActive = true }, new DocumentTabItem { Id = 1, Name = "Old Job", IsActive = false }];
 
-            gfxEngine = new GraphicEngine.GraphicEngine(v3dMain, v3dCamera, [v3dLightTop, v3dLightRight, v3dLightLeft]);
+            gfxEngine = new Model.GraphicEngine.GraphicEngine(v3dMain, v3dCamera, [v3dLightTop, v3dLightRight, v3dLightLeft]);
 
             gfxEngine.PaintCube(10);
         }

@@ -346,15 +346,13 @@
                 Visibility="Collapsed"/>
             </Canvas>
 
-
             <DockPanel 
             x:Name="pnlMenu"
             HorizontalAlignment="Stretch" 
             VerticalAlignment="Top" 
             Height="70" 
             Width="Auto"
-            Margin="0,25,10,10"
-            >
+            Margin="0,25,10,10" >                
                 <Button 
                 x:Name="btnMenu"
                 DockPanel.Dock ="Left"

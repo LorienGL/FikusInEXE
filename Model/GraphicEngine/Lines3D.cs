@@ -9,7 +9,7 @@ using System.Windows;
 using System.Windows.Media.Media3D;
 using System.Diagnostics;
 
-namespace FikusIn.GraphicEngine
+namespace FikusIn.Model.GraphicEngine
 {
     internal class Lines3D : ModelVisual3D
     {
@@ -71,7 +71,7 @@ namespace FikusIn.GraphicEngine
             _model = new GeometryModel3D();
             _model.Geometry = _mesh;
             SetColor(Color);
-            base.Content = _model;
+            Content = _model;
             Points = new Point3DCollection();
             CompositionTarget.Rendering += OnRender;
         }
@@ -111,7 +111,7 @@ namespace FikusIn.GraphicEngine
 
         private void GeometryDirty()
         {
-            _visualToScreen = MathUtils.ZeroMatrix;
+            _visualToScreen = View3DMathUtils.ZeroMatrix;
         }
 
         private void RebuildGeometry()
@@ -178,7 +178,7 @@ namespace FikusIn.GraphicEngine
             Viewport3DVisual viewport;
 
             DependencyObject v = this;
-            while(v != null && v is not Viewport3DVisual)
+            while (v != null && v is not Viewport3DVisual)
                 v = VisualTreeHelper.GetParent(v);
 
             if (v == null)
@@ -191,24 +191,24 @@ namespace FikusIn.GraphicEngine
             // If line width does not need to change (no zoom), we can skip redoing the lines
             if (oc != null)
             {
-                if(viewWidth == oc.Width)
+                if (viewWidth == oc.Width)
                     return false;
 
                 viewWidth = oc.Width;
             }
 
-            Matrix3D matrix3D = FikusIn.MathUtils.TryTransformTo2DAncestor(this, out viewport, out bool success);
+            Matrix3D matrix3D = View3DMathUtils.TryTransformTo2DAncestor(this, out viewport, out bool success);
             if (!success || !matrix3D.HasInverse)
             {
                 _mesh.Positions = null;
                 return false;
             }
-            
-            if(matrix3D == _visualToScreen)
+
+            if (matrix3D == _visualToScreen)
                 return false;
 
 
-            _visualToScreen = (_screenToVisual = matrix3D);
+            _visualToScreen = _screenToVisual = matrix3D;
             _screenToVisual.Invert();
             return true;
         }

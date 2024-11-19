@@ -9,7 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 
-namespace FikusIn.GraphicEngine
+namespace FikusIn.Model.GraphicEngine
 {
     internal class GraphicEngine
     {
@@ -108,7 +108,7 @@ namespace FikusIn.GraphicEngine
         public void PaintLines(Point3D[] ps, double thickness, Color c)
         {
             OrthographicCamera? oc = viewport3D.Camera as OrthographicCamera;
-            if(oc == null)
+            if (oc == null)
                 return;
 
             double d = thickness / 2.0;
@@ -124,7 +124,7 @@ namespace FikusIn.GraphicEngine
 
                 // Get the line direction vector projected to the plane of the camera
                 Vector3D vector3D = Vector3D.CrossProduct(oc.LookDirection, Vector3D.CrossProduct(dir, oc.LookDirection));
-                if(vector3D.LengthSquared == 0)
+                if (vector3D.LengthSquared == 0)
                     vector3D = oc.UpDirection;
 
                 // Get the perpendicular vector regarding view axis
@@ -168,8 +168,8 @@ namespace FikusIn.GraphicEngine
             //mesh.Freeze();
 
             MaterialGroup materialGroup = new();
-            materialGroup.Children.Add(new DiffuseMaterial(new SolidColorBrush(Colors.Black))); 
-            materialGroup.Children.Add(new SpecularMaterial(new SolidColorBrush(Colors.Black), 0)); 
+            materialGroup.Children.Add(new DiffuseMaterial(new SolidColorBrush(Colors.Black)));
+            materialGroup.Children.Add(new SpecularMaterial(new SolidColorBrush(Colors.Black), 0));
             materialGroup.Children.Add(new EmissiveMaterial(new SolidColorBrush(c)));
             materialGroup.Freeze();
 
@@ -183,7 +183,7 @@ namespace FikusIn.GraphicEngine
 
         private void OnCameraPositionChanged()
         {
-            for (int i = 0; i < lights.Length; i++) 
+            for (int i = 0; i < lights.Length; i++)
             {
                 lights[i].Position = Camera.Position + lightsInitialPositions[i];
                 lights[i].Transform = Camera.Transform;

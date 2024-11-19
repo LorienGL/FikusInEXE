@@ -3,10 +3,11 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
+using M3DCamera = System.Windows.Media.Media3D.Camera;
 
-namespace FikusIn
+namespace FikusIn.Model.GraphicEngine
 {
-    public static class MathUtils
+    public static class View3DMathUtils
     {
         public static readonly Matrix3D ZeroMatrix = new Matrix3D(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 
@@ -41,7 +42,7 @@ namespace FikusIn
             return new Matrix3D(vector3D2.X, vector.X, vector3D.X, 0.0, vector3D2.Y, vector.Y, vector3D.Y, 0.0, vector3D2.Z, vector.Z, vector3D.Z, 0.0, offsetX, offsetY, offsetZ, 1.0);
         }
 
-        public static Matrix3D GetViewMatrix(Camera camera)
+        public static Matrix3D GetViewMatrix(M3DCamera camera)
         {
             if (camera == null)
             {
@@ -71,10 +72,10 @@ namespace FikusIn
             //double num2 = 1.0; // 1.0 / (nearPlaneDistance - farPlaneDistance); // Near and far can be inf, so its 1
             //double offsetZ = 1; // nearPlaneDistance * num2;
             return new Matrix3D(
-                2.0 / width,    0.0,            0.0,        -1.0, 
-                0.0,            2.0 / height,   0.0,        -1.0, 
-                0.0,            0.0,            1.0,        -1.0, 
-                0.0,            0.0,            0.0,        1.0);
+                2.0 / width, 0.0, 0.0, -1.0,
+                0.0, 2.0 / height, 0.0, -1.0,
+                0.0, 0.0, 1.0, -1.0,
+                0.0, 0.0, 0.0, 1.0);
         }
 
         private static Matrix3D GetProjectionMatrix(PerspectiveCamera camera, double aspectRatio)
@@ -85,12 +86,12 @@ namespace FikusIn
             double farPlaneDistance = camera.FarPlaneDistance;
             double num2 = 1.0 / Math.Tan(num / 2.0);
             double m = aspectRatio * num2;
-            double num3 = ((farPlaneDistance == double.PositiveInfinity) ? (-1.0) : (farPlaneDistance / (nearPlaneDistance - farPlaneDistance)));
+            double num3 = farPlaneDistance == double.PositiveInfinity ? -1.0 : farPlaneDistance / (nearPlaneDistance - farPlaneDistance);
             double offsetZ = nearPlaneDistance * num3;
             return new Matrix3D(num2, 0.0, 0.0, 0.0, 0.0, m, 0.0, 0.0, 0.0, 0.0, num3, -1.0, 0.0, 0.0, offsetZ, 0.0);
         }
 
-        public static Matrix3D GetProjectionMatrix(Camera camera, double aspectRatio)
+        public static Matrix3D GetProjectionMatrix(M3DCamera camera, double aspectRatio)
         {
             if (camera == null)
             {
@@ -155,7 +156,7 @@ namespace FikusIn
         {
             success = false;
             Matrix3D identity = Matrix3D.Identity;
-            Camera camera = visual.Camera;
+            var camera = visual.Camera;
             if (camera == null)
             {
                 return ZeroMatrix;
@@ -259,9 +260,9 @@ namespace FikusIn
             };
             transform.Transform(array);
             Point3D point3D = array[0];
-            x = (x2 = point3D.X);
-            y = (y2 = point3D.Y);
-            z = (z2 = point3D.Z);
+            x = x2 = point3D.X;
+            y = y2 = point3D.Y;
+            z = z2 = point3D.Z;
             for (int i = 1; i < array.Length; i++)
             {
                 point3D = array[i];
