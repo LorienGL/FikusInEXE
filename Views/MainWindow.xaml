@@ -85,7 +85,7 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#DDDDDD"/>
+                    <Setter Property="Background" Value="#FFFFFF"/>
                 </Trigger>
             </Style.Triggers>
             <Style.Resources>
@@ -125,6 +125,8 @@
             <Setter Property="TextBlock.VerticalAlignment" Value="Center"/>
             <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
             <Setter Property="VerticalAlignment" Value="Bottom"/>
+            <Setter Property="Command" Value="{Binding ElementName=tabsItemsControl,  Path=DataContext.SetActiveDocument}"/>
+            <Setter Property="CommandParameter" Value="{Binding}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
@@ -139,6 +141,8 @@
                                     Margin="0,0,10,0" 
                                     VerticalAlignment="Center"/>
                                 <Button Style="{StaticResource TabCloseButton}" 
+                                        Command="{Binding ElementName=tabsItemsControl,  Path=DataContext.CloseDocument}"
+                                        CommandParameter="{Binding}"
                                         Margin="0,0,1,1">
                                     <TextBlock FontSize="16" Text="❎"/>
                                 </Button>
@@ -157,34 +161,6 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-        </Style>
-        <Style x:Key="TabButton" TargetType="{x:Type Button}">
-            <Setter Property="Background" Value="#222222"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Height" Value="Auto"/>
-            <Setter Property="Margin" Value="2,2,2,0"/>
-            <Setter Property="TextBlock.Foreground" Value="#999999"/>
-            <Setter Property="TextBlock.VerticalAlignment" Value="Center"/>
-            <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Button}">
-                        <Border Background="{TemplateBinding Background}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#111111"/>
-                    <Setter Property="TextBlock.Foreground" Value="#FFFFFF"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-        <Style x:Key="TabButton_ActiveDoc" TargetType="{x:Type Button}" BasedOn="{StaticResource TabButton}">
-            <Setter Property="Background" Value="#111111"/>
-            <Setter Property="TextBlock.Foreground" Value="#FFFFFF"/>
         </Style>
     </Window.Resources>
 
@@ -245,19 +221,6 @@
                         Margin="0,0,0,0"
                         VerticalAlignment="Bottom"
                         HorizontalAlignment="Left">
-                        <!--<StackPanel 
-    Height="Auto"
-    Width="Auto"
-    Margin="0,0,0,0"
-    VerticalAlignment="Bottom"
-    HorizontalAlignment="Left"
-    Orientation="Horizontal"
-    Background="#FFFF00">
-                            <Button Margin ="0" Style="{StaticResource TabButtonStyle}">
-                                <TextBlock Text="KK"/>
-                            </Button>
-                        </StackPanel>-->
-
                         <ItemsControl x:Name="tabsItemsControl" 
                                   ItemsSource="{Binding Documents}"
                                   Margin="0">
@@ -279,23 +242,7 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                     </Grid>
-                        
-                        <!--<Button Style="{StaticResource TabButton_ActiveDoc}">
-                            <StackPanel Orientation="Horizontal" Margin="10,3,0,3">
-                                <TextBlock Text="New Job"/>
-                                <Button Style="{StaticResource TabCloseButton}">
-                                    <TextBlock Text="❎"/>
-                                </Button>
-                            </StackPanel>
-                        </Button>
-                        <Button Style="{StaticResource TabButton}">
-                            <StackPanel Orientation="Horizontal" Margin="10,3,0,3">
-                                <TextBlock Text="New Job 2"/>
-                                <Button Style="{StaticResource TabCloseButton}">
-                                    <TextBlock Text="❎"/>
-                                </Button>
-                            </StackPanel>
-                        </Button>-->
+
                     <StackPanel 
                         x:Name="pnlTopRight"
                         Margin="0" 
@@ -400,10 +347,9 @@
                 Height="70"
                 Width="Auto"
                 Orientation="Horizontal">
-                    <Button 
-                    x:Name="btnNew"
-                    Style="{StaticResource MenuButtons}"
-                    ToolTip="New">
+                    <Button Style="{StaticResource MenuButtons}" 
+                            ToolTip="New" 
+                            Command="{Binding NewDocument}">
                         <TextBlock Text="📄" Margin="0,1,0,0" FontFamily="Consolas" FontSize="32"/>
                     </Button>
                     <Button 
@@ -421,6 +367,5 @@
                 </StackPanel>
             </DockPanel>
         </Grid>
-
     </Border>
 </Window>

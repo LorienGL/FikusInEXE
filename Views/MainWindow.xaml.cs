@@ -30,7 +30,6 @@ namespace FikusIn.Views
 
             DataContext = new MainViewModel();
 
-
             gfxEngine = new Model.GraphicEngine.GraphicEngine(v3dMain, v3dCamera, [v3dLightTop, v3dLightRight, v3dLightLeft]);
 
             gfxEngine.PaintCube(10);

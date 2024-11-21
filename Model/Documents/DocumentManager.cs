@@ -47,6 +47,17 @@ namespace FikusIn.Model.Documents
             return _documents.FirstOrDefault(d => d.IsActive);
         }
 
+        public static void SetActiveDocument(Document? document)
+        { 
+            if(document == null || !_documents.Contains(document))
+                return;
+
+            foreach (var item in _documents)
+                item.IsActive = false;
+
+            document.IsActive = true;
+        }
+
         public static Document? GetDocumentById(Guid id)
         {
             return _documents.FirstOrDefault(d => d.Id == id);
@@ -57,12 +68,15 @@ namespace FikusIn.Model.Documents
             return _documents;
         }
 
-        public static void CloseDocument(Document document)
+        public static void CloseDocument(Document? document)
         {
-            if (!document.Close())
+            if(document == null || document is not Document) 
                 return;
 
-            _documents.Remove(document);
+            RemoveDocument(document);
+
+            if (!document.Close())
+                return;
         }
 
     }

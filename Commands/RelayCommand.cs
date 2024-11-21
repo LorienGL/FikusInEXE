@@ -31,7 +31,7 @@ namespace FikusIn.Commands
         /// </summary>
         /// <param name="execute">The execution logic.</param>
         public RelayCommand(Action<object> execute)
-            : this(execute, param => RelayCommand.TruePredicate(ull))
+            : this(execute, param => RelayCommand.TruePredicate(null))
         {
         }
 
