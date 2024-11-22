@@ -33,9 +33,22 @@ namespace FikusIn.Model.Documents
             if(document.IsActive && _documents.Count > 0)
                 _documents.First().IsActive = true;
         }
+
+        private static readonly string NewJobName = "New Job";
+
+        private static int GetMaxJobNumber()
+        {
+            var jobNumbers = _documents
+                .Where(d => d.Name.StartsWith($"{NewJobName} "))
+                .Select(d => int.Parse(d.Name.Substring($"{NewJobName} ".Length)))
+                .ToList();
+
+            return jobNumbers.Count != 0 ? jobNumbers.Max() + 1: _documents.Any(d => d.Name == NewJobName)? 1: 0;
+        }
         public static Document NewDocument()
         {
-            var res = new Document(Guid.NewGuid(), "New Job", true);
+            int njc = GetMaxJobNumber();
+            var res = new Document(Guid.NewGuid(), NewJobName + (njc > 0? $" {njc}": ""), true);
 
             AddDocument(res);
 

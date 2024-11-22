@@ -366,6 +366,35 @@
                     </Button>
                 </StackPanel>
             </DockPanel>
+
+            <Label 
+                x:Name="messageLabel" 
+                FontSize="24"
+                FontFamily="Calibri"
+                HorizontalAlignment="Stretch" 
+                VerticalAlignment="Bottom"
+                HorizontalContentAlignment="Center"
+                Content="{Binding Message}" 
+                Foreground="{Binding MessageForeground}"
+                Background="{Binding MessageBackground}">
+                <Label.Style>
+                    <Style TargetType="Label">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsMessageFadingOut}" Value="True">
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation 
+                                                Storyboard.TargetProperty="Opacity" 
+                                                From="1" To="0" Duration="0:0:3" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Label.Style>
+            </Label>
         </Grid>
     </Border>
 </Window>

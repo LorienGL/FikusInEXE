@@ -1,28 +1,25 @@
-﻿using System;
+﻿using FikusIn.Utils;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace FikusIn.Model.Documents
 {
-    public class Document(Guid _id, string _name, bool p_isActive): INotifyPropertyChanged
+    public class Document(Guid _id, string _name, bool p_isActive): ObservableObjectBase
     {
         public Guid Id { get; set; } = _id;
         public string Name { get; set; } = _name;
+
+
         private bool _isActive = p_isActive;
         public bool IsActive
         {
-            get { return _isActive; }
-            set
-            {
-                if (_isActive != value)
-                {
-                    _isActive = value;
-                    OnPropertyChanged(nameof(IsActive));
-                }
-            }
+            get => _isActive;
+            set => SetField(ref _isActive, value);
         }
 
         public string Title
@@ -31,13 +28,6 @@ namespace FikusIn.Model.Documents
         }
 
         public bool IsModified { get; private set; } = false;
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
 
         internal bool Close()
         {

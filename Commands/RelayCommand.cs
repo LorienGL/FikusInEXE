@@ -30,7 +30,7 @@ namespace FikusIn.Commands
         /// Creates a new command that can always execute.
         /// </summary>
         /// <param name="execute">The execution logic.</param>
-        public RelayCommand(Action<object> execute)
+        public RelayCommand(Action<object?> execute)
             : this(execute, param => RelayCommand.TruePredicate(null))
         {
         }
@@ -42,10 +42,9 @@ namespace FikusIn.Commands
         /// </summary>
         /// <param name="execute">The execution logic.</param>
         /// <param name="canExecute">The execution status logic.</param>
-        public RelayCommand(Action<object?> execute, Predicate<object?> canExecute)
+        public RelayCommand(Action<object?>? execute, Predicate<object?> canExecute)
         {
-            if (execute == null)
-                throw new ArgumentNullException("execute");
+            ArgumentNullException.ThrowIfNull(execute);
 
             _execute = execute;
             _canExecute = canExecute;
