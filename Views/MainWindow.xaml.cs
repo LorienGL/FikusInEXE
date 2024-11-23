@@ -28,7 +28,9 @@ namespace FikusIn.Views
 
             pnlSubMenu.Visibility = Visibility.Collapsed;
 
-            DataContext = new MainViewModel();
+            var mainViewModel = new MainViewModel();
+            DataContext = mainViewModel;
+            messageLabel.DataContext = mainViewModel.MessagesViewModel;
 
             gfxEngine = new Model.GraphicEngine.GraphicEngine(v3dMain, v3dCamera, [v3dLightTop, v3dLightRight, v3dLightLeft]);
 

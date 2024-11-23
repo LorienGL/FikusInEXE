@@ -16,6 +16,7 @@
     WindowState="Maximized"
     WindowStartupLocation="CenterScreen"
     Background="#111111"
+    
     MouseLeftButtonDown="Window_MouseLeftButtonDown"
     MouseLeftButtonUp="Window_MouseLeftButtonUp"
     MouseMove="Window_MouseMove"
@@ -367,34 +368,108 @@
                 </StackPanel>
             </DockPanel>
 
-            <Label 
-                x:Name="messageLabel" 
-                FontSize="24"
-                FontFamily="Calibri"
-                HorizontalAlignment="Stretch" 
-                VerticalAlignment="Bottom"
-                HorizontalContentAlignment="Center"
-                Content="{Binding Message}" 
-                Foreground="{Binding MessageForeground}"
-                Background="{Binding MessageBackground}">
-                <Label.Style>
-                    <Style TargetType="Label">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsMessageFadingOut}" Value="True">
-                                <DataTrigger.EnterActions>
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation 
-                                                Storyboard.TargetProperty="Opacity" 
-                                                From="1" To="0" Duration="0:0:3" />
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </DataTrigger.EnterActions>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Label.Style>
-            </Label>
+            <Grid
+                    HorizontalAlignment="Stretch" 
+                    VerticalAlignment="Bottom">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Label 
+                    x:Name="messageLabel" 
+                    FontSize="24"
+                    FontFamily="Calibri"
+                    HorizontalAlignment="Stretch" 
+                    VerticalAlignment="Bottom"
+                    HorizontalContentAlignment="Center"
+                    Content="{Binding Message}" 
+                    Foreground="{Binding MessageForeground}"
+                    Background="{Binding MessageBackground}"
+                    Grid.Row="0">
+                    <Label.Style>
+                        <Style TargetType="Label">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ShowMessage}" Value="True">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation 
+                                                    Storyboard.TargetProperty="Opacity" 
+                                                    To="1" Duration="0:0:0.200" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                    <DataTrigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation 
+                                                    Storyboard.TargetProperty="Opacity" 
+                                                    To="0" Duration="0:0:0.500" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.ExitActions>
+                                </DataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ShowMessage}" Value="False" />
+                                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation 
+                                                    Storyboard.TargetProperty="Opacity" 
+                                                    To="1" Duration="0:0:0.200" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </MultiDataTrigger.EnterActions>
+                                    <MultiDataTrigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation 
+                                                    Storyboard.TargetProperty="Opacity" 
+                                                    To="0" Duration="0:0:0.500" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </MultiDataTrigger.ExitActions>
+
+                                </MultiDataTrigger>
+
+                                <!--<Trigger Property="IsMouseOver" Value="True">
+                                    <Trigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation 
+                                                    Storyboard.TargetProperty="Opacity" 
+                                                    To="1" Duration="0:0:0.200" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.EnterActions>
+                                    <Trigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation 
+                                                    Storyboard.TargetProperty="Opacity" 
+                                                    To="0" Duration="0:0:0.500" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.ExitActions>
+                                </Trigger>-->
+                            </Style.Triggers>
+                        </Style>
+                    </Label.Style>
+                </Label>
+                <ProgressBar 
+                    Minimum="0" 
+                    Maximum="100" 
+                    Name="pbStatus" 
+                    IsIndeterminate="True" 
+                    BorderThickness="0"
+                    Height="3"
+                    Grid.Row="1"
+                    Background="#000000"
+                    Foreground="#FFFFFF"/>
+            </Grid>
         </Grid>
     </Border>
 </Window>

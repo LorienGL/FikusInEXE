@@ -19,7 +19,7 @@ namespace FikusIn.Model.Documents
         public bool IsActive
         {
             get => _isActive;
-            set => SetField(ref _isActive, value);
+            set => SetProperty(ref _isActive, value);
         }
 
         public string Title

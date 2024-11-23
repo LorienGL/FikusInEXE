@@ -40,10 +40,10 @@ namespace FikusIn.Model.Documents
         {
             var jobNumbers = _documents
                 .Where(d => d.Name.StartsWith($"{NewJobName} "))
-                .Select(d => int.Parse(d.Name.Substring($"{NewJobName} ".Length)))
+                .Select(d => int.Parse(d.Name[$"{NewJobName} ".Length..]))
                 .ToList();
 
-            return jobNumbers.Count != 0 ? jobNumbers.Max() + 1: _documents.Any(d => d.Name == NewJobName)? 1: 0;
+            return jobNumbers.Count != 0 ? jobNumbers.Max() + 1: _documents.Any(d => d.Name == NewJobName)? 2: 0;
         }
         public static Document NewDocument()
         {

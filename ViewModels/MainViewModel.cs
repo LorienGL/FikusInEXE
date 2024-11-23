@@ -1,6 +1,7 @@
 ﻿using FikusIn.Commands;
 using FikusIn.Model.Documents;
 using FikusIn.Utils;
+using FikusIn.ViewModels;
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
@@ -18,49 +19,12 @@ namespace FikusIn.ViewModel
         #region Observed Properties
         public ObservableCollection<Document> Documents { get; set; }
 
-        private string _message = "";
-        public string Message
+        private MessagesViewModel _messagesViewModel = new MessagesViewModel();
+        public MessagesViewModel MessagesViewModel
         {
-            get => _message;
-            set
-            {
-                if (!SetField(ref _message, value))
-                    return;
-
-                // start timer
-                _isMessageFadingOut = true;
-            }
+            get => _messagesViewModel;
+            set => SetProperty(ref _messagesViewModel, value);
         }
-
-        private bool _isMessageFadingOut = false;
-        public bool IsMessageFadingOut
-        {
-            get => _isMessageFadingOut;
-            set
-            {
-                if (!SetField(ref _isMessageFadingOut, value))
-                    return;
-
-                // start timer
-            }
-        }
-
-        private Brush _messageForeground = Brushes.White;
-        public Brush MessageForeground
-        {
-            get => _messageForeground;
-            set => SetField(ref _messageForeground, value);
-        }
-
-        private Brush _messageBackground = Brushes.Black;
-        public Brush MessageBackground
-        {
-            get => _messageBackground;
-            set => SetField(ref _messageBackground, value);
-        }
-
-
-
         #endregion
 
         #region Commands
@@ -87,35 +51,13 @@ namespace FikusIn.ViewModel
 
         #region Event Handlers
 
-        private void MessageReceivedEventHandler(Object? sender, Message message)
-        {
-            Message = message.Text;
-            if(message.Type == Utils.Message.MessageType.Info) 
-            {
-                MessageBackground = Brushes.Black;
-                MessageForeground = Brushes.White;
-            } 
-            else if(message.Type == Utils.Message.MessageType.Warning)
-            {
-                MessageBackground = Brushes.Yellow;
-                MessageForeground = Brushes.Black;
-            }
-            else if(message.Type == Utils.Message.MessageType.Error)
-            {
-                MessageBackground = Brushes.DarkRed;
-                MessageForeground = Brushes.White;
-            }
-        }
-
         #endregion
 
 
         public MainViewModel() 
         {
-            Messenger.Instance.MessageReceived += MessageReceivedEventHandler;
-
+            
             Documents = DocumentManager.GetDocuments();
-            Message = DateTime.Now.Hour < 12 ? "Good Morning!" : DateTime.Now.Hour < 18 ? "Good afternoon!" : "Good Night!";
         }
 
 
