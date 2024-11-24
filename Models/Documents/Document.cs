@@ -9,6 +9,13 @@ using System.Xml.Linq;
 
 namespace FikusIn.Model.Documents
 {
+    /// <summary>
+    /// Document class 
+    /// Do not create documents using new Document(...) unless for testing purposes, use DocumentManager.NewDocument(...) instead
+    /// </summary>
+    /// <param name="_id"></param>
+    /// <param name="_name"></param>
+    /// <param name="p_isActive"></param>
     public class Document(Guid _id, string _name, bool p_isActive): ObservableObjectBase
     {
         public Guid Id { get; set; } = _id;
@@ -22,6 +29,7 @@ namespace FikusIn.Model.Documents
             set => SetProperty(ref _isActive, value);
         }
 
+        // TODO: SetProperty setup
         public string Title
         {
             get { return Name + (IsModified ? "*" : ""); }

@@ -437,16 +437,27 @@
                         </Style>
                     </Label.Style>
                 </Label>
-                <ProgressBar 
-                    Minimum="0" 
-                    Maximum="100" 
-                    Name="pbStatus" 
-                    IsIndeterminate="True" 
-                    BorderThickness="0"
-                    Height="3"
-                    Grid.Row="1"
-                    Background="#000000"
-                    Foreground="#FFFFFF"/>
+                <StackPanel
+                    HorizontalAlignment="Stretch" 
+                    VerticalAlignment="Bottom"
+                    Orientation="Vertical"
+                    Grid.Row="1">
+                    <ItemsControl ItemsSource="{Binding ProgressList}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <ProgressBar Minimum="{Binding Minimum}"
+                                Maximum="{Binding Maximum}"
+                                Value="{Binding Current}"
+                                IsIndeterminate="{Binding IsDeterminate}" 
+                                BorderThickness="0"
+                                Height="3"
+                                Grid.Row="1"
+                                Background="#000000"
+                                Foreground="#FFFFFF"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
             </Grid>
         </Grid>
     </Border>
