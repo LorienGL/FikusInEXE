@@ -179,7 +179,7 @@
                     <!-- Add to avoid border disappearing when window is maximised -->
                     <DataTrigger Binding="{Binding WindowState, RelativeSource={RelativeSource AncestorType=Window}}" 
                                  Value="Maximized">
-                        <Setter Property="Margin" Value="10"/>
+                        <Setter Property="Margin" Value="8"/>
                     </DataTrigger>
                     <DataTrigger Binding="{Binding WindowState, RelativeSource={RelativeSource AncestorType=Window}}" 
                                  Value="Normal">
@@ -190,6 +190,34 @@
         </Border.Style>
 
         <Grid Background="#111111">
+            <Viewport3D 
+                x:Name="v3dMain"
+                ClipToBounds="False"
+                IsHitTestVisible="True"             
+                Width="Auto"
+                Height="Auto">
+                <Viewport3D.Camera>
+                    <OrthographicCamera 
+                    x:Name="v3dCamera" 
+                    Position="0,0,40" 
+                    LookDirection="0,0,-1" 
+                    UpDirection="0,1,0"
+                    FarPlaneDistance="Infinity"
+                    NearPlaneDistance="-Infinity"
+                    Width="100"/>
+                </Viewport3D.Camera>
+                <ModelVisual3D>
+                    <ModelVisual3D.Content>
+                        <Model3DGroup
+                        x:Name="v3dScene">
+                            <AmbientLight Color="#444444"/>
+                            <PointLight x:Name="v3dLightTop" Color="#777777" Position="1,10,40"/>
+                            <PointLight x:Name="v3dLightRight" Color="#444444" Position="10,-1,60"/>
+                            <PointLight x:Name="v3dLightLeft" Color="#333333" Position="-10,2,20"/>
+                        </Model3DGroup>
+                    </ModelVisual3D.Content>
+                </ModelVisual3D>
+            </Viewport3D>
 
             <DockPanel
                 x:Name="pnlTop"
@@ -197,8 +225,7 @@
                 VerticalAlignment="Top" 
                 Height="26" 
                 Width="Auto"
-                Background="#333333"
-                Grid.Row="0">
+                Background="#333333">
                 <Grid HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>
@@ -279,35 +306,6 @@
                 </Grid>
             </DockPanel>
 
-            <Viewport3D 
-            x:Name="v3dMain"
-            ClipToBounds="False"
-            IsHitTestVisible="True"
-            Height="Auto" 
-            Width="Auto">
-                <Viewport3D.Camera>
-                    <OrthographicCamera 
-                    x:Name="v3dCamera" 
-                    Position="0,0,40" 
-                    LookDirection="0,0,-1" 
-                    UpDirection="0,1,0"
-                    FarPlaneDistance="Infinity"
-                    NearPlaneDistance="-Infinity"
-                    Width="100"/>
-                </Viewport3D.Camera>
-                <ModelVisual3D>
-                    <ModelVisual3D.Content>
-                        <Model3DGroup
-                        x:Name="v3dScene">
-                            <AmbientLight Color="#444444"/>
-                            <PointLight x:Name="v3dLightTop" Color="#777777" Position="1,10,40"/>
-                            <PointLight x:Name="v3dLightRight" Color="#444444" Position="10,-1,60"/>
-                            <PointLight x:Name="v3dLightLeft" Color="#333333" Position="-10,2,20"/>
-                        </Model3DGroup>
-                    </ModelVisual3D.Content>
-                </ModelVisual3D>
-            </Viewport3D>
-
             <Canvas 
             Height="Auto" 
             Width="Auto"
@@ -368,12 +366,12 @@
                 </StackPanel>
             </DockPanel>
 
-            <Grid
-                    HorizontalAlignment="Stretch" 
-                    VerticalAlignment="Bottom">
+            <Grid HorizontalAlignment="Stretch" 
+                  VerticalAlignment="Bottom"
+                  Margin="0">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
                 <Label 
                     x:Name="messageLabel" 
@@ -385,7 +383,9 @@
                     Content="{Binding Message}" 
                     Foreground="{Binding MessageForeground}"
                     Background="{Binding MessageBackground}"
-                    Grid.Row="0">
+                    Grid.Row="0"
+                    BorderThickness="0"
+                    Margin="0">
                     <Label.Style>
                         <Style TargetType="Label">
                             <Style.Triggers>
@@ -441,19 +441,21 @@
                     HorizontalAlignment="Stretch" 
                     VerticalAlignment="Bottom"
                     Orientation="Vertical"
-                    Grid.Row="1">
-                    <ItemsControl ItemsSource="{Binding ProgressList}">
+                    Grid.Row="1"
+                    Margin="0">
+                    <ItemsControl ItemsSource="{Binding ProgressList}" BorderThickness="0">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <ProgressBar Minimum="{Binding Minimum}"
                                 Maximum="{Binding Maximum}"
                                 Value="{Binding Current}"
-                                IsIndeterminate="{Binding IsDeterminate}" 
+                                IsIndeterminate="{Binding IsIndeterminate}" 
                                 BorderThickness="0"
                                 Height="3"
                                 Grid.Row="1"
                                 Background="#000000"
-                                Foreground="#FFFFFF"/>
+                                Foreground="#FFFFFF"
+                                Margin="0"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>

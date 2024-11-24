@@ -61,7 +61,7 @@ namespace FikusIn.ViewModel
             var w1 = new BackgroundWorker();
             w1.DoWork += (sender, e) =>
             {
-                using var progress = new Progress(0, 1000, false);
+                using var progress = new Progress(1000);
                 for (int i = 0; i <= 1000; i++)
                 {
                     Thread.Sleep(TimeSpan.FromMilliseconds(10));
@@ -73,7 +73,7 @@ namespace FikusIn.ViewModel
             var w2 = new BackgroundWorker();
             w2.DoWork += (sender, e) =>
             {
-                using var progress = new Progress(0, 500, false);
+                using var progress = new Progress(500);
                 for (int i = 0; i <= 500; i++)
                 {
                     Thread.Sleep(TimeSpan.FromMilliseconds(100));
@@ -85,7 +85,7 @@ namespace FikusIn.ViewModel
             var w3 = new BackgroundWorker();
             w3.DoWork += (sender, e) =>
             {
-                using var progress = new Progress(0, 250, true);
+                using var progress = new Progress(250, 0, true);
                 for (int i = 0; i <= 250; i++)
                 {
                     Thread.Sleep(TimeSpan.FromMilliseconds(100));

@@ -10,6 +10,11 @@ using System.Windows.Threading;
 
 namespace FikusIn.Utils
 {
+    /// <summary>
+    /// Just do: 
+    ///     using Progress myProgress = new Progress();
+    /// MUST do the using or the progress will remain in screen forever even when done
+    /// </summary>
     public class Progress: ObservableObjectBase, IDisposable
     {
         private static readonly ConcurrentDictionary<Guid, Progress> _progressList = []; // This will be used in many threads
@@ -17,7 +22,7 @@ namespace FikusIn.Utils
 
         public double Minimum { get; }
         public double Maximum { get; }
-        public bool IsDeterminate { get; }
+        public bool IsIndeterminate { get; }
 
         private Guid Id { get; }
 
@@ -31,11 +36,11 @@ namespace FikusIn.Utils
         private static DispatcherTimer? refreshBindedListTimer = null;
 
         // Multi thred supported
-        public Progress(double min, double max, bool isDeterminate)
+        public Progress(double max = 0, double min = 0, bool isIndeterminate = false)
         {
             Minimum = min;
             Maximum = max; 
-            IsDeterminate = isDeterminate;
+            IsIndeterminate = isIndeterminate;
             Id = Guid.NewGuid();
 
             while(!_progressList.TryAdd(Id, this)) // Should never be false, ever
@@ -47,7 +52,7 @@ namespace FikusIn.Utils
         {
             Minimum = min;
             Maximum = max;
-            IsDeterminate = isDeterminate;
+            IsIndeterminate = isDeterminate;
             Current = current;
             Id = id;
         }
@@ -57,13 +62,14 @@ namespace FikusIn.Utils
         {
             // Start a timer (150ms) that will go on til program ends
             refreshBindedListTimer = new DispatcherTimer();
-            refreshBindedListTimer.Interval = TimeSpan.FromMilliseconds(50);
+            refreshBindedListTimer.Interval = TimeSpan.FromMilliseconds(150);
             refreshBindedListTimer.Tick += refreshBindedListTimer_Tick;
             refreshBindedListTimer.Start();
 
             return _bindedProgressList; 
         }
 
+        // If we recreate the objects everytime, the UI felt clumsy, plus no determinate progress bars will not show (destroyed and created every tick, not fun)
         private static void refreshBindedListTimer_Tick(object? sender, EventArgs e)
         {
             var deletedList = _bindedProgressList.Where(p => !_progressList.ContainsKey(p.Id)).ToList();
@@ -72,13 +78,14 @@ namespace FikusIn.Utils
 
             var newList = _progressList.Values.Where(p => !_bindedProgressList.Any(p2 => p2.Id == p.Id)).ToList();
             foreach (var progress in newList)
-                _bindedProgressList.Add(new Progress(progress.Minimum, progress.Maximum, progress.IsDeterminate, progress.Current, progress.Id));
+                _bindedProgressList.Add(new Progress(progress.Minimum, progress.Maximum, progress.IsIndeterminate, progress.Current, progress.Id));
 
             foreach(var progress in _bindedProgressList)
             {
-                Progress thProgress;
+                Progress? thProgress;
                 if (_progressList.TryGetValue(progress.Id, out thProgress))
-                    progress.Current = thProgress.Current;
+                    if(progress != null)
+                        progress.Current = thProgress.Current;
             }
         }
 
