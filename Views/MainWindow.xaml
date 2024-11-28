@@ -134,13 +134,18 @@
                         <Border Background="{TemplateBinding Background}" 
                                 BorderThickness="0">
                             <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
-                                <TextBlock 
-                                    FontWeight="Bold"
-                                    Height ="24" 
-                                    Text="{Binding Title}" 
-                                    FontSize="18" 
-                                    Margin="0,0,10,0" 
-                                    VerticalAlignment="Center"/>
+                                <!--<Viewbox MaxWidth="150">-->
+                                    <TextBlock 
+                                        MaxWidth="200"
+                                        Height ="24" 
+                                        Text="{Binding Title}" 
+                                        ToolTip="{Binding Title}" 
+                                        FontSize="18" 
+                                        Margin="0,0,10,0" 
+                                        TextTrimming="WordEllipsis" 
+                                        TextWrapping="NoWrap"
+                                        VerticalAlignment="Center"/>
+                                <!--</Viewbox>-->
                                 <Button Style="{StaticResource TabCloseButton}" 
                                         Command="{Binding ElementName=tabsItemsControl,  Path=DataContext.CloseDocument}"
                                         CommandParameter="{Binding}"
@@ -153,6 +158,7 @@
                             <DataTrigger Binding="{Binding IsActive}" Value="True">
                                 <Setter Property="Background" Value="#111111" />
                                 <Setter Property="TextBlock.Foreground" Value="#FFFFFF"/>
+                                <!--<Setter Property="TextBlock.FontWeight" Value="Bold"/>-->
                             </DataTrigger>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Background" Value="#111111"/>
@@ -163,6 +169,30 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="FileMenuButtons" TargetType="{x:Type Button}">
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="TextBlock.Foreground" Value="#BBBBBB"/>
+            <Setter Property="TextBlock.FontSize" Value="20"/>
+            <Setter Property="TextBlock.FontFamily" Value="Consolas"/>
+            <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#BBBBBB"/>
+                    <Setter Property="TextBlock.Foreground" Value="#444444"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
     </Window.Resources>
 
     <WindowChrome.WindowChrome>
@@ -232,15 +262,33 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
-                    <Image
-                        DockPanel.Dock="Left"
-                        Source="{Binding Source={x:Static properties:Resources.Icon}}"
-                        VerticalAlignment="Top" 
-                        Margin="2,0,2,0"
-                        Grid.Column="0"
-                        Height="26"
-                        Stretch="UniformToFill"
-                        StretchDirection="DownOnly"/>
+                    <StackPanel
+                        Height="26" 
+                        Width="Auto"
+                        Background="#333333"
+                        Orientation="Horizontal"
+                        Margin="0,0,4,0">
+                        <Image Source="{Binding Source={x:Static properties:Resources.Icon}}"
+                            VerticalAlignment="Top" 
+                            Margin="2,0,2,0"
+                            Grid.Column="0"
+                            Height="26"
+                            Stretch="UniformToFill"
+                            StretchDirection="DownOnly"/>
+                        <Button Style="{StaticResource FileMenuButtons}"
+                            ToolTip="New" 
+                            Command="{Binding NewDocument}">
+                            <TextBlock Text="📄" Margin="0,1,0,0"/>
+                        </Button>
+                        <Button Style="{StaticResource FileMenuButtons}"
+                            ToolTip="Open">
+                            <TextBlock Text="📂" Margin="0,0,0,0"/>
+                        </Button>
+                        <Button Style="{StaticResource FileMenuButtons}"
+                            ToolTip="Save">
+                            <TextBlock Text="💾" Margin="0,1,0,0"/>
+                        </Button>
+                    </StackPanel>
                     <Grid
                         Grid.Column="1"
                         DockPanel.Dock="Left"
@@ -327,13 +375,13 @@
             Width="Auto"
             Margin="0,25,10,10" >                
                 <Button 
-                x:Name="btnMenu"
-                DockPanel.Dock ="Left"
-                VerticalAlignment="Bottom" 
-                HorizontalAlignment="Left" 
-                Style="{StaticResource MenuButtons}"
-                MouseEnter="btnMenu_MouseEnter"
-                Click="btnMenu_Click">
+                    x:Name="btnMenu"
+                    DockPanel.Dock ="Left"
+                    VerticalAlignment="Bottom" 
+                    HorizontalAlignment="Left" 
+                    Style="{StaticResource MenuButtons}"
+                    MouseEnter="btnMenu_MouseEnter"
+                    Click="btnMenu_Click">
                     <TextBlock Text="☰" FontWeight="Bold" Margin="0,-5,0,0" FontSize="34"/>
                 </Button>
 
