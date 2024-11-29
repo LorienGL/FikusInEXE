@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:local="clr-namespace:FikusIn" 
+    xmlns:conv="clr-namespace:FikusIn.UIConverters"
     xmlns:properties="clr-namespace:FikusIn.Properties"
     mc:Ignorable="d"
     Title="FikusIn" 
@@ -95,6 +96,23 @@
                 </Style>
             </Style.Resources>
         </Style>
+
+        <Style x:Key="AutoSizeTextBox" TargetType="{x:Type TextBlock}">
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="MaxWidth" Value="500" />
+            <Setter Property="Margin" Value="0,1,10,0" />
+            <Style.Triggers>
+                <DataTrigger 
+                    Binding="{Binding ActualWidth, RelativeSource={RelativeSource Self}, Converter={x:Static conv:IsGreaterThanConverter.Instance}, ConverterParameter=150}" 
+                    Value="True">
+                    <Setter Property="FontSize" Value="14" />
+                    <Setter Property="MaxWidth" Value="200" />
+                    <Setter Property="Margin" Value="0,5,10,0" />
+                    <Setter Property="ToolTip" Value="{Binding Title}" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
         <Style x:Key="TabCloseButton" TargetType="{x:Type Button}">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
@@ -117,6 +135,7 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+
         <Style x:Key="TabButtonStyle" TargetType="{x:Type Button}">
             <Setter Property="Background" Value="#222222"/>
             <Setter Property="BorderThickness" Value="0"/>
@@ -134,18 +153,11 @@
                         <Border Background="{TemplateBinding Background}" 
                                 BorderThickness="0">
                             <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
-                                <!--<Viewbox MaxWidth="150">-->
-                                    <TextBlock 
-                                        MaxWidth="200"
-                                        Height ="24" 
-                                        Text="{Binding Title}" 
-                                        ToolTip="{Binding Title}" 
-                                        FontSize="18" 
-                                        Margin="0,0,10,0" 
-                                        TextTrimming="WordEllipsis" 
-                                        TextWrapping="NoWrap"
-                                        VerticalAlignment="Center"/>
-                                <!--</Viewbox>-->
+                                <TextBlock 
+                                    Height ="24" 
+                                    Text="{Binding Title}" 
+                                    TextTrimming="CharacterEllipsis" 
+                                    Style="{StaticResource AutoSizeTextBox}"/>
                                 <Button Style="{StaticResource TabCloseButton}" 
                                         Command="{Binding ElementName=tabsItemsControl,  Path=DataContext.CloseDocument}"
                                         CommandParameter="{Binding}"
@@ -192,7 +204,6 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-
     </Window.Resources>
 
     <WindowChrome.WindowChrome>

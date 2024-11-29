@@ -10,9 +10,7 @@ namespace FikusIn.Model.Documents
     internal static class DocumentManager
     {
         private static readonly ObservableCollection<Document> _documents = 
-            [new Document(new Guid(), "New Job", true), 
-            new Document(new Guid(), "AAA-0001-PFT LEFT BLADDER", false),
-            new Document(new Guid(), "A n extremely very long name for a document that is going to be impossible to read", false)];
+            [new Document(new Guid(), "New Job", true)];
 
         private static void AddDocument(Document document)
         {
