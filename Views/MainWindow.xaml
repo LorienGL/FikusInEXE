@@ -139,7 +139,7 @@
         <Style x:Key="TabButtonStyle" TargetType="{x:Type Button}">
             <Setter Property="Background" Value="#222222"/>
             <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Height" Value="24"/>
+            <Setter Property="Height" Value="Auto"/>
             <Setter Property="Margin" Value="2,0,2,0"/>
             <Setter Property="TextBlock.Foreground" Value="#999999"/>
             <Setter Property="TextBlock.VerticalAlignment" Value="Center"/>
@@ -181,6 +181,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        
         <Style x:Key="FileMenuButtons" TargetType="{x:Type Button}">
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Background" Value="Transparent"/>
@@ -231,6 +232,9 @@
         </Border.Style>
 
         <Grid Background="#111111">
+            <Grid.LayoutTransform>
+                <ScaleTransform ScaleX="{Binding WindowScale}" ScaleY="{Binding WindowScale}" CenterX=".5" CenterY=".5" />
+            </Grid.LayoutTransform>
             <Viewport3D 
                 x:Name="v3dMain"
                 ClipToBounds="False"
@@ -279,13 +283,14 @@
                         Background="#333333"
                         Orientation="Horizontal"
                         Margin="0,0,4,0">
-                        <Image Source="{Binding Source={x:Static properties:Resources.Icon}}"
+                        <TextBlock Text="🌿" FontSize="20" Foreground="Green"/>
+                        <!--<Image Source="{Binding Source={x:Static properties:Resources.Icon}}"
                             VerticalAlignment="Top" 
                             Margin="2,0,2,0"
                             Grid.Column="0"
                             Height="26"
                             Stretch="UniformToFill"
-                            StretchDirection="DownOnly"/>
+                            StretchDirection="DownOnly"/>-->
                         <Button Style="{StaticResource FileMenuButtons}"
                             ToolTip="New" 
                             Command="{Binding NewDocument}">
@@ -296,8 +301,31 @@
                             <TextBlock Text="📂" Margin="0,0,0,0"/>
                         </Button>
                         <Button Style="{StaticResource FileMenuButtons}"
+                                ToolTip="Open..."
+                                Margin="0,0,2,0">
+                            <TextBlock Text="▼" Margin="2,8,2,0" FontSize="16"/>
+                        </Button>
+                        <Button Style="{StaticResource FileMenuButtons}"
                             ToolTip="Save">
                             <TextBlock Text="💾" Margin="0,1,0,0"/>
+                        </Button>
+                        <Button Style="{StaticResource FileMenuButtons}"
+                                ToolTip="Save..."
+                                Margin="0,0,2,0">
+                            <TextBlock Text="▼" Margin="2,8,2,0" FontSize="16"/>
+                        </Button>
+                        <Button Style="{StaticResource FileMenuButtons}"
+                            ToolTip="Scale"
+                            Command="{Binding SetNextZoomFactor}">
+                            <TextBlock Text="🗚" Margin="0,0,0,0" FontSize="24"/>
+                        </Button>
+                        <Button Style="{StaticResource FileMenuButtons}"
+                            ToolTip="View Mode">
+                            <TextBlock Text="🧊" Margin="0,1,0,0"/>
+                        </Button>
+                        <Button Style="{StaticResource FileMenuButtons}"
+                            ToolTip="Settings">
+                            <TextBlock Text="⚙️" Margin="0,1,0,0"/>
                         </Button>
                     </StackPanel>
                     <Grid
@@ -316,7 +344,7 @@
                                 <StackPanel 
                                     Height="Auto"
                                     Width="Auto"
-                                    Margin="0,0,0,0"
+                                    Margin="0,2,0,0"
                                     VerticalAlignment="Bottom"
                                     HorizontalAlignment="Left"
                                     Orientation="Horizontal"/>

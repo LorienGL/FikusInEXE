@@ -17,6 +17,9 @@ namespace FikusIn.ViewModel
 {
     public class MainViewModel: ObservableObjectBase
     {
+
+        private static readonly double[] WindowZoomFactors = { 1, 1.25, 1.50, 2 };
+
         #region Observed Properties
         public ObservableCollection<Document> Documents { get; private set; }
         public BindingList<Progress> ProgressList { get; private set; }
@@ -26,6 +29,14 @@ namespace FikusIn.ViewModel
         {
             get => _messagesViewModel;
             set => SetProperty(ref _messagesViewModel, value);
+        }
+
+        private int _windowScaleIndex = 0;
+        private double _windowScale = 1;
+        public double WindowScale
+        {
+            get => WindowZoomFactors[_windowScaleIndex];
+            set => SetProperty(ref _windowScale, value);
         }
         #endregion
 
@@ -45,6 +56,11 @@ namespace FikusIn.ViewModel
             (object? obj) => { return true; }
         );
 
+        public ICommand SetNextZoomFactor => new RelayCommand(
+            (object? obj) => { _windowScaleIndex = (_windowScaleIndex == WindowZoomFactors.Length - 1? 0 : _windowScaleIndex + 1);  WindowScale = WindowZoomFactors[_windowScaleIndex]; },
+            (object? obj) => { return true; }
+        );
+
 
         #endregion
 
@@ -53,13 +69,11 @@ namespace FikusIn.ViewModel
         #endregion
 
 
+
         public MainViewModel() 
         {            
             Documents = DocumentManager.GetDocuments();
             ProgressList = Progress.StartProgressList();
         }
-
-
-
     }
 }
