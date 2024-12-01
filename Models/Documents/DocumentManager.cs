@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,27 +13,38 @@ namespace FikusIn.Model.Documents
         private static readonly ObservableCollection<Document> _documents = 
             [new Document(new Guid(), "New Job", true)];
 
-        private static void AddDocument(Document document)
+        public static void SetActiveDocument(Document? document)
         {
-            if (document == null)
+            if (document == null || !_documents.Contains(document))
                 return;
 
-            if (document.IsActive)
-                foreach (var item in _documents)
-                    item.IsActive = false;
+            foreach (var item in _documents)
+                item.IsActive = false;
 
+            document.IsActive = true;
+        }
+
+        private static void AddDocument(Document document)
+        {
             _documents.Add(document);
+            SetActiveDocument(document);
         }
 
         private static void RemoveDocument(Document document)
         {
-            if (document == null)
+            int idx = _documents.IndexOf(document);
+            if(!_documents.Remove(document))
                 return;
 
-            _documents.Remove(document);
+            if (!document.IsActive)
+                return;
 
-            if(document.IsActive && _documents.Count > 0)
-                _documents.First().IsActive = true;
+            if(_documents.Count == 0)
+                SetActiveDocument(null);
+            else if (idx < _documents.Count)
+                SetActiveDocument(_documents[idx]);
+            else
+                SetActiveDocument(_documents[idx - 1]);
         }
 
         private static readonly string NewJobName = "New Job";
@@ -49,27 +61,26 @@ namespace FikusIn.Model.Documents
         public static Document NewDocument()
         {
             int njc = GetMaxJobNumber();
-            var res = new Document(Guid.NewGuid(), NewJobName + (njc > 0? $" {njc}": ""), true);
+            var res = new Document(Guid.NewGuid(), NewJobName + (njc > 0? $" {njc}": ""), false);
 
             AddDocument(res);
 
             return res;
         }
 
+        public static Document OpenDocument(string path)
+        {
+            var res = new Document(Guid.NewGuid(), "", false);
+
+            AddDocument(res);
+
+            return res;
+        }
+
+
         public static Document? GetActiveDocument()
         {
             return _documents.FirstOrDefault(d => d.IsActive);
-        }
-
-        public static void SetActiveDocument(Document? document)
-        { 
-            if(document == null || !_documents.Contains(document))
-                return;
-
-            foreach (var item in _documents)
-                item.IsActive = false;
-
-            document.IsActive = true;
         }
 
         public static Document? GetDocumentById(Guid id)

@@ -37,6 +37,8 @@ namespace FikusIn.Views
             gfxEngine.PaintCube(10);
         }
 
+
+
         private void btnClose_Click(object sender, RoutedEventArgs e)
         {
             Close();

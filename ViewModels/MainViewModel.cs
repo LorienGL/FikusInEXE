@@ -61,7 +61,6 @@ namespace FikusIn.ViewModel
             (object? obj) => { return true; }
         );
 
-
         #endregion
 
         #region Event Handlers

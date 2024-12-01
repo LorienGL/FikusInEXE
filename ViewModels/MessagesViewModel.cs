@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -73,6 +74,12 @@ namespace FikusIn.ViewModels
                 MessageForeground = Brushes.White;
             }
         }
+
+        private void ActiveDocumentChangedEventHandler(Object? sender, Document? doc)
+        {
+
+        }
+
         #endregion
 
         public static TimeSpan CalculateReadingTime(string text, int wordsPerMinute = 100) // Should be 200, but we asume users wont read very fast

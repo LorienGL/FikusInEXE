@@ -7,6 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:local="clr-namespace:FikusIn" 
     xmlns:conv="clr-namespace:FikusIn.UIConverters"
+    xmlns:utils="clr-namespace:FikusIn.Utils"
     xmlns:properties="clr-namespace:FikusIn.Properties"
     mc:Ignorable="d"
     Title="FikusIn" 
@@ -67,6 +68,7 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+       
         <Style x:Key="MenuButtons" TargetType="{x:Type Button}">
             <Setter Property="Margin" Value="10"/>
             <Setter Property="Width" Value="50"/>
@@ -137,6 +139,7 @@
         </Style>
 
         <Style x:Key="TabButtonStyle" TargetType="{x:Type Button}">
+            <Setter Property="Tag" Value="{Binding Id}"/>
             <Setter Property="Background" Value="#222222"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Height" Value="Auto"/>
@@ -145,7 +148,7 @@
             <Setter Property="TextBlock.VerticalAlignment" Value="Center"/>
             <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
             <Setter Property="VerticalAlignment" Value="Bottom"/>
-            <Setter Property="Command" Value="{Binding ElementName=tabsItemsControl,  Path=DataContext.SetActiveDocument}"/>
+            <Setter Property="Command" Value="{Binding ElementName=tabsItemsControl, Path=DataContext.SetActiveDocument}"/>
             <Setter Property="CommandParameter" Value="{Binding}"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -154,12 +157,12 @@
                                 BorderThickness="0">
                             <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
                                 <TextBlock 
-                                    Height ="24" 
+                                    Height ="23" 
                                     Text="{Binding Title}" 
                                     TextTrimming="CharacterEllipsis" 
                                     Style="{StaticResource AutoSizeTextBox}"/>
                                 <Button Style="{StaticResource TabCloseButton}" 
-                                        Command="{Binding ElementName=tabsItemsControl,  Path=DataContext.CloseDocument}"
+                                        Command="{Binding ElementName=tabsItemsControl, Path=DataContext.CloseDocument}"
                                         CommandParameter="{Binding}"
                                         Margin="0,0,1,1">
                                     <TextBlock FontSize="16" Text="❎"/>
@@ -170,6 +173,7 @@
                             <DataTrigger Binding="{Binding IsActive}" Value="True">
                                 <Setter Property="Background" Value="#111111" />
                                 <Setter Property="TextBlock.Foreground" Value="#FFFFFF"/>
+                                <!--<Setter Property="Content" Value="btnDocTab_MakeActive"/>-->
                                 <!--<Setter Property="TextBlock.FontWeight" Value="Bold"/>-->
                             </DataTrigger>
                             <Trigger Property="IsMouseOver" Value="True">
@@ -205,6 +209,7 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+
     </Window.Resources>
 
     <WindowChrome.WindowChrome>
@@ -271,7 +276,8 @@
                 Height="26" 
                 Width="Auto"
                 Background="#333333">
-                <Grid HorizontalAlignment="Stretch">
+                <Grid HorizontalAlignment="Stretch" 
+                      utils:ScrollViewerHelper.WheelScrollsHorizontally="True">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="*"/>
@@ -297,22 +303,44 @@
                             <TextBlock Text="📄" Margin="0,1,0,0"/>
                         </Button>
                         <Button Style="{StaticResource FileMenuButtons}"
-                            ToolTip="Open">
+                                ToolTip="Open"
+                                x:Name="btnOpen">
                             <TextBlock Text="📂" Margin="0,0,0,0"/>
                         </Button>
-                        <Button Style="{StaticResource FileMenuButtons}"
+                        <Button x:Name="btnOpen2"
                                 ToolTip="Open..."
-                                Margin="0,0,2,0">
-                            <TextBlock Text="▼" Margin="2,8,2,0" FontSize="16"/>
+                                Margin="0,0,4,0">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource FileMenuButtons}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ElementName=btnOpen,
+                                                   Path=IsMouseOver}" Value="True">
+                                            <Setter Property="Background" Value="#777777" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                            <TextBlock Text="🔻" Margin="0,10,0,0" FontSize="14"/>
                         </Button>
                         <Button Style="{StaticResource FileMenuButtons}"
-                            ToolTip="Save">
+                                ToolTip="Save"
+                                x:Name="btnSave">
                             <TextBlock Text="💾" Margin="0,1,0,0"/>
                         </Button>
-                        <Button Style="{StaticResource FileMenuButtons}"
+                        <Button x:Name="btnSave2"
                                 ToolTip="Save..."
-                                Margin="0,0,2,0">
-                            <TextBlock Text="▼" Margin="2,8,2,0" FontSize="16"/>
+                                Margin="0,0,4,0">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource FileMenuButtons}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ElementName=btnSave,
+                                                   Path=IsMouseOver}" Value="True">
+                                            <Setter Property="Background" Value="#777777" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                            <TextBlock Text="🔻" Margin="0,10,0,0" FontSize="14"/>
                         </Button>
                         <Button Style="{StaticResource FileMenuButtons}"
                             ToolTip="Scale"
@@ -328,36 +356,42 @@
                             <TextBlock Text="⚙️" Margin="0,1,0,0"/>
                         </Button>
                     </StackPanel>
-                    <Grid
-                        Grid.Column="1"
-                        DockPanel.Dock="Left"
-                        Height="Auto"
-                        Width="Auto"
-                        Margin="0,0,0,0"
-                        VerticalAlignment="Bottom"
-                        HorizontalAlignment="Left">
-                        <ItemsControl x:Name="tabsItemsControl" 
-                                  ItemsSource="{Binding Documents}"
+                    <ScrollViewer x:Name="tabsScrollViewer" 
+                                  Grid.Column="1" 
+                                  HorizontalScrollBarVisibility="Hidden" 
+                                  VerticalScrollBarVisibility="Hidden" 
+                                  CanContentScroll="True"
+                                  BorderThickness="0"
                                   Margin="0">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel 
-                                    Height="Auto"
-                                    Width="Auto"
-                                    Margin="0,2,0,0"
-                                    VerticalAlignment="Bottom"
-                                    HorizontalAlignment="Left"
-                                    Orientation="Horizontal"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Button Style="{StaticResource TabButtonStyle}"/>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                    </Grid>
-
+                        <Grid
+                            DockPanel.Dock="Left"
+                            Height="Auto"
+                            Width="Auto"
+                            Margin="0,0,0,0"
+                            VerticalAlignment="Bottom"
+                            HorizontalAlignment="Left">
+                            <ItemsControl x:Name="tabsItemsControl" 
+                                      ItemsSource="{Binding Documents}"
+                                      Margin="0">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel 
+                                            Height="Auto"
+                                            Width="Auto"
+                                            Margin="0,2,0,0"
+                                            VerticalAlignment="Bottom"
+                                            HorizontalAlignment="Left"
+                                            Orientation="Horizontal"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Button Style="{StaticResource TabButtonStyle}"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Grid>
+                    </ScrollViewer>                    
                     <StackPanel 
                         x:Name="pnlTopRight"
                         Margin="0" 
@@ -369,6 +403,9 @@
                         Visibility="Visible"
                         DockPanel.Dock ="Right"
                         Grid.Column="2">
+                        <Button HorizontalAlignment="Right">
+                            <TextBlock Text="🔻"/>
+                        </Button>
                         <Button             
                             x:Name="btnMinimize"
                             Style="{StaticResource WindowsButtons}"
@@ -439,13 +476,13 @@
                         <TextBlock Text="📄" Margin="0,1,0,0" FontFamily="Consolas" FontSize="32"/>
                     </Button>
                     <Button 
-                    x:Name="btnOpen"
+                    x:Name="btnXXX"
                     Style="{StaticResource MenuButtons}"
                     ToolTip="Open">
                         <TextBlock Text="📂" Margin="2,-3,0,0" FontFamily="Consolas" FontSize="36"/>
                     </Button>
                     <Button 
-                    x:Name="btnSave"
+                    x:Name="btnKKK"
                     Style="{StaticResource MenuButtons}"
                     ToolTip="Save">
                         <TextBlock Text="💾" Margin="0,1,0,0" FontFamily="Consolas" FontSize="32"/>
