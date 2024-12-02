@@ -16,11 +16,16 @@ namespace FikusIn.Model.Documents
     /// <param name="_id"></param>
     /// <param name="_name"></param>
     /// <param name="p_isActive"></param>
-    public class Document(Guid _id, string _name, bool p_isActive): ObservableObjectBase
+    public class Document(Guid _id, string p_name, bool p_isActive): ObservableObjectBase
     {
         public Guid Id { get; set; } = _id;
-        public string Name { get; set; } = _name;
 
+        private string _name = p_name;
+        public string Name 
+        { 
+            get => _name; 
+            set => SetProperty(ref _name, value);
+        }
 
         private bool _isActive = p_isActive;
         public bool IsActive
@@ -29,7 +34,7 @@ namespace FikusIn.Model.Documents
             set => SetProperty(ref _isActive, value);
         }
 
-        // TODO: SetProperty setup
+        // TODO: SetProperty setup => DELETE!
         public string Title
         {
             get { return Name + (IsModified ? "*" : ""); }
@@ -41,5 +46,7 @@ namespace FikusIn.Model.Documents
         {
             return true;
         }
+
+        public override string ToString() => Name;
     }
 }

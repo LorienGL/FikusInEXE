@@ -95,7 +95,7 @@ namespace FikusIn.Model.Documents
 
         public static void CloseDocument(Document? document)
         {
-            if(document == null || document is not Document) 
+            if(document == null) 
                 return;
 
             RemoveDocument(document);

@@ -210,6 +210,29 @@
             </Style.Triggers>
         </Style>
 
+        <Style x:Key="OpenedDocumentListButton" TargetType="{x:Type Button}" BasedOn="{StaticResource FileMenuButtons}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border BorderThickness="0" ContextMenuService.Placement="Bottom">
+                            <TextBlock Text="🔻" Margin="0,2,0,0" FontWeight="Bold" FontSize="24"/>
+                            <Border.ContextMenu>
+                                <ContextMenu x:Name="cmenuDocList" 
+                                             DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}"
+                                             ItemsSource="{Binding SortedDocumentNames}"/>
+                            </Border.ContextMenu>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="ContextMenu.IsOpen" Value="True" TargetName="cmenuDocList"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+
     </Window.Resources>
 
     <WindowChrome.WindowChrome>
@@ -403,9 +426,7 @@
                         Visibility="Visible"
                         DockPanel.Dock ="Right"
                         Grid.Column="2">
-                        <Button HorizontalAlignment="Right">
-                            <TextBlock Text="🔻"/>
-                        </Button>
+                        <Button Style="{StaticResource OpenedDocumentListButton}"/>
                         <Button             
                             x:Name="btnMinimize"
                             Style="{StaticResource WindowsButtons}"

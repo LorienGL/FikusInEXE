@@ -22,6 +22,7 @@ namespace FikusIn.ViewModel
 
         #region Observed Properties
         public ObservableCollection<Document> Documents { get; private set; }
+        public ObservableCollection<string> SortedDocumentNames { get; private set; }
         public BindingList<Progress> ProgressList { get; private set; }
 
         private MessagesViewModel _messagesViewModel = new MessagesViewModel();
@@ -72,7 +73,22 @@ namespace FikusIn.ViewModel
         public MainViewModel() 
         {            
             Documents = DocumentManager.GetDocuments();
+            Documents.CollectionChanged += Documents_CollectionChanged;
+
+            var docNames = Documents.Select(d => d.Name).ToList();
+            docNames.Sort(StringComparer.CurrentCultureIgnoreCase);
+            SortedDocumentNames = new ObservableCollection<string>(docNames);
+
             ProgressList = Progress.StartProgressList();
+        }
+
+        private void Documents_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            var docNames = Documents.Select(d => d.Name).ToList();
+            docNames.Sort(StringComparer.CurrentCultureIgnoreCase);
+            SortedDocumentNames.Clear();
+            foreach (var doc in docNames)
+                SortedDocumentNames.Add(doc);
         }
     }
 }
