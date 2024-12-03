@@ -173,6 +173,7 @@
                             <DataTrigger Binding="{Binding IsActive}" Value="True">
                                 <Setter Property="Background" Value="#111111" />
                                 <Setter Property="TextBlock.Foreground" Value="#FFFFFF"/>
+                                <Setter Property="utils:FocusBehavior.IsFocus" Value="True"/>
                                 <!--<Setter Property="Content" Value="btnDocTab_MakeActive"/>-->
                                 <!--<Setter Property="TextBlock.FontWeight" Value="Bold"/>-->
                             </DataTrigger>
@@ -185,8 +186,8 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        
-        <Style x:Key="FileMenuButtons" TargetType="{x:Type Button}">
+
+        <Style x:Key="FileToolbarButton" TargetType="{x:Type Button}">
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="TextBlock.Foreground" Value="#BBBBBB"/>
@@ -209,8 +210,94 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        
+        <Style x:Key="FileMenuToggleButtons" TargetType="{x:Type ToggleButton}">
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="TextBlock.Foreground" Value="#BBBBBB"/>
+            <Setter Property="TextBlock.FontSize" Value="20"/>
+            <Setter Property="TextBlock.FontFamily" Value="Consolas"/>
+            <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                        <Border x:Name="border"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Background="{TemplateBinding Background}"
+                            SnapsToDevicePixels="True">
+                            <ContentPresenter x:Name="contentPresenter"
+                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                Content="{TemplateBinding Content}"
+                                ContentStringFormat="{TemplateBinding ContentStringFormat}"
+                                Focusable="False"
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                Margin="{TemplateBinding Padding}"
+                                RecognizesAccessKey="True"
+                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#BBBBBB"/>
+                    <Setter Property="TextBlock.Foreground" Value="#444444"/>
+                </Trigger>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter Property="Background" Value="#BBBBBB"/>
+                    <Setter Property="TextBlock.Foreground" Value="#444444"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
 
-        <Style x:Key="OpenedDocumentListButton" TargetType="{x:Type Button}" BasedOn="{StaticResource FileMenuButtons}">
+        <Style x:Key="FileMenuButton" TargetType="{x:Type Button}">
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="#333333"/>
+            <Setter Property="TextBlock.Foreground" Value="#BBBBBB"/>
+            <Setter Property="TextBlock.FontSize" Value="18"/>
+            <Setter Property="TextBlock.FontFamily" Value="Consolas"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="MinWidth" Value="150"/>
+            <Setter Property="Command" Value="{Binding ElementName=icDocumentsList, 
+                Path=DataContext.SetActiveDocument}"/>
+            <Setter Property="CommandParameter" Value="{Binding}"/>
+            <Setter Property="Content" Value="{Binding Title}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid>
+                            <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="0">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition SharedSizeGroup="A"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0"
+                                               Text="{Binding Title}" Margin="21,2,10,4"/>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                        <!--<Border Background="{TemplateBinding Background}" BorderThickness="0">
+                            <TextBlock Height ="18" Text="{Binding Title}" Margin="21,0,5,2"/>
+                        </Border>-->
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#BBBBBB"/>
+                    <Setter Property="TextBlock.Foreground" Value="#444444"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="OpenedDocumentListButton" TargetType="{x:Type Button}" BasedOn="{StaticResource FileToolbarButton}">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
@@ -231,7 +318,6 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
 
     </Window.Resources>
 
@@ -292,6 +378,7 @@
                 </ModelVisual3D>
             </Viewport3D>
 
+            <!-- Top window bar (file menu + doc tabs + window operation-->
             <DockPanel
                 x:Name="pnlTop"
                 HorizontalAlignment="Stretch" 
@@ -306,6 +393,8 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
+                    
+                    <!--File menu-->
                     <StackPanel
                         Height="26" 
                         Width="Auto"
@@ -320,12 +409,12 @@
                             Height="26"
                             Stretch="UniformToFill"
                             StretchDirection="DownOnly"/>-->
-                        <Button Style="{StaticResource FileMenuButtons}"
+                        <Button Style="{StaticResource FileToolbarButton}"
                             ToolTip="New" 
                             Command="{Binding NewDocument}">
                             <TextBlock Text="📄" Margin="0,1,0,0"/>
                         </Button>
-                        <Button Style="{StaticResource FileMenuButtons}"
+                        <Button Style="{StaticResource FileToolbarButton}"
                                 ToolTip="Open"
                                 x:Name="btnOpen">
                             <TextBlock Text="📂" Margin="0,0,0,0"/>
@@ -334,7 +423,7 @@
                                 ToolTip="Open..."
                                 Margin="0,0,4,0">
                             <Button.Style>
-                                <Style TargetType="Button" BasedOn="{StaticResource FileMenuButtons}">
+                                <Style TargetType="Button" BasedOn="{StaticResource FileToolbarButton}">
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding ElementName=btnOpen,
                                                    Path=IsMouseOver}" Value="True">
@@ -345,7 +434,7 @@
                             </Button.Style>
                             <TextBlock Text="🔻" Margin="0,10,0,0" FontSize="14"/>
                         </Button>
-                        <Button Style="{StaticResource FileMenuButtons}"
+                        <Button Style="{StaticResource FileToolbarButton}"
                                 ToolTip="Save"
                                 x:Name="btnSave">
                             <TextBlock Text="💾" Margin="0,1,0,0"/>
@@ -354,7 +443,7 @@
                                 ToolTip="Save..."
                                 Margin="0,0,4,0">
                             <Button.Style>
-                                <Style TargetType="Button" BasedOn="{StaticResource FileMenuButtons}">
+                                <Style TargetType="Button" BasedOn="{StaticResource FileToolbarButton}">
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding ElementName=btnSave,
                                                    Path=IsMouseOver}" Value="True">
@@ -365,20 +454,22 @@
                             </Button.Style>
                             <TextBlock Text="🔻" Margin="0,10,0,0" FontSize="14"/>
                         </Button>
-                        <Button Style="{StaticResource FileMenuButtons}"
+                        <Button Style="{StaticResource FileToolbarButton}"
                             ToolTip="Scale"
                             Command="{Binding SetNextZoomFactor}">
                             <TextBlock Text="🗚" Margin="0,0,0,0" FontSize="24"/>
                         </Button>
-                        <Button Style="{StaticResource FileMenuButtons}"
+                        <Button Style="{StaticResource FileToolbarButton}"
                             ToolTip="View Mode">
                             <TextBlock Text="🧊" Margin="0,1,0,0"/>
                         </Button>
-                        <Button Style="{StaticResource FileMenuButtons}"
+                        <Button Style="{StaticResource FileToolbarButton}"
                             ToolTip="Settings">
                             <TextBlock Text="⚙️" Margin="0,1,0,0"/>
                         </Button>
                     </StackPanel>
+                    
+                    <!--Document tabs-->
                     <ScrollViewer x:Name="tabsScrollViewer" 
                                   Grid.Column="1" 
                                   HorizontalScrollBarVisibility="Hidden" 
@@ -414,7 +505,9 @@
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
                         </Grid>
-                    </ScrollViewer>                    
+                    </ScrollViewer>
+                    
+                    <!--Right menu + window menu-->
                     <StackPanel 
                         x:Name="pnlTopRight"
                         Margin="0" 
@@ -426,7 +519,59 @@
                         Visibility="Visible"
                         DockPanel.Dock ="Right"
                         Grid.Column="2">
-                        <Button Style="{StaticResource OpenedDocumentListButton}"/>
+                        <ToggleButton x:Name="tbtnDocumentList" 
+                                      Style="{StaticResource FileMenuToggleButtons}"
+                                      IsHitTestVisible="{Binding ElementName=popupDocumentList, 
+                                        Path=IsOpen, 
+                                        Mode=OneWay, Converter={conv:BoolInverter}}">
+                            <StackPanel>
+                                <TextBlock Text="🔻" />
+                                <Popup x:Name="popupDocumentList" 
+                                       IsOpen="{Binding IsChecked, ElementName=tbtnDocumentList}"
+                                       StaysOpen="False"
+                                       AllowsTransparency="True">
+                                    <Border BorderThickness="0.5"
+                                            CornerRadius="0"
+                                            Background="#333333"
+                                            BorderBrush="#BBBBBB"
+                                            Margin="0">
+                                        <!--<StackPanel Orientation="Vertical"
+                                                    Background="Transparent"
+                                                    Margin="0"
+                                                    HorizontalAlignment="Left">
+                                            <Button Style="{StaticResource FileMenuButton}">
+                                                <TextBlock Margin="21,0,5,0" Text="Test" Name="myPopupText"/>
+                                            </Button>
+                                            <Button Style="{StaticResource FileMenuButton}">
+                                                <TextBlock Margin="21,0,5,0" Text="A very long name that wont fit in place" Name="myPopupText2"/>
+                                            </Button>
+                                        </StackPanel>-->
+                                        <ItemsControl x:Name="icDocumentsList" 
+                                            ItemsSource="{Binding Documents}"
+                                            Margin="0">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <StackPanel 
+                                                        Margin="0"
+                                                        VerticalAlignment="Center"
+                                                        HorizontalAlignment="Left"
+                                                        Orientation="Vertical"
+                                                        Grid.IsSharedSizeScope="True"/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Button Style="{StaticResource FileMenuButton}"
+                                                            Click="popupDocumentListButton_Click"/>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+
+                                    </Border>
+                                </Popup>
+                            </StackPanel>
+                        </ToggleButton>
+                        <!--<Button Style="{StaticResource OpenedDocumentListButton}"/>-->
                         <Button             
                             x:Name="btnMinimize"
                             Style="{StaticResource WindowsButtons}"
@@ -451,19 +596,21 @@
                 </Grid>
             </DockPanel>
 
+            <!-- Selection box -->
             <Canvas 
-            Height="Auto" 
-            Width="Auto"
-            VerticalAlignment="Stretch"
-            HorizontalAlignment="Stretch">
+                Height="Auto" 
+                Width="Auto"
+                VerticalAlignment="Stretch"
+                HorizontalAlignment="Stretch">
                 <Rectangle 
-                x:Name="canvasSelectionBox" 
-                Stroke="White" 
-                StrokeThickness="1" 
-                StrokeDashArray="2 2"                
-                Visibility="Collapsed"/>
+                    x:Name="canvasSelectionBox" 
+                    Stroke="White" 
+                    StrokeThickness="1" 
+                    StrokeDashArray="2 2"                
+                    Visibility="Collapsed"/>
             </Canvas>
 
+            <!--Floating main operation menu-->
             <DockPanel 
             x:Name="pnlMenu"
             HorizontalAlignment="Stretch" 
@@ -510,7 +657,8 @@
                     </Button>
                 </StackPanel>
             </DockPanel>
-
+            
+            <!--Bottom: Message & Progressbars-->
             <Grid HorizontalAlignment="Stretch" 
                   VerticalAlignment="Bottom"
                   Margin="0">
@@ -606,6 +754,10 @@
                     </ItemsControl>
                 </StackPanel>
             </Grid>
+            
+            <!--Floating windows and menus-->
+            
+            
         </Grid>
     </Border>
 </Window>

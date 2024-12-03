@@ -249,5 +249,9 @@ namespace FikusIn.Views
             SetMenuOrientation();
         }
 
+        private void popupDocumentListButton_Click(object sender, RoutedEventArgs e)
+        {
+            popupDocumentList.IsOpen = false;
+        }
     }
 }
