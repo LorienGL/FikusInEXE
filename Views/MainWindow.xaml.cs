@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace FikusIn.Views
 {
@@ -252,6 +253,21 @@ namespace FikusIn.Views
         private void popupDocumentListButton_Click(object sender, RoutedEventArgs e)
         {
             popupDocumentList.IsOpen = false;
+            //Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
+
+            for (int i = 0; i < tabsItemsControl.Items.Count; i++)
+            {
+                UIElement tabButtonUIE = (UIElement)tabsItemsControl.ItemContainerGenerator.ContainerFromIndex(i);
+
+                if(sender is Button popupButton && popupButton.CommandParameter != null 
+                    && tabButtonUIE is ContentPresenter tabButton && tabButton.Content != null
+                    && ((Document)popupButton.CommandParameter).Id == ((Document)tabButton.Content).Id) 
+                {
+                    tabButton.BringIntoView();
+
+                    return;
+                }
+            }
         }
     }
 }

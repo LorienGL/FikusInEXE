@@ -32,8 +32,8 @@ namespace FikusIn.ViewModel
             set => SetProperty(ref _messagesViewModel, value);
         }
 
-        private int _windowScaleIndex = 0;
-        private double _windowScale = 1;
+        private int _windowScaleIndex = 1;
+        private double _windowScale = 1.25;
         public double WindowScale
         {
             get => WindowZoomFactors[_windowScaleIndex];
