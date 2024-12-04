@@ -19,10 +19,6 @@
     WindowStartupLocation="CenterScreen"
     Background="#111111"
     
-    MouseLeftButtonDown="Window_MouseLeftButtonDown"
-    MouseLeftButtonUp="Window_MouseLeftButtonUp"
-    MouseMove="Window_MouseMove"
-    MouseWheel="Window_MouseWheel"
     ContentRendered="wMain_ContentRendered"
     SizeChanged="wMain_SizeChanged">
 
@@ -343,50 +339,27 @@
             </Style>
         </Border.Style>
 
-        <Grid Background="#111111">
+        <Grid Background="#111111" Margin="0">
             <Grid.LayoutTransform>
                 <ScaleTransform ScaleX="{Binding WindowScale}" ScaleY="{Binding WindowScale}" CenterX=".5" CenterY=".5" />
             </Grid.LayoutTransform>
-            
-            <!--Graphic panel-->
-            <Viewport3D 
-                x:Name="v3dMain"
-                ClipToBounds="False"
-                IsHitTestVisible="True"             
-                Width="Auto"
-                Height="Auto">
-                <Viewport3D.Camera>
-                    <OrthographicCamera 
-                    x:Name="v3dCamera" 
-                    Position="0,0,40" 
-                    LookDirection="0,0,-1" 
-                    UpDirection="0,1,0"
-                    FarPlaneDistance="Infinity"
-                    NearPlaneDistance="-Infinity"
-                    Width="100"/>
-                </Viewport3D.Camera>
-                <ModelVisual3D>
-                    <ModelVisual3D.Content>
-                        <Model3DGroup
-                        x:Name="v3dScene">
-                            <AmbientLight Color="#444444"/>
-                            <PointLight x:Name="v3dLightTop" Color="#777777" Position="1,10,40"/>
-                            <PointLight x:Name="v3dLightRight" Color="#444444" Position="10,-1,60"/>
-                            <PointLight x:Name="v3dLightLeft" Color="#333333" Position="-10,2,20"/>
-                        </Model3DGroup>
-                    </ModelVisual3D.Content>
-                </ModelVisual3D>
-            </Viewport3D>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="26"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
             <!-- Top window bar (file menu + doc tabs + window operation-->
             <DockPanel
                 x:Name="pnlTop"
                 HorizontalAlignment="Stretch" 
                 VerticalAlignment="Top" 
-                Height="26" 
+                Height="Auto" 
                 Width="Auto"
-                Background="#333333">
-                <Grid HorizontalAlignment="Stretch">
+                Background="#444444"
+                Grid.Row="0"
+                Margin="0">
+                <Grid HorizontalAlignment="Stretch"
+                      Margin="0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="*"/>
@@ -395,19 +368,13 @@
                     
                     <!--File menu-->
                     <StackPanel
-                        Height="26" 
+                        Height="Auto" 
                         Width="Auto"
-                        Background="#333333"
+                        Background="Transparent"
                         Orientation="Horizontal"
-                        Margin="0,0,4,0">
+                        Margin="0,0,0,0"
+                        Grid.Column="0">
                         <TextBlock Text="🌿" FontSize="20" Foreground="Green"/>
-                        <!--<Image Source="{Binding Source={x:Static properties:Resources.Icon}}"
-                            VerticalAlignment="Top" 
-                            Margin="2,0,2,0"
-                            Grid.Column="0"
-                            Height="26"
-                            Stretch="UniformToFill"
-                            StretchDirection="DownOnly"/>-->
                         <Button Style="{StaticResource FileToolbarButton}"
                             ToolTip="New" 
                             Command="{Binding NewDocument}">
@@ -469,63 +436,79 @@
                     </StackPanel>
                     
                     <!--Document tabs-->
-                    <Grid utils:ScrollViewerHelper.WheelScrollsHorizontally="True"
+                    <Grid Margin="0" 
                           Grid.Column="1">
-                        <ScrollViewer x:Name="tabsScrollViewer" 
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!--Actual list of document tabs-->
+                        <Grid x:Name="grdDocumentTabs"
+                            utils:ScrollViewerHelper.WheelScrollsHorizontally="True" 
+                            Margin="0"
+                            Grid.Column="0">
+                            <ScrollViewer x:Name="tabsScrollViewer" 
                                       HorizontalScrollBarVisibility="Hidden" 
                                       VerticalScrollBarVisibility="Hidden" 
                                       CanContentScroll="True"
                                       BorderThickness="0"
                                       Margin="0">
-                            <Grid
+                                <Grid
                                 DockPanel.Dock="Left"
                                 Height="Auto"
                                 Width="Auto"
                                 Margin="0,0,0,0"
                                 VerticalAlignment="Bottom"
                                 HorizontalAlignment="Left">
-                                <ItemsControl x:Name="tabsItemsControl" 
+                                    <ItemsControl x:Name="tabsItemsControl" 
                                           ItemsSource="{Binding Documents}"
                                           Margin="0">
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <StackPanel 
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <StackPanel 
                                                 Height="Auto"
                                                 Width="Auto"
                                                 Margin="0,2,0,0"
                                                 VerticalAlignment="Bottom"
                                                 HorizontalAlignment="Left"
                                                 Orientation="Horizontal"/>
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Button Style="{StaticResource TabButtonStyle}"/>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </Grid>
-                        </ScrollViewer>
-                    </Grid>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Button Style="{StaticResource TabButtonStyle}">
+                                                    <Button.Resources>
+                                                        <Style TargetType="{x:Type Border}">
+                                                            <Setter Property="CornerRadius" Value="5,5,0,0"/>
+                                                            <Setter Property="BorderThickness" Value="0"/>
+                                                        </Style>
+                                                    </Button.Resources>
+                                                </Button>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </Grid>
+                            </ScrollViewer>
+                        </Grid>
 
-                    <!--Right menu + window menu-->
-                    <StackPanel 
-                        x:Name="pnlTopRight"
-                        Margin="0" 
-                        VerticalAlignment="Top" 
-                        HorizontalAlignment="Right"
-                        Height="26"
-                        Width="Auto"
-                        Orientation="Horizontal"
-                        Visibility="Visible"
-                        DockPanel.Dock ="Right"
-                        Grid.Column="2">
+                        <!--Tab list button and popup-->
                         <ToggleButton x:Name="tbtnDocumentList" 
                                       Style="{StaticResource FileToolbarToggleButton}"
                                       IsHitTestVisible="{Binding ElementName=popupDocumentList, 
                                         Path=IsOpen, 
-                                        Mode=OneWay, Converter={conv:BoolInverter}}">
-                            <StackPanel>
+                                        Mode=OneWay, Converter={conv:BoolInverter}}"
+                                      Grid.Column="1">
+                            <StackPanel Margin="0">
+                                <StackPanel.Style>
+                                    <Style TargetType="{x:Type StackPanel}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ElementName=tabsScrollViewer, Path=ScrollableWidth}" Value="0">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </StackPanel.Style>
                                 <TextBlock Text="🔻" />
                                 <Popup x:Name="popupDocumentList" 
                                        IsOpen="{Binding IsChecked, ElementName=tbtnDocumentList}"
@@ -565,101 +548,158 @@
                                 </Popup>
                             </StackPanel>
                         </ToggleButton>
-                        <Button             
-                            x:Name="btnMinimize"
-                            Style="{StaticResource WindowsButtons}"
-                            Margin="0,0,0,0" 
-                            Click="btnMinimize_Click">
-                            <TextBlock Text="_" Margin="0,-25,0,0"/>
-                        </Button>
-                        <Button
-                            x:Name="btnMaximize"
-                            Style="{StaticResource WindowsButtons}"
-                            Margin="0,0,0,0" 
-                            Click="btnMaximize_Click">
-                            <TextBlock Text="□" Margin="0,-14,0,0"/>
-                        </Button>
-                        <Button 
-                            x:Name="btnClose"
-                            Style="{StaticResource WindowsButtonsX}" 
-                            Click="btnClose_Click">
-                            <TextBlock Text="×" Margin="0,-11,0,0"/>
-                        </Button>
+                    </Grid>
+
+                    <!--Right menu + window menu-->
+                    <StackPanel 
+                        x:Name="pnlTopRight"
+                        Margin="0" 
+                        VerticalAlignment="Top" 
+                        HorizontalAlignment="Right"
+                        Height="Auto"
+                        Width="Auto"
+                        Orientation="Horizontal"
+                        Visibility="Visible"
+                        DockPanel.Dock ="Right"
+                        Grid.Column="2">
+                        <StackPanel Orientation="Horizontal"
+                                    Margin="50,0,0,0">
+                            <Button             
+                                x:Name="btnMinimize"
+                                Style="{StaticResource WindowsButtons}"
+                                Margin="0,0,0,0" 
+                                Click="btnMinimize_Click">
+                                <TextBlock Text="_" Margin="0,-25,0,0"/>
+                            </Button>
+                            <Button
+                                x:Name="btnMaximize"
+                                Style="{StaticResource WindowsButtons}"
+                                Margin="0,0,0,0" 
+                                Click="btnMaximize_Click">
+                                <TextBlock Text="□" Margin="0,-14,0,0"/>
+                            </Button>
+                            <Button 
+                                x:Name="btnClose"
+                                Style="{StaticResource WindowsButtonsX}" 
+                                Click="btnClose_Click"
+                                Margin="0">
+                                <TextBlock Text="×" Margin="0,-11,0,0"/>
+                            </Button>
+                        </StackPanel>
                     </StackPanel>
                 </Grid>
             </DockPanel>
 
-            <!-- Selection box -->
-            <Canvas 
+            <!--Graphic area-->
+            <Grid Background="#111111"
+                MouseLeftButtonDown="Window_MouseLeftButtonDown"
+                MouseLeftButtonUp="Window_MouseLeftButtonUp"
+                MouseMove="Window_MouseMove"
+                MouseWheel="Window_MouseWheel"
+                Grid.Row="1"
+                Margin="0">
+                
+                <!--3D graohics-->
+                <Viewport3D 
+                    x:Name="v3dMain"
+                    ClipToBounds="False"
+                    IsHitTestVisible="True"             
+                    Width="Auto"
+                    Height="Auto">
+                    <Viewport3D.Camera>
+                        <OrthographicCamera 
+                        x:Name="v3dCamera" 
+                        Position="0,0,40" 
+                        LookDirection="0,0,-1" 
+                        UpDirection="0,1,0"
+                        FarPlaneDistance="Infinity"
+                        NearPlaneDistance="-Infinity"
+                        Width="100"/>
+                    </Viewport3D.Camera>
+                    <ModelVisual3D>
+                        <ModelVisual3D.Content>
+                            <Model3DGroup
+                            x:Name="v3dScene">
+                                <AmbientLight Color="#444444"/>
+                                <PointLight x:Name="v3dLightTop" Color="#777777" Position="1,10,40"/>
+                                <PointLight x:Name="v3dLightRight" Color="#444444" Position="10,-1,60"/>
+                                <PointLight x:Name="v3dLightLeft" Color="#333333" Position="-10,2,20"/>
+                            </Model3DGroup>
+                        </ModelVisual3D.Content>
+                    </ModelVisual3D>
+                </Viewport3D>
+                
+                <!--Floating main operation menu-->
+                <DockPanel 
+                    x:Name="pnlMenu"
+                    HorizontalAlignment="Stretch" 
+                    VerticalAlignment="Top" 
+                    Height="70" 
+                    Width="Auto"
+                    Margin="0,0,10,10" >
+                    <Button 
+                        x:Name="btnMenu"
+                        DockPanel.Dock ="Left"
+                        VerticalAlignment="Bottom" 
+                        HorizontalAlignment="Left" 
+                        Style="{StaticResource MenuButtons}"
+                        MouseEnter="btnMenu_MouseEnter"
+                        Click="btnMenu_Click">
+                        <TextBlock Text="☰" FontWeight="Bold" Margin="0,-5,0,0" FontSize="34"/>
+                    </Button>
+
+                    <StackPanel 
+                        x:Name="pnlSubMenu"
+                        Margin="0" 
+                        DockPanel.Dock ="Right"
+                        VerticalAlignment="Bottom" 
+                        HorizontalAlignment="Stretch"
+                        Height="70"
+                        Width="Auto"
+                        Orientation="Horizontal">
+                        <Button Style="{StaticResource MenuButtons}" 
+                            ToolTip="New" 
+                            Command="{Binding NewDocument}">
+                            <TextBlock Text="📄" Margin="0,1,0,0" FontFamily="Consolas" FontSize="32"/>
+                        </Button>
+                        <Button 
+                            x:Name="btnXXX"
+                            Style="{StaticResource MenuButtons}"
+                            ToolTip="Open">
+                            <TextBlock Text="📂" Margin="2,-3,0,0" FontFamily="Consolas" FontSize="36"/>
+                        </Button>
+                        <Button 
+                            x:Name="btnKKK"
+                            Style="{StaticResource MenuButtons}"
+                            ToolTip="Save">
+                            <TextBlock Text="💾" Margin="0,1,0,0" FontFamily="Consolas" FontSize="32"/>
+                        </Button>
+                    </StackPanel>
+                </DockPanel>
+                
+                <!-- Selection box -->
+                <Canvas 
                 Height="Auto" 
                 Width="Auto"
                 VerticalAlignment="Stretch"
                 HorizontalAlignment="Stretch">
-                <Rectangle 
+                    <Rectangle 
                     x:Name="canvasSelectionBox" 
                     Stroke="White" 
                     StrokeThickness="1" 
                     StrokeDashArray="2 2"                
                     Visibility="Collapsed"/>
-            </Canvas>
-
-            <!--Floating main operation menu-->
-            <DockPanel 
-            x:Name="pnlMenu"
-            HorizontalAlignment="Stretch" 
-            VerticalAlignment="Top" 
-            Height="70" 
-            Width="Auto"
-            Margin="0,25,10,10" >
-                <Button 
-                    x:Name="btnMenu"
-                    DockPanel.Dock ="Left"
-                    VerticalAlignment="Bottom" 
-                    HorizontalAlignment="Left" 
-                    Style="{StaticResource MenuButtons}"
-                    MouseEnter="btnMenu_MouseEnter"
-                    Click="btnMenu_Click">
-                    <TextBlock Text="☰" FontWeight="Bold" Margin="0,-5,0,0" FontSize="34"/>
-                </Button>
-
-                <StackPanel 
-                x:Name="pnlSubMenu"
-                Margin="0" 
-                DockPanel.Dock ="Right"
-                VerticalAlignment="Bottom" 
-                HorizontalAlignment="Stretch"
-                Height="70"
-                Width="Auto"
-                Orientation="Horizontal">
-                    <Button Style="{StaticResource MenuButtons}" 
-                            ToolTip="New" 
-                            Command="{Binding NewDocument}">
-                        <TextBlock Text="📄" Margin="0,1,0,0" FontFamily="Consolas" FontSize="32"/>
-                    </Button>
-                    <Button 
-                    x:Name="btnXXX"
-                    Style="{StaticResource MenuButtons}"
-                    ToolTip="Open">
-                        <TextBlock Text="📂" Margin="2,-3,0,0" FontFamily="Consolas" FontSize="36"/>
-                    </Button>
-                    <Button 
-                    x:Name="btnKKK"
-                    Style="{StaticResource MenuButtons}"
-                    ToolTip="Save">
-                        <TextBlock Text="💾" Margin="0,1,0,0" FontFamily="Consolas" FontSize="32"/>
-                    </Button>
-                </StackPanel>
-            </DockPanel>
-
-            <!--Bottom: Message & Progressbars-->
-            <Grid HorizontalAlignment="Stretch" 
+                </Canvas>
+                
+                <!--Bottom: Message & Progressbars-->
+                <Grid HorizontalAlignment="Stretch" 
                   VerticalAlignment="Bottom"
                   Margin="0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                </Grid.RowDefinitions>
-                <Label 
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Label 
                     x:Name="messageLabel" 
                     FontSize="24"
                     FontFamily="Calibri"
@@ -672,67 +712,67 @@
                     Grid.Row="0"
                     BorderThickness="0"
                     Margin="0">
-                    <Label.Style>
-                        <Style TargetType="Label">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding ShowMessage}" Value="True">
-                                    <DataTrigger.EnterActions>
-                                        <BeginStoryboard>
-                                            <Storyboard>
-                                                <DoubleAnimation 
+                        <Label.Style>
+                            <Style TargetType="Label">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ShowMessage}" Value="True">
+                                        <DataTrigger.EnterActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation 
                                                     Storyboard.TargetProperty="Opacity" 
                                                     To="1" Duration="0:0:0.200" />
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </DataTrigger.EnterActions>
-                                    <DataTrigger.ExitActions>
-                                        <BeginStoryboard>
-                                            <Storyboard>
-                                                <DoubleAnimation 
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </DataTrigger.EnterActions>
+                                        <DataTrigger.ExitActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation 
                                                     Storyboard.TargetProperty="Opacity" 
-                                                    To="0" Duration="0:0:0.500" />
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </DataTrigger.ExitActions>
-                                </DataTrigger>
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding ShowMessage}" Value="False" />
-                                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
-                                    </MultiDataTrigger.Conditions>
-                                    <MultiDataTrigger.EnterActions>
-                                        <BeginStoryboard>
-                                            <Storyboard>
-                                                <DoubleAnimation 
+                                                    To="0.05" Duration="0:0:0.500" />
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </DataTrigger.ExitActions>
+                                    </DataTrigger>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding ShowMessage}" Value="False" />
+                                            <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+                                        </MultiDataTrigger.Conditions>
+                                        <MultiDataTrigger.EnterActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation 
                                                     Storyboard.TargetProperty="Opacity" 
                                                     To="1" Duration="0:0:0.200" />
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </MultiDataTrigger.EnterActions>
-                                    <MultiDataTrigger.ExitActions>
-                                        <BeginStoryboard>
-                                            <Storyboard>
-                                                <DoubleAnimation 
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </MultiDataTrigger.EnterActions>
+                                        <MultiDataTrigger.ExitActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation 
                                                     Storyboard.TargetProperty="Opacity" 
-                                                    To="0" Duration="0:0:0.500" />
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </MultiDataTrigger.ExitActions>
-                                </MultiDataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Label.Style>
-                </Label>
-                <StackPanel
+                                                    To="0.05" Duration="0:0:0.500" />
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </MultiDataTrigger.ExitActions>
+                                    </MultiDataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Label.Style>
+                    </Label>
+                    <StackPanel
                     HorizontalAlignment="Stretch" 
                     VerticalAlignment="Bottom"
                     Orientation="Vertical"
                     Grid.Row="1"
                     Margin="0">
-                    <ItemsControl ItemsSource="{Binding ProgressList}" BorderThickness="0">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <ProgressBar Minimum="{Binding Minimum}"
+                        <ItemsControl ItemsSource="{Binding ProgressList}" BorderThickness="0">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <ProgressBar Minimum="{Binding Minimum}"
                                 Maximum="{Binding Maximum}"
                                 Value="{Binding Current}"
                                 IsIndeterminate="{Binding IsIndeterminate}" 
@@ -742,11 +782,13 @@
                                 Background="#000000"
                                 Foreground="#FFFFFF"
                                 Margin="0"/>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Grid>
             </Grid>
+
             
             <!--Floating windows and menus-->
             

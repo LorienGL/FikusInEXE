@@ -18,7 +18,7 @@ namespace FikusIn.ViewModel
     public class MainViewModel: ObservableObjectBase
     {
 
-        private static readonly double[] WindowZoomFactors = { 1, 1.25, 1.50, 2 };
+        private static readonly double[] WindowZoomFactors = { 1, 1.2, 1.50, 2 };
 
         #region Observed Properties
         public ObservableCollection<Document> Documents { get; private set; }
@@ -33,7 +33,7 @@ namespace FikusIn.ViewModel
         }
 
         private int _windowScaleIndex = 1;
-        private double _windowScale = 1.25;
+        private double _windowScale = 1.2;
         public double WindowScale
         {
             get => WindowZoomFactors[_windowScaleIndex];

@@ -61,16 +61,6 @@ namespace FikusIn.Properties {
         }
         
         /// <summary>
-        ///   Busca un recurso adaptado de tipo System.Byte[].
-        /// </summary>
-        public static byte[] Icon {
-            get {
-                object obj = ResourceManager.GetObject("Icon", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Busca una cadena traducida similar a New.
         /// </summary>
         public static string New {
