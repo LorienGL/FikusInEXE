@@ -211,7 +211,7 @@
             </Style.Triggers>
         </Style>
         
-        <Style x:Key="FileMenuToggleButtons" TargetType="{x:Type ToggleButton}">
+        <Style x:Key="FileToolbarToggleButton" TargetType="{x:Type ToggleButton}">
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="TextBlock.Foreground" Value="#BBBBBB"/>
@@ -252,7 +252,7 @@
             </Style.Triggers>
         </Style>
 
-        <Style x:Key="FileMenuButton" TargetType="{x:Type Button}">
+        <Style x:Key="DocumentListMenuButton" TargetType="{x:Type Button}">
             <Setter Property="Tag" Value="{Binding Id}"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Background" Value="#333333"/>
@@ -284,9 +284,6 @@
                                 </Grid>
                             </Border>
                         </Grid>
-                        <!--<Border Background="{TemplateBinding Background}" BorderThickness="0">
-                            <TextBlock Height ="18" Text="{Binding Title}" Margin="21,0,5,2"/>
-                        </Border>-->
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -350,6 +347,8 @@
             <Grid.LayoutTransform>
                 <ScaleTransform ScaleX="{Binding WindowScale}" ScaleY="{Binding WindowScale}" CenterX=".5" CenterY=".5" />
             </Grid.LayoutTransform>
+            
+            <!--Graphic panel-->
             <Viewport3D 
                 x:Name="v3dMain"
                 ClipToBounds="False"
@@ -387,8 +386,7 @@
                 Height="26" 
                 Width="Auto"
                 Background="#333333">
-                <Grid HorizontalAlignment="Stretch" 
-                      utils:ScrollViewerHelper.WheelScrollsHorizontally="True">
+                <Grid HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="*"/>
@@ -471,43 +469,45 @@
                     </StackPanel>
                     
                     <!--Document tabs-->
-                    <ScrollViewer x:Name="tabsScrollViewer" 
-                                  Grid.Column="1" 
-                                  HorizontalScrollBarVisibility="Hidden" 
-                                  VerticalScrollBarVisibility="Hidden" 
-                                  CanContentScroll="True"
-                                  BorderThickness="0"
-                                  Margin="0">
-                        <Grid
-                            DockPanel.Dock="Left"
-                            Height="Auto"
-                            Width="Auto"
-                            Margin="0,0,0,0"
-                            VerticalAlignment="Bottom"
-                            HorizontalAlignment="Left">
-                            <ItemsControl x:Name="tabsItemsControl" 
-                                      ItemsSource="{Binding Documents}"
+                    <Grid utils:ScrollViewerHelper.WheelScrollsHorizontally="True"
+                          Grid.Column="1">
+                        <ScrollViewer x:Name="tabsScrollViewer" 
+                                      HorizontalScrollBarVisibility="Hidden" 
+                                      VerticalScrollBarVisibility="Hidden" 
+                                      CanContentScroll="True"
+                                      BorderThickness="0"
                                       Margin="0">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <StackPanel 
-                                            Height="Auto"
-                                            Width="Auto"
-                                            Margin="0,2,0,0"
-                                            VerticalAlignment="Bottom"
-                                            HorizontalAlignment="Left"
-                                            Orientation="Horizontal"/>
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Button Style="{StaticResource TabButtonStyle}"/>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </Grid>
-                    </ScrollViewer>
-                    
+                            <Grid
+                                DockPanel.Dock="Left"
+                                Height="Auto"
+                                Width="Auto"
+                                Margin="0,0,0,0"
+                                VerticalAlignment="Bottom"
+                                HorizontalAlignment="Left">
+                                <ItemsControl x:Name="tabsItemsControl" 
+                                          ItemsSource="{Binding Documents}"
+                                          Margin="0">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel 
+                                                Height="Auto"
+                                                Width="Auto"
+                                                Margin="0,2,0,0"
+                                                VerticalAlignment="Bottom"
+                                                HorizontalAlignment="Left"
+                                                Orientation="Horizontal"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Button Style="{StaticResource TabButtonStyle}"/>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </Grid>
+                        </ScrollViewer>
+                    </Grid>
+
                     <!--Right menu + window menu-->
                     <StackPanel 
                         x:Name="pnlTopRight"
@@ -521,7 +521,7 @@
                         DockPanel.Dock ="Right"
                         Grid.Column="2">
                         <ToggleButton x:Name="tbtnDocumentList" 
-                                      Style="{StaticResource FileMenuToggleButtons}"
+                                      Style="{StaticResource FileToolbarToggleButton}"
                                       IsHitTestVisible="{Binding ElementName=popupDocumentList, 
                                         Path=IsOpen, 
                                         Mode=OneWay, Converter={conv:BoolInverter}}">
@@ -536,43 +536,35 @@
                                             Background="#333333"
                                             BorderBrush="#BBBBBB"
                                             Margin="0">
-                                        <!--<StackPanel Orientation="Vertical"
-                                                    Background="Transparent"
-                                                    Margin="0"
-                                                    HorizontalAlignment="Left">
-                                            <Button Style="{StaticResource FileMenuButton}">
-                                                <TextBlock Margin="21,0,5,0" Text="Test" Name="myPopupText"/>
-                                            </Button>
-                                            <Button Style="{StaticResource FileMenuButton}">
-                                                <TextBlock Margin="21,0,5,0" Text="A very long name that wont fit in place" Name="myPopupText2"/>
-                                            </Button>
-                                        </StackPanel>-->
-                                        <ItemsControl x:Name="icDocumentsList" 
-                                            ItemsSource="{Binding Documents}"
-                                            Margin="0">
-                                            <ItemsControl.ItemsPanel>
-                                                <ItemsPanelTemplate>
-                                                    <StackPanel 
-                                                        Margin="0"
-                                                        VerticalAlignment="Center"
-                                                        HorizontalAlignment="Left"
-                                                        Orientation="Vertical"
-                                                        Grid.IsSharedSizeScope="True"/>
-                                                </ItemsPanelTemplate>
-                                            </ItemsControl.ItemsPanel>
-                                            <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
-                                                    <Button Style="{StaticResource FileMenuButton}"
-                                                            Click="popupDocumentListButton_Click"/>
-                                                </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
-
+                                        <ScrollViewer MaxHeight="{Binding ActualHeight, ElementName=v3dMain}"
+                                                      MaxWidth="600"
+                                                      HorizontalScrollBarVisibility="Auto"
+                                                      VerticalScrollBarVisibility="Auto">
+                                            <ItemsControl x:Name="icDocumentsList" 
+                                                ItemsSource="{Binding Documents}"
+                                                Margin="0">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <StackPanel 
+                                                            Margin="0"
+                                                            VerticalAlignment="Center"
+                                                            HorizontalAlignment="Left"
+                                                            Orientation="Vertical"
+                                                            Grid.IsSharedSizeScope="True"/>
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Button Style="{StaticResource DocumentListMenuButton}"
+                                                                Click="popupDocumentListButton_Click"/>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </ScrollViewer>
                                     </Border>
                                 </Popup>
                             </StackPanel>
                         </ToggleButton>
-                        <!--<Button Style="{StaticResource OpenedDocumentListButton}"/>-->
                         <Button             
                             x:Name="btnMinimize"
                             Style="{StaticResource WindowsButtons}"
@@ -618,7 +610,7 @@
             VerticalAlignment="Top" 
             Height="70" 
             Width="Auto"
-            Margin="0,25,10,10" >                
+            Margin="0,25,10,10" >
                 <Button 
                     x:Name="btnMenu"
                     DockPanel.Dock ="Left"
@@ -658,7 +650,7 @@
                     </Button>
                 </StackPanel>
             </DockPanel>
-            
+
             <!--Bottom: Message & Progressbars-->
             <Grid HorizontalAlignment="Stretch" 
                   VerticalAlignment="Bottom"
