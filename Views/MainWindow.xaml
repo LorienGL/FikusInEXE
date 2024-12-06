@@ -187,6 +187,7 @@
             <Setter Property="TextBlock.FontSize" Value="20"/>
             <Setter Property="TextBlock.FontFamily" Value="Consolas"/>
             <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
+            <Setter Property="Margin" Value="0"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
@@ -423,19 +424,114 @@
                             </Button.Style>
                             <TextBlock Text="🔻" Margin="0,10,0,0" FontSize="14"/>
                         </Button>
-                        <Button Style="{StaticResource FileToolbarButton}"
-                            ToolTip="Scale"
-                            Command="{Binding SetNextZoomFactor}">
-                            <TextBlock Text="🗚" Margin="0,0,0,0" FontSize="24"/>
-                        </Button>
-                        <Button Style="{StaticResource FileToolbarButton}"
-                            ToolTip="View Mode">
-                            <TextBlock Text="🧊" Margin="0,1,0,0"/>
-                        </Button>
-                        <Button Style="{StaticResource FileToolbarButton}"
-                            ToolTip="Settings">
-                            <TextBlock Text="⚙️" Margin="0,1,0,0"/>
-                        </Button>
+                        <ToggleButton x:Name="tbtnSettings" 
+                                      Style="{StaticResource FileToolbarToggleButton}"
+                                      IsHitTestVisible="{Binding ElementName=popupSettings, 
+                                        Path=IsOpen, 
+                                        Mode=OneWay, Converter={conv:BoolInverter}}"
+                                      Grid.Column="1">
+                            <StackPanel Margin="0">
+                                <TextBlock Text="⚙️" />
+                                <Popup x:Name="popupSettings" 
+                                       IsOpen="{Binding IsChecked, ElementName=tbtnSettings}"
+                                       StaysOpen="False"
+                                       AllowsTransparency="True">
+                                    <Border BorderThickness="0.5"
+                                            CornerRadius="0"
+                                            Background="#333333"
+                                            BorderBrush="#BBBBBB"
+                                            Margin="0">
+                                        <ScrollViewer MaxHeight="{Binding ActualHeight, ElementName=v3dMain}"
+                                                      MaxWidth="600"
+                                                      HorizontalScrollBarVisibility="Auto"
+                                                      VerticalScrollBarVisibility="Auto">
+                                            <UniformGrid Columns="4">
+                                                <Button ToolTip="Window Scale: Small"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Bottom"
+                                                        Command="{Binding SetSmallZoomFactor}"
+                                                        Width="28"
+                                                        Height="28"
+                                                        Click="popupSettingsButton_Click">
+                                                    <Button.Style>
+                                                        <Style TargetType="Button" BasedOn="{StaticResource FileToolbarButton}">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding WindowScale}" Value="1">
+                                                                    <Setter Property="Background" Value="#BBBBBB"/>
+                                                                    <Setter Property="TextBlock.Foreground" Value="#444444"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Button.Style>
+                                                    <TextBlock Text="🗚" Margin="0,0,0,0" FontSize="10"/>
+                                                </Button>
+                                                <Button ToolTip="Window Scale: Medium"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Bottom"
+                                                        Command="{Binding SetMidZoomFactor}"
+                                                        Width="28"
+                                                        Height="28"
+                                                        Click="popupSettingsButton_Click">
+                                                    <Button.Style>
+                                                        <Style TargetType="Button" BasedOn="{StaticResource FileToolbarButton}">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding WindowScale}" Value="1.2">
+                                                                    <Setter Property="Background" Value="#BBBBBB"/>
+                                                                    <Setter Property="TextBlock.Foreground" Value="#444444"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Button.Style>
+                                                    <TextBlock Text="🗚" Margin="0,0,0,0" FontSize="12"/>
+                                                </Button>
+                                                <Button ToolTip="Window Scale: Big"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Bottom"
+                                                        Command="{Binding SetBigZoomFactor}"
+                                                        Width="28"
+                                                        Height="28"
+                                                        Click="popupSettingsButton_Click">
+                                                    <Button.Style>
+                                                        <Style TargetType="Button" BasedOn="{StaticResource FileToolbarButton}">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding WindowScale}" Value="1.5">
+                                                                    <Setter Property="Background" Value="#BBBBBB"/>
+                                                                    <Setter Property="TextBlock.Foreground" Value="#444444"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Button.Style>
+                                                    <TextBlock Text="🗚" Margin="0,0,0,0" FontSize="15"/>
+                                                </Button>
+                                                <Button ToolTip="Window Scale: Huge"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Bottom"
+                                                        Command="{Binding SetHugeZoomFactor}"
+                                                        Width="28"
+                                                        Height="28"
+                                                        Click="popupSettingsButton_Click">
+                                                    <Button.Style>
+                                                        <Style TargetType="Button" BasedOn="{StaticResource FileToolbarButton}">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding WindowScale}" Value="2">
+                                                                    <Setter Property="Background" Value="#BBBBBB"/>
+                                                                    <Setter Property="TextBlock.Foreground" Value="#444444"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Button.Style>
+                                                    <TextBlock Text="🗚" Margin="0,0,0,0" FontSize="20"/>
+                                                </Button>
+                                                <Button ToolTip="Wireframe"
+                                                        Style="{StaticResource FileToolbarButton}">
+                                                    <TextBlock Text="🧊" Margin="0,1,0,0"/>
+                                                </Button>
+                                            </UniformGrid>
+                                        </ScrollViewer>
+                                    </Border>
+                                </Popup>
+                            </StackPanel>
+                        </ToggleButton>
                     </StackPanel>
                     
                     <!--Document tabs-->

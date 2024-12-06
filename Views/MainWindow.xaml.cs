@@ -269,5 +269,10 @@ namespace FikusIn.Views
                 }
             }
         }
+
+        private void popupSettingsButton_Click(object sender, RoutedEventArgs e)
+        {
+            popupSettings.IsOpen = false;
+        }
     }
 }

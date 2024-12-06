@@ -36,7 +36,7 @@ namespace FikusIn.ViewModel
         private double _windowScale = 1.2;
         public double WindowScale
         {
-            get => WindowZoomFactors[_windowScaleIndex];
+            get => _windowScale;
             set => SetProperty(ref _windowScale, value);
         }
         #endregion
@@ -57,8 +57,23 @@ namespace FikusIn.ViewModel
             (object? obj) => { return true; }
         );
 
-        public ICommand SetNextZoomFactor => new RelayCommand(
-            (object? obj) => { _windowScaleIndex = (_windowScaleIndex == WindowZoomFactors.Length - 1? 0 : _windowScaleIndex + 1);  WindowScale = WindowZoomFactors[_windowScaleIndex]; },
+        public ICommand SetSmallZoomFactor => new RelayCommand(
+            (object? obj) => { _windowScaleIndex = 0; WindowScale = WindowZoomFactors[0]; },
+            (object? obj) => { return true; }
+        );
+
+        public ICommand SetMidZoomFactor => new RelayCommand(
+            (object? obj) => { _windowScaleIndex = 1; WindowScale = WindowZoomFactors[1]; },
+            (object? obj) => { return true; }
+        );
+
+        public ICommand SetBigZoomFactor => new RelayCommand(
+            (object? obj) => { _windowScaleIndex = 2; WindowScale = WindowZoomFactors[2]; },
+            (object? obj) => { return true; }
+        );
+
+        public ICommand SetHugeZoomFactor => new RelayCommand(
+            (object? obj) => { _windowScaleIndex = 3; WindowScale = WindowZoomFactors[3]; },
             (object? obj) => { return true; }
         );
 
