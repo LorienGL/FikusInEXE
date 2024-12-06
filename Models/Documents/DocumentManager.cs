@@ -104,5 +104,16 @@ namespace FikusIn.Model.Documents
                 return;
         }
 
+        internal static void SaveActiveDocument()
+        {
+            GetActiveDocument()?.Save();
+        }
+
+        internal static void SaveAllDocuments()
+        {
+            foreach (var doc in _documents)
+                if(doc.IsModified)
+                    doc.Save();
+        }
     }
 }

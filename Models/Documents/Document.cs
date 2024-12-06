@@ -34,17 +34,21 @@ namespace FikusIn.Model.Documents
             set => SetProperty(ref _isActive, value);
         }
 
-        // TODO: SetProperty setup => DELETE!
-        public string Title
+        private bool _isModified = true;
+        public bool IsModified 
         {
-            get { return Name + (IsModified ? "*" : ""); }
+            get => _isModified;
+            private set => SetProperty(ref _isModified, value); 
         }
-
-        public bool IsModified { get; private set; } = false;
 
         internal bool Close()
         {
             return true;
+        }
+
+        public void Save()
+        {
+            IsModified = false;
         }
 
         public override string ToString() => Name;

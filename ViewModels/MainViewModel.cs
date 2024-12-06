@@ -52,6 +52,22 @@ namespace FikusIn.ViewModel
             (object? obj) => { return true; }
         );
 
+        public static ICommand SaveDocument => new RelayCommand(
+            (object? obj) => { DocumentManager.SaveActiveDocument(); },
+            (object? obj) => { return true; }
+        );
+
+        public static ICommand SaveAllDocuments => new RelayCommand(
+            (object? obj) => { DocumentManager.SaveAllDocuments(); },
+            (object? obj) => { return true; }
+        );
+
+        public static ICommand OpenDocument => new RelayCommand(
+            (object? obj) => { },
+            (object? obj) => { return true; }
+        );
+
+
         public static ICommand SetActiveDocument => new RelayCommand(
             (object? obj) => { DocumentManager.SetActiveDocument(obj as Document); },
             (object? obj) => { return true; }

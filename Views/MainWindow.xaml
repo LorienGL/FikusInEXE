@@ -98,7 +98,7 @@
         <Style x:Key="AutoSizeTextBox" TargetType="{x:Type TextBlock}">
             <Setter Property="FontSize" Value="18" />
             <Setter Property="MaxWidth" Value="500" />
-            <Setter Property="Margin" Value="0,1,10,0" />
+            <Setter Property="Margin" Value="0,1,5,0" />
             <Style.Triggers>
                 <DataTrigger 
                     Binding="{Binding ActualWidth, RelativeSource={RelativeSource Self}, Converter={x:Static conv:IsGreaterThanConverter.Instance}, ConverterParameter=150}" 
@@ -106,15 +106,14 @@
                     <Setter Property="FontSize" Value="14" />
                     <Setter Property="MaxWidth" Value="200" />
                     <Setter Property="Margin" Value="0,5,10,0" />
-                    <Setter Property="ToolTip" Value="{Binding Title}" />
+                    <Setter Property="ToolTip" Value="{Binding Name}" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
-
         <Style x:Key="TabCloseButton" TargetType="{x:Type Button}">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Margin" Value="5,0,5,0"/>
+            <Setter Property="Margin" Value="0,0,5,0"/>
             <Setter Property="TextBlock.Foreground" Value="#999999"/>
             <Setter Property="Height" Value="Auto"/>
             <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
@@ -133,7 +132,6 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-
         <Style x:Key="TabButtonStyle" TargetType="{x:Type Button}">
             <Setter Property="Tag" Value="{Binding Id}"/>
             <Setter Property="Background" Value="#222222"/>
@@ -151,10 +149,21 @@
                     <ControlTemplate TargetType="{x:Type Button}">
                         <Border Background="{TemplateBinding Background}" 
                                 BorderThickness="0">
-                            <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
+                            <StackPanel Orientation="Horizontal" Margin="10,0,0,0">
+                                <TextBlock Text="✏️" FontSize="10" Margin="0,8,2,0">
+                                    <TextBlock.Style>
+                                        <Style TargetType="{x:Type TextBlock}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsModified}" Value="False">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
                                 <TextBlock 
                                     Height ="23" 
-                                    Text="{Binding Title}" 
+                                    Text="{Binding Name}" 
                                     TextTrimming="CharacterEllipsis" 
                                     Style="{StaticResource AutoSizeTextBox}"/>
                                 <Button Style="{StaticResource TabCloseButton}" 
@@ -203,8 +212,7 @@
                     <Setter Property="TextBlock.Foreground" Value="#444444"/>
                 </Trigger>
             </Style.Triggers>
-        </Style>
-        
+        </Style>        
         <Style x:Key="FileToolbarToggleButton" TargetType="{x:Type ToggleButton}">
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Background" Value="Transparent"/>
@@ -261,7 +269,7 @@
             <Setter Property="Command" Value="{Binding ElementName=icDocumentsList, 
                 Path=DataContext.SetActiveDocument}"/>
             <Setter Property="CommandParameter" Value="{Binding}"/>
-            <Setter Property="Content" Value="{Binding Title}"/>
+            <Setter Property="Content" Value="{Binding Name}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
@@ -274,7 +282,7 @@
                                         <ColumnDefinition SharedSizeGroup="A"/>
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Grid.Column="0"
-                                               Text="{Binding Title}" Margin="21,2,10,4"/>
+                                               Text="{Binding Name}" Margin="21,2,10,4"/>
                                 </Grid>
                             </Border>
                         </Grid>
@@ -287,28 +295,6 @@
                     <Setter Property="TextBlock.Foreground" Value="#444444"/>
                 </Trigger>
             </Style.Triggers>
-        </Style>
-
-        <Style x:Key="OpenedDocumentListButton" TargetType="{x:Type Button}" BasedOn="{StaticResource FileToolbarButton}">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Button}">
-                        <Border BorderThickness="0" ContextMenuService.Placement="Bottom">
-                            <TextBlock Text="🔻" Margin="0,2,0,0" FontWeight="Bold" FontSize="24"/>
-                            <Border.ContextMenu>
-                                <ContextMenu x:Name="cmenuDocList" 
-                                             DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}"
-                                             ItemsSource="{Binding SortedDocumentNames}"/>
-                            </Border.ContextMenu>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="ContextMenu.IsOpen" Value="True" TargetName="cmenuDocList"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
         </Style>
 
     </Window.Resources>
@@ -379,23 +365,34 @@
                         Margin="0,0,0,0"
                         Grid.Column="0">
                         <TextBlock Text="🌿" FontSize="20" Foreground="Green"/>
-                        <Button Style="{StaticResource FileToolbarButton}"
-                            ToolTip="New&#x0a;Ctrl+N" 
-                            Command="{Binding NewDocument}">
+                        <Button x:Name="btnNewDoc" 
+                                Style="{StaticResource FileToolbarButton}"
+                                ToolTip="New&#x0a;Ctrl+N" 
+                                Command="{Binding NewDocument}">
                             <TextBlock Text="📄" Margin="0,1,0,0"/>
                         </Button>
-                        <Button Style="{StaticResource FileToolbarButton}"
+                        <Button x:Name="btnOpenDoc"
                                 ToolTip="Open&#x0a;Ctrl+O"
-                                x:Name="btnOpen">
+                                Command="{Binding OpenDocument}">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource FileToolbarButton}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ElementName=btnOpenDoc2,
+                                                   Path=IsMouseOver}" Value="True">
+                                            <Setter Property="Background" Value="#777777" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
                             <TextBlock Text="📂" Margin="0,0,0,0"/>
                         </Button>
-                        <Button x:Name="btnOpen2"
+                        <Button x:Name="btnOpenDoc2"
                                 ToolTip="Open..."
                                 Margin="0,0,4,0">
                             <Button.Style>
                                 <Style TargetType="Button" BasedOn="{StaticResource FileToolbarButton}">
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ElementName=btnOpen,
+                                        <DataTrigger Binding="{Binding ElementName=btnOpenDoc,
                                                    Path=IsMouseOver}" Value="True">
                                             <Setter Property="Background" Value="#777777" />
                                         </DataTrigger>
@@ -404,18 +401,28 @@
                             </Button.Style>
                             <TextBlock Text="🔻" Margin="0,10,0,0" FontSize="14"/>
                         </Button>
-                        <Button Style="{StaticResource FileToolbarButton}"
+                        <Button x:Name="btnSaveDoc"
                                 ToolTip="Save&#x0a;Ctrl+S"
-                                x:Name="btnSave">
+                                Command="{Binding SaveDocument}">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource FileToolbarButton}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ElementName=btnSaveDoc2,
+                                                   Path=IsMouseOver}" Value="True">
+                                            <Setter Property="Background" Value="#777777" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
                             <TextBlock Text="💾" Margin="0,1,0,0"/>
                         </Button>
-                        <Button x:Name="btnSave2"
+                        <Button x:Name="btnSaveDoc2"
                                 ToolTip="Save..."
                                 Margin="0,0,4,0">
                             <Button.Style>
                                 <Style TargetType="Button" BasedOn="{StaticResource FileToolbarButton}">
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ElementName=btnSave,
+                                        <DataTrigger Binding="{Binding ElementName=btnSaveDoc,
                                                    Path=IsMouseOver}" Value="True">
                                             <Setter Property="Background" Value="#777777" />
                                         </DataTrigger>
