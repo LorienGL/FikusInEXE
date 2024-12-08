@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
     xmlns:local="clr-namespace:FikusIn" 
     xmlns:conv="clr-namespace:FikusIn.UIConverters"
     xmlns:utils="clr-namespace:FikusIn.Utils"
@@ -279,7 +280,7 @@
                                 BorderThickness="0">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition SharedSizeGroup="A"/>
+                                        <ColumnDefinition SharedSizeGroup="shsgDocumentListPopup"/>
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Grid.Column="0"
                                                Text="{Binding Name}" Margin="21,2,10,4"/>
@@ -297,6 +298,50 @@
             </Style.Triggers>
         </Style>
 
+        <Style x:Key="PopupMenuButton" TargetType="{x:Type Button}">
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="#333333"/>
+            <Setter Property="TextBlock.Foreground" Value="#BBBBBB"/>
+            <Setter Property="TextBlock.FontSize" Value="18"/>
+            <Setter Property="TextBlock.FontFamily" Value="Consolas"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="MinWidth" Value="150"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid>
+                            <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="0">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition SharedSizeGroup="shsgDocumentListPopup"/>
+                                    </Grid.ColumnDefinitions>
+                                    <ContentPresenter HorizontalAlignment="Left" 
+                                                      VerticalAlignment="Center" 
+                                                      Margin="21,2,10,4"/>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#BBBBBB"/>
+                    <Setter Property="TextBlock.Foreground" Value="#444444"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <CollectionViewSource x:Key="SortedDocuments" Source="{Binding Documents}">
+            <CollectionViewSource.SortDescriptions>
+                <scm:SortDescription PropertyName="Name" Direction="Ascending"/>
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
     </Window.Resources>
 
     <WindowChrome.WindowChrome>
@@ -310,6 +355,8 @@
         <KeyBinding Command="{Binding NewDocument}" Modifiers="Ctrl" Key="N"/>
         <KeyBinding Command="{Binding OpenDocument}" Modifiers="Ctrl" Key="O"/>
         <KeyBinding Command="{Binding SaveDocument}" Modifiers="Ctrl" Key="S"/>
+        <KeyBinding Command="{Binding SaveDocumentAs}" Modifiers="Ctrl+Shift" Key="S"/>
+        <KeyBinding Command="{Binding SaveAllDocuments}" Modifiers="Ctrl+Shift+Alt" Key="S"/>
     </Window.InputBindings>
 
     <Border Background="#111111">
@@ -386,11 +433,13 @@
                             </Button.Style>
                             <TextBlock Text="📂" Margin="0,0,0,0"/>
                         </Button>
-                        <Button x:Name="btnOpenDoc2"
-                                ToolTip="Open..."
-                                Margin="0,0,4,0">
-                            <Button.Style>
-                                <Style TargetType="Button" BasedOn="{StaticResource FileToolbarButton}">
+                        <ToggleButton x:Name="btnOpenDoc2" 
+                                      IsHitTestVisible="{Binding ElementName=popupOpen, 
+                                        Path=IsOpen, 
+                                        Mode=OneWay, Converter={conv:BoolInverter}}"
+                                      Grid.Column="1">
+                            <ToggleButton.Style>
+                                <Style TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource FileToolbarToggleButton}">
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding ElementName=btnOpenDoc,
                                                    Path=IsMouseOver}" Value="True">
@@ -398,9 +447,33 @@
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
-                            </Button.Style>
-                            <TextBlock Text="🔻" Margin="0,10,0,0" FontSize="14"/>
-                        </Button>
+                            </ToggleButton.Style>
+                            <StackPanel Margin="0">
+                                <TextBlock Text="🔻" Margin="0,10,0,0" FontSize="14"/>
+                                <Popup x:Name="popupOpen" 
+                                       IsOpen="{Binding IsChecked, ElementName=btnOpenDoc2}"
+                                       StaysOpen="False"
+                                       AllowsTransparency="True">
+                                    <Border BorderThickness="0.5"
+                                            CornerRadius="0"
+                                            Background="#333333"
+                                            BorderBrush="#BBBBBB"
+                                            Margin="0">
+                                        <ScrollViewer MaxHeight="{Binding ActualHeight, ElementName=gridGraphicMain}"
+                                                      MaxWidth="600"
+                                                      HorizontalScrollBarVisibility="Auto"
+                                                      VerticalScrollBarVisibility="Auto">
+                                            <StackPanel Margin="0"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Left"
+                                                Orientation="Vertical"
+                                                Grid.IsSharedSizeScope="True">
+                                            </StackPanel>
+                                        </ScrollViewer>
+                                    </Border>
+                                </Popup>
+                            </StackPanel>
+                        </ToggleButton>
                         <Button x:Name="btnSaveDoc"
                                 ToolTip="Save&#x0a;Ctrl+S"
                                 Command="{Binding SaveDocument}">
@@ -411,16 +484,21 @@
                                                    Path=IsMouseOver}" Value="True">
                                             <Setter Property="Background" Value="#777777" />
                                         </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsChecked, ElementName=btnSaveDoc2}" Value="True">
+                                            <Setter Property="Background" Value="#777777" />
+                                        </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
                             </Button.Style>
                             <TextBlock Text="💾" Margin="0,1,0,0"/>
                         </Button>
-                        <Button x:Name="btnSaveDoc2"
-                                ToolTip="Save..."
-                                Margin="0,0,4,0">
-                            <Button.Style>
-                                <Style TargetType="Button" BasedOn="{StaticResource FileToolbarButton}">
+                        <ToggleButton x:Name="btnSaveDoc2" 
+                                      IsHitTestVisible="{Binding ElementName=popupSave, 
+                                        Path=IsOpen, 
+                                        Mode=OneWay, Converter={conv:BoolInverter}}"
+                                      Grid.Column="1">
+                            <ToggleButton.Style>
+                                <Style TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource FileToolbarToggleButton}">
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding ElementName=btnSaveDoc,
                                                    Path=IsMouseOver}" Value="True">
@@ -428,9 +506,45 @@
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
-                            </Button.Style>
-                            <TextBlock Text="🔻" Margin="0,10,0,0" FontSize="14"/>
-                        </Button>
+                            </ToggleButton.Style>
+                            <StackPanel Margin="0">
+                                <TextBlock Text="🔻" Margin="0,10,0,0" FontSize="14"/>
+                                <Popup x:Name="popupSave" 
+                                       IsOpen="{Binding IsChecked, ElementName=btnSaveDoc2}"
+                                       StaysOpen="False"
+                                       AllowsTransparency="True">
+                                    <Border BorderThickness="0.5"
+                                            CornerRadius="0"
+                                            Background="#333333"
+                                            BorderBrush="#BBBBBB"
+                                            Margin="0">
+                                        <ScrollViewer MaxHeight="{Binding ActualHeight, ElementName=gridGraphicMain}"
+                                                      MaxWidth="600"
+                                                      HorizontalScrollBarVisibility="Auto"
+                                                      VerticalScrollBarVisibility="Auto">
+                                            <StackPanel Margin="0"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Left"
+                                                Orientation="Vertical"
+                                                Grid.IsSharedSizeScope="True">
+                                                <Button ToolTip="Save As...&#x0a;Ctrl+Shift+S"
+                                                        Style="{StaticResource PopupMenuButton}"
+                                                        Command="{Binding SaveDocumentAs}"
+                                                        Click="popupSaveButton_Click">
+                                                    <TextBlock Text="Save As..." Margin="0,1,0,0"/>
+                                                </Button>
+                                                <Button ToolTip="Save All&#x0a;Ctrl+Shift+Alt+S"
+                                                        Style="{StaticResource PopupMenuButton}"
+                                                        Command="{Binding SaveAllDocuments}"
+                                                        Click="popupSaveButton_Click">
+                                                    <TextBlock Text="Save All" Margin="0,1,0,0"/>
+                                                </Button>
+                                            </StackPanel>
+                                        </ScrollViewer>
+                                    </Border>
+                                </Popup>
+                            </StackPanel>
+                        </ToggleButton>
                         <ToggleButton x:Name="tbtnSettings" 
                                       Style="{StaticResource FileToolbarToggleButton}"
                                       IsHitTestVisible="{Binding ElementName=popupSettings, 
@@ -448,7 +562,7 @@
                                             Background="#333333"
                                             BorderBrush="#BBBBBB"
                                             Margin="0">
-                                        <ScrollViewer MaxHeight="{Binding ActualHeight, ElementName=v3dMain}"
+                                        <ScrollViewer MaxHeight="{Binding ActualHeight, ElementName=gridGraphicMain}"
                                                       MaxWidth="600"
                                                       HorizontalScrollBarVisibility="Auto"
                                                       VerticalScrollBarVisibility="Auto">
@@ -530,8 +644,19 @@
                                                     <TextBlock Text="🗚" Margin="0,0,0,0" FontSize="20"/>
                                                 </Button>
                                                 <Button ToolTip="Wireframe"
-                                                        Style="{StaticResource FileToolbarButton}">
-                                                    <TextBlock Text="🧊" Margin="0,1,0,0"/>
+                                                        Command="{Binding ToggleWireframe}"
+                                                        Click="popupSettingsButton_Click">
+                                                    <Button.Style>
+                                                        <Style TargetType="Button" BasedOn="{StaticResource FileToolbarButton}">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Wireframe}" Value="True">
+                                                                    <Setter Property="Background" Value="#BBBBBB"/>
+                                                                    <Setter Property="TextBlock.Foreground" Value="#444444"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Button.Style>
+                                                    <TextBlock Text="➿" Margin="0,1,0,0"/>
                                                 </Button>
                                             </UniformGrid>
                                         </ScrollViewer>
@@ -625,7 +750,7 @@
                                             Background="#333333"
                                             BorderBrush="#BBBBBB"
                                             Margin="0">
-                                        <ScrollViewer MaxHeight="{Binding ActualHeight, ElementName=v3dMain}"
+                                        <ScrollViewer MaxHeight="{Binding ActualHeight, ElementName=gridGraphicMain}"
                                                       MaxWidth="600"
                                                       HorizontalScrollBarVisibility="Auto"
                                                       VerticalScrollBarVisibility="Auto">
@@ -697,207 +822,211 @@
             </DockPanel>
 
             <!--Graphic area-->
-            <Grid Background="#111111"
-                MouseLeftButtonDown="Window_MouseLeftButtonDown"
-                MouseLeftButtonUp="Window_MouseLeftButtonUp"
-                MouseMove="Window_MouseMove"
-                MouseWheel="Window_MouseWheel"
-                Grid.Row="1"
-                Margin="0">
-                
-                <!--3D graohics-->
-                <Viewport3D 
-                    x:Name="v3dMain"
-                    ClipToBounds="False"
-                    IsHitTestVisible="True"             
-                    Width="Auto"
-                    Height="Auto">
-                    <Viewport3D.Camera>
-                        <OrthographicCamera 
-                        x:Name="v3dCamera" 
-                        Position="0,0,40" 
-                        LookDirection="0,0,-1" 
-                        UpDirection="0,1,0"
-                        FarPlaneDistance="Infinity"
-                        NearPlaneDistance="-Infinity"
-                        Width="100"/>
-                    </Viewport3D.Camera>
-                    <ModelVisual3D>
-                        <ModelVisual3D.Content>
-                            <Model3DGroup
-                            x:Name="v3dScene">
-                                <AmbientLight Color="#444444"/>
-                                <PointLight x:Name="v3dLightTop" Color="#777777" Position="1,10,40"/>
-                                <PointLight x:Name="v3dLightRight" Color="#444444" Position="10,-1,60"/>
-                                <PointLight x:Name="v3dLightLeft" Color="#333333" Position="-10,2,20"/>
-                            </Model3DGroup>
-                        </ModelVisual3D.Content>
-                    </ModelVisual3D>
-                </Viewport3D>
-                
-                <!--Floating main operation menu-->
-                <DockPanel 
-                    x:Name="pnlMenu"
-                    HorizontalAlignment="Stretch" 
-                    VerticalAlignment="Top" 
-                    Height="70" 
-                    Width="Auto"
-                    Margin="0,0,10,10" >
-                    <Button 
-                        x:Name="btnMenu"
-                        DockPanel.Dock ="Left"
-                        VerticalAlignment="Bottom" 
-                        HorizontalAlignment="Left" 
-                        Style="{StaticResource MenuButtons}"
-                        MouseEnter="btnMenu_MouseEnter"
-                        Click="btnMenu_Click">
-                        <TextBlock Text="☰" FontWeight="Bold" Margin="0,-5,0,0" FontSize="34"/>
-                    </Button>
-
-                    <StackPanel 
-                        x:Name="pnlSubMenu"
-                        Margin="0" 
-                        DockPanel.Dock ="Right"
-                        VerticalAlignment="Bottom" 
-                        HorizontalAlignment="Stretch"
-                        Height="70"
-                        Width="Auto"
-                        Orientation="Horizontal">
-                        <Button Style="{StaticResource MenuButtons}" 
-                            ToolTip="New" 
-                            Command="{Binding NewDocument}">
-                            <TextBlock Text="📄" Margin="0,1,0,0" FontFamily="Consolas" FontSize="32"/>
-                        </Button>
-                        <Button 
-                            x:Name="btnXXX"
-                            Style="{StaticResource MenuButtons}"
-                            ToolTip="Open">
-                            <TextBlock Text="📂" Margin="2,-3,0,0" FontFamily="Consolas" FontSize="36"/>
-                        </Button>
-                        <Button 
-                            x:Name="btnKKK"
-                            Style="{StaticResource MenuButtons}"
-                            ToolTip="Save">
-                            <TextBlock Text="💾" Margin="0,1,0,0" FontFamily="Consolas" FontSize="32"/>
-                        </Button>
-                    </StackPanel>
-                </DockPanel>
-                
-                <!-- Selection box -->
-                <Canvas 
-                Height="Auto" 
-                Width="Auto"
-                VerticalAlignment="Stretch"
-                HorizontalAlignment="Stretch">
-                    <Rectangle 
-                    x:Name="canvasSelectionBox" 
-                    Stroke="White" 
-                    StrokeThickness="1" 
-                    StrokeDashArray="2 2"                
-                    Visibility="Collapsed"/>
-                </Canvas>
-                
-                <!--Bottom: Message & Progressbars-->
-                <Grid HorizontalAlignment="Stretch" 
-                  VerticalAlignment="Bottom"
+            <Grid x:Name="gridGraphicMain"
+                  Background="#111111"
+                  MouseLeftButtonDown="Window_MouseLeftButtonDown"
+                  MouseLeftButtonUp="Window_MouseLeftButtonUp"
+                  MouseMove="Window_MouseMove"
+                  MouseWheel="Window_MouseWheel"
+                  Grid.Row="1"
                   Margin="0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                    </Grid.RowDefinitions>
-                    <Label 
-                    x:Name="messageLabel" 
-                    FontSize="24"
-                    FontFamily="Calibri"
-                    HorizontalAlignment="Stretch" 
-                    VerticalAlignment="Bottom"
-                    HorizontalContentAlignment="Center"
-                    Content="{Binding Message}" 
-                    Foreground="{Binding MessageForeground}"
-                    Background="{Binding MessageBackground}"
-                    Grid.Row="0"
-                    BorderThickness="0"
-                    Margin="0">
-                        <Label.Style>
-                            <Style TargetType="Label">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ShowMessage}" Value="True">
-                                        <DataTrigger.EnterActions>
-                                            <BeginStoryboard>
-                                                <Storyboard>
-                                                    <DoubleAnimation 
-                                                    Storyboard.TargetProperty="Opacity" 
-                                                    To="1" Duration="0:0:0.200" />
-                                                </Storyboard>
-                                            </BeginStoryboard>
-                                        </DataTrigger.EnterActions>
-                                        <DataTrigger.ExitActions>
-                                            <BeginStoryboard>
-                                                <Storyboard>
-                                                    <DoubleAnimation 
-                                                    Storyboard.TargetProperty="Opacity" 
-                                                    To="0.05" Duration="0:0:0.500" />
-                                                </Storyboard>
-                                            </BeginStoryboard>
-                                        </DataTrigger.ExitActions>
-                                    </DataTrigger>
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding ShowMessage}" Value="False" />
-                                            <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
-                                        </MultiDataTrigger.Conditions>
-                                        <MultiDataTrigger.EnterActions>
-                                            <BeginStoryboard>
-                                                <Storyboard>
-                                                    <DoubleAnimation 
-                                                    Storyboard.TargetProperty="Opacity" 
-                                                    To="1" Duration="0:0:0.200" />
-                                                </Storyboard>
-                                            </BeginStoryboard>
-                                        </MultiDataTrigger.EnterActions>
-                                        <MultiDataTrigger.ExitActions>
-                                            <BeginStoryboard>
-                                                <Storyboard>
-                                                    <DoubleAnimation 
-                                                    Storyboard.TargetProperty="Opacity" 
-                                                    To="0.05" Duration="0:0:0.500" />
-                                                </Storyboard>
-                                            </BeginStoryboard>
-                                        </MultiDataTrigger.ExitActions>
-                                    </MultiDataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Label.Style>
-                    </Label>
-                    <StackPanel
-                    HorizontalAlignment="Stretch" 
-                    VerticalAlignment="Bottom"
-                    Orientation="Vertical"
-                    Grid.Row="1"
-                    Margin="0">
-                        <ItemsControl ItemsSource="{Binding ProgressList}" BorderThickness="0">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <ProgressBar Minimum="{Binding Minimum}"
-                                Maximum="{Binding Maximum}"
-                                Value="{Binding Current}"
-                                IsIndeterminate="{Binding IsIndeterminate}" 
-                                BorderThickness="0"
-                                Height="3"
-                                Grid.Row="1"
-                                Background="#000000"
-                                Foreground="#FFFFFF"
-                                Margin="0"/>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </StackPanel>
-                </Grid>
+
+                <StackPanel Margin="0">
+                    <Grid Margin="0">
+                        <!--3D graphics-->
+                        <Viewport3D 
+                            x:Name="v3dMain"
+                            ClipToBounds="True"
+                            IsHitTestVisible="True"             
+                            Width="Auto"
+                            Height="Auto">
+                            <Viewport3D.Camera>
+                                <OrthographicCamera 
+                                x:Name="v3dCamera" 
+                                Position="0,0,40" 
+                                LookDirection="0,0,-1" 
+                                UpDirection="0,1,0"
+                                FarPlaneDistance="Infinity"
+                                NearPlaneDistance="-Infinity"
+                                Width="100"/>
+                            </Viewport3D.Camera>
+                            <ModelVisual3D>
+                                <ModelVisual3D.Content>
+                                    <Model3DGroup
+                                    x:Name="v3dScene">
+                                        <AmbientLight Color="#444444"/>
+                                        <PointLight x:Name="v3dLightTop" Color="#777777" Position="1,10,40"/>
+                                        <PointLight x:Name="v3dLightRight" Color="#444444" Position="10,-1,60"/>
+                                        <PointLight x:Name="v3dLightLeft" Color="#333333" Position="-10,2,20"/>
+                                    </Model3DGroup>
+                                </ModelVisual3D.Content>
+                            </ModelVisual3D>
+                        </Viewport3D>
+                
+                        <!--Floating main operation menu-->
+                        <DockPanel 
+                            x:Name="pnlMenu"
+                            HorizontalAlignment="Stretch" 
+                            VerticalAlignment="Top" 
+                            Height="70" 
+                            Width="Auto"
+                            Margin="0,0,10,10" >
+                            <Button 
+                                x:Name="btnMenu"
+                                DockPanel.Dock ="Left"
+                                VerticalAlignment="Bottom" 
+                                HorizontalAlignment="Left" 
+                                Style="{StaticResource MenuButtons}"
+                                MouseEnter="btnMenu_MouseEnter"
+                                Click="btnMenu_Click">
+                                <TextBlock Text="☰" FontWeight="Bold" Margin="0,-5,0,0" FontSize="34"/>
+                            </Button>
+
+                            <StackPanel 
+                                x:Name="pnlSubMenu"
+                                Margin="0" 
+                                DockPanel.Dock ="Right"
+                                VerticalAlignment="Bottom" 
+                                HorizontalAlignment="Stretch"
+                                Height="70"
+                                Width="Auto"
+                                Orientation="Horizontal">
+                                <Button Style="{StaticResource MenuButtons}" 
+                                    ToolTip="New" 
+                                    Command="{Binding NewDocument}">
+                                    <TextBlock Text="📄" Margin="0,1,0,0" FontFamily="Consolas" FontSize="32"/>
+                                </Button>
+                                <Button 
+                                    x:Name="btnXXX"
+                                    Style="{StaticResource MenuButtons}"
+                                    ToolTip="Open">
+                                    <TextBlock Text="📂" Margin="2,-3,0,0" FontFamily="Consolas" FontSize="36"/>
+                                </Button>
+                                <Button 
+                                    x:Name="btnKKK"
+                                    Style="{StaticResource MenuButtons}"
+                                    ToolTip="Save">
+                                    <TextBlock Text="💾" Margin="0,1,0,0" FontFamily="Consolas" FontSize="32"/>
+                                </Button>
+                            </StackPanel>
+                        </DockPanel>
+                
+                        <!-- Selection box -->
+                        <Canvas 
+                        Height="Auto" 
+                        Width="Auto"
+                        VerticalAlignment="Stretch"
+                        HorizontalAlignment="Stretch">
+                            <Rectangle 
+                            x:Name="canvasSelectionBox" 
+                            Stroke="White" 
+                            StrokeThickness="1" 
+                            StrokeDashArray="2 2"                
+                            Visibility="Collapsed"/>
+                        </Canvas>
+                
+                        <!--Bottom: Message & Progressbars-->
+                        <Grid HorizontalAlignment="Stretch" 
+                          VerticalAlignment="Bottom"
+                          Margin="0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <Label 
+                            x:Name="messageLabel" 
+                            FontSize="24"
+                            FontFamily="Calibri"
+                            HorizontalAlignment="Stretch" 
+                            VerticalAlignment="Bottom"
+                            HorizontalContentAlignment="Center"
+                            Content="{Binding Message}" 
+                            Foreground="{Binding MessageForeground}"
+                            Background="{Binding MessageBackground}"
+                            Grid.Row="0"
+                            BorderThickness="0"
+                            Margin="0">
+                                <Label.Style>
+                                    <Style TargetType="Label">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ShowMessage}" Value="True">
+                                                <DataTrigger.EnterActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation 
+                                                            Storyboard.TargetProperty="Opacity" 
+                                                            To="1" Duration="0:0:0.200" />
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </DataTrigger.EnterActions>
+                                                <DataTrigger.ExitActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation 
+                                                            Storyboard.TargetProperty="Opacity" 
+                                                            To="0.05" Duration="0:0:0.500" />
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </DataTrigger.ExitActions>
+                                            </DataTrigger>
+                                            <MultiDataTrigger>
+                                                <MultiDataTrigger.Conditions>
+                                                    <Condition Binding="{Binding ShowMessage}" Value="False" />
+                                                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+                                                </MultiDataTrigger.Conditions>
+                                                <MultiDataTrigger.EnterActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation 
+                                                            Storyboard.TargetProperty="Opacity" 
+                                                            To="1" Duration="0:0:0.200" />
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </MultiDataTrigger.EnterActions>
+                                                <MultiDataTrigger.ExitActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation 
+                                                            Storyboard.TargetProperty="Opacity" 
+                                                            To="0.05" Duration="0:0:0.500" />
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </MultiDataTrigger.ExitActions>
+                                            </MultiDataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Label.Style>
+                            </Label>
+                            <StackPanel
+                            HorizontalAlignment="Stretch" 
+                            VerticalAlignment="Bottom"
+                            Orientation="Vertical"
+                            Grid.Row="1"
+                            Margin="0">
+                                <ItemsControl ItemsSource="{Binding ProgressList}" BorderThickness="0">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <ProgressBar Minimum="{Binding Minimum}"
+                                        Maximum="{Binding Maximum}"
+                                        Value="{Binding Current}"
+                                        IsIndeterminate="{Binding IsIndeterminate}" 
+                                        BorderThickness="0"
+                                        Height="3"
+                                        Grid.Row="1"
+                                        Background="#000000"
+                                        Foreground="#FFFFFF"
+                                        Margin="0"/>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </StackPanel>
             </Grid>
 
             
-            <!--Floating windows and menus-->
-            
+            <!--Floating windows and menus-->           
             
         </Grid>
     </Border>

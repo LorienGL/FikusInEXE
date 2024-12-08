@@ -68,9 +68,11 @@ namespace FikusIn.Model.Documents
             return res;
         }
 
-        public static Document OpenDocument(string path)
+        public static Document? OpenDocument(string path)
         {
-            var res = new Document(Guid.NewGuid(), "", false);
+            var res = new Document(Guid.NewGuid(), Path.GetFileNameWithoutExtension(path), false);
+
+            //TODO: Open the document => if failed, return null
 
             AddDocument(res);
 

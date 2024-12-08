@@ -34,7 +34,7 @@ namespace FikusIn.Model.Documents
             set => SetProperty(ref _isActive, value);
         }
 
-        private bool _isModified = true;
+        private bool _isModified = false;
         public bool IsModified 
         {
             get => _isModified;

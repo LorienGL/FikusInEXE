@@ -274,5 +274,10 @@ namespace FikusIn.Views
         {
             popupSettings.IsOpen = false;
         }
+
+        private void popupSaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            popupSave.IsOpen = false;
+        }
     }
 }
