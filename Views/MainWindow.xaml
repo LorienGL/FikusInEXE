@@ -18,7 +18,7 @@
     ResizeMode="CanResize" 
     WindowState="Maximized"
     WindowStartupLocation="CenterScreen"
-    Background="#111111"
+    Background="{StaticResource colorMainWindowBackground}"
     
     ContentRendered="wMain_ContentRendered"
     SizeChanged="wMain_SizeChanged">
@@ -36,7 +36,7 @@
             <Setter Property="Opacity" Value="0.5"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="TextBlock.Foreground" Value="LightGray"/>
+            <Setter Property="TextBlock.Foreground" Value="{StaticResource colorWindowsButtonForeground}"/>
             <Setter Property="TextBlock.Opacity" Value="1"/>
             <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
             <Setter Property="Template">
@@ -50,8 +50,8 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="White"/>
-                    <Setter Property="TextBlock.Foreground" Value="DimGray"/>
+                    <Setter Property="Background" Value="{StaticResource colorWindowsButtonMouseOnBackground}"/>
+                    <Setter Property="TextBlock.Foreground" Value="{StaticResource colorWindowsButtonMouseOnForeground}"/>
                     <Setter Property="Opacity" Value="1"/>
                 </Trigger>
             </Style.Triggers>
@@ -59,8 +59,8 @@
         <Style x:Key="WindowsButtonsX" TargetType="{x:Type Button}" BasedOn="{StaticResource WindowsButtons}">
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#E81123"/>
-                    <Setter Property="TextBlock.Foreground" Value="White"/>
+                    <Setter Property="Background" Value="{StaticResource colorWindowsButtonXMouseOnBackground}"/>
+                    <Setter Property="TextBlock.Foreground" Value="{StaticResource colorWindowsButtonXMouseOnForeground}"/>
                     <Setter Property="Opacity" Value="1"/>
                 </Trigger>
             </Style.Triggers>
@@ -73,8 +73,8 @@
             <Setter Property="FontSize" Value="42"/>
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Background" Value="#BBBBBB"/>
-            <Setter Property="TextBlock.Foreground" Value="#555555"/>
+            <Setter Property="Background" Value="{StaticResource colorFloatingMenuButtonBackground}"/>
+            <Setter Property="TextBlock.Foreground" Value="{StaticResource colorFloatingMenuButtonForeground}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
@@ -86,7 +86,8 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#FFFFFF"/>
+                    <Setter Property="Background" Value="{StaticResource colorFloatingMenuButtonMouseOnBackground}"/>
+                    <Setter Property="TextBlock.Foreground" Value="{StaticResource colorFloatingMenuButtonMouseOnForeground}"/>
                 </Trigger>
             </Style.Triggers>
             <Style.Resources>
@@ -115,7 +116,7 @@
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Margin" Value="0,0,5,0"/>
-            <Setter Property="TextBlock.Foreground" Value="#999999"/>
+            <Setter Property="TextBlock.Foreground" Value="{StaticResource colorDocumentTabForeground}"/>
             <Setter Property="Height" Value="Auto"/>
             <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
             <Setter Property="Template">
@@ -129,17 +130,17 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="TextBlock.Foreground" Value="#FFFFFF"/>
+                    <Setter Property="TextBlock.Foreground" Value="{StaticResource colorDocumentTabMouseOnForeground}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
         <Style x:Key="TabButtonStyle" TargetType="{x:Type Button}">
             <Setter Property="Tag" Value="{Binding Id}"/>
-            <Setter Property="Background" Value="#222222"/>
+            <Setter Property="Background" Value="{StaticResource colorDocumentTabBackground}"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Height" Value="Auto"/>
             <Setter Property="Margin" Value="2,0,2,0"/>
-            <Setter Property="TextBlock.Foreground" Value="#999999"/>
+            <Setter Property="TextBlock.Foreground" Value="{StaticResource colorDocumentTabForeground}"/>
             <Setter Property="TextBlock.VerticalAlignment" Value="Center"/>
             <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
             <Setter Property="VerticalAlignment" Value="Bottom"/>
@@ -177,12 +178,12 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <DataTrigger Binding="{Binding IsActive}" Value="True">
-                                <Setter Property="Background" Value="#111111" />
-                                <Setter Property="TextBlock.Foreground" Value="#FFFFFF"/>
+                                <Setter Property="Background" Value="{StaticResource colorActiveDocumentTabBackground}" />
+                                <Setter Property="TextBlock.Foreground" Value="{StaticResource colorActiveDocumentTabForeground}"/>
                                 <Setter Property="utils:FocusBehavior.IsFocus" Value="True"/>
                             </DataTrigger>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="TextBlock.Foreground" Value="#FFFFFF"/>
+                                <Setter Property="TextBlock.Foreground" Value="{StaticResource colorDocumentTabMouseOnForeground}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -193,7 +194,7 @@
         <Style x:Key="FileToolbarButton" TargetType="{x:Type Button}">
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="TextBlock.Foreground" Value="#BBBBBB"/>
+            <Setter Property="TextBlock.Foreground" Value="{StaticResource colorFileToolbarButtonForeground}"/>
             <Setter Property="TextBlock.FontSize" Value="20"/>
             <Setter Property="TextBlock.FontFamily" Value="Consolas"/>
             <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
@@ -209,15 +210,15 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#BBBBBB"/>
-                    <Setter Property="TextBlock.Foreground" Value="#444444"/>
+                    <Setter Property="Background" Value="{StaticResource colorFileToolbarButtonMouseOnBackground}"/>
+                    <Setter Property="TextBlock.Foreground" Value="{StaticResource colorFileToolbarButtonMouseOnForeground}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>        
         <Style x:Key="FileToolbarToggleButton" TargetType="{x:Type ToggleButton}">
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="TextBlock.Foreground" Value="#BBBBBB"/>
+            <Setter Property="TextBlock.Foreground" Value="{StaticResource colorFileToolbarButtonForeground}"/>
             <Setter Property="TextBlock.FontSize" Value="20"/>
             <Setter Property="TextBlock.FontFamily" Value="Consolas"/>
             <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
@@ -245,12 +246,12 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#BBBBBB"/>
-                    <Setter Property="TextBlock.Foreground" Value="#444444"/>
+                    <Setter Property="Background" Value="{StaticResource colorFileToolbarButtonMouseOnBackground}"/>
+                    <Setter Property="TextBlock.Foreground" Value="{StaticResource colorFileToolbarButtonMouseOnForeground}"/>
                 </Trigger>
                 <Trigger Property="IsChecked" Value="True">
-                    <Setter Property="Background" Value="#BBBBBB"/>
-                    <Setter Property="TextBlock.Foreground" Value="#444444"/>
+                    <Setter Property="Background" Value="{StaticResource colorFileToolbarButtonMouseOnBackground}"/>
+                    <Setter Property="TextBlock.Foreground" Value="{StaticResource colorFileToolbarButtonMouseOnForeground}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -300,8 +301,8 @@
 
         <Style x:Key="PopupMenuButton" TargetType="{x:Type Button}">
             <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Background" Value="#333333"/>
-            <Setter Property="TextBlock.Foreground" Value="#BBBBBB"/>
+            <Setter Property="Background" Value="{StaticResource colorPopupMenuButtonBackground}"/>
+            <Setter Property="TextBlock.Foreground" Value="{StaticResource colorPopupMenuButtonForeground}"/>
             <Setter Property="TextBlock.FontSize" Value="18"/>
             <Setter Property="TextBlock.FontFamily" Value="Consolas"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
@@ -331,8 +332,8 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#BBBBBB"/>
-                    <Setter Property="TextBlock.Foreground" Value="#444444"/>
+                    <Setter Property="Background" Value="{StaticResource colorPopupMenuButtonMouseOnBackground}"/>
+                    <Setter Property="TextBlock.Foreground" Value="{StaticResource colorPopupMenuButtonMouseOnForeground}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -359,7 +360,7 @@
         <KeyBinding Command="{Binding SaveAllDocuments}" Modifiers="Ctrl+Shift+Alt" Key="S"/>
     </Window.InputBindings>
 
-    <Border Background="#111111">
+    <Border Background="{StaticResource colorMainWindowBackground}">
         <Border.Style>
             <Style TargetType="{x:Type Border}">
                 <Style.Triggers>
@@ -376,7 +377,7 @@
             </Style>
         </Border.Style>
 
-        <Grid Background="#111111" Margin="0">
+        <Grid Background="{StaticResource colorMainWindowBackground}" Margin="0">
             <Grid.LayoutTransform>
                 <ScaleTransform ScaleX="{Binding WindowScale}" ScaleY="{Binding WindowScale}" CenterX=".5" CenterY=".5" />
             </Grid.LayoutTransform>
@@ -426,8 +427,12 @@
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding ElementName=btnOpenDoc2,
                                                    Path=IsMouseOver}" Value="True">
-                                            <Setter Property="Background" Value="#777777" />
+                                            <Setter Property="Background" Value="{StaticResource colorFileToolbarButtonPartnerMouseOnBackground}" />
                                         </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsChecked, ElementName=btnOpenDoc2}" Value="True">
+                                            <Setter Property="Background" Value="{StaticResource colorFileToolbarButtonPartnerMouseOnBackground}" />
+                                        </DataTrigger>
+
                                     </Style.Triggers>
                                 </Style>
                             </Button.Style>
@@ -443,7 +448,7 @@
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding ElementName=btnOpenDoc,
                                                    Path=IsMouseOver}" Value="True">
-                                            <Setter Property="Background" Value="#777777" />
+                                            <Setter Property="Background" Value="{StaticResource colorFileToolbarButtonPartnerMouseOnBackground}" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -482,10 +487,10 @@
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding ElementName=btnSaveDoc2,
                                                    Path=IsMouseOver}" Value="True">
-                                            <Setter Property="Background" Value="#777777" />
+                                            <Setter Property="Background" Value="{StaticResource colorFileToolbarButtonPartnerMouseOnBackground}" />
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding IsChecked, ElementName=btnSaveDoc2}" Value="True">
-                                            <Setter Property="Background" Value="#777777" />
+                                            <Setter Property="Background" Value="{StaticResource colorFileToolbarButtonPartnerMouseOnBackground}" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -502,7 +507,7 @@
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding ElementName=btnSaveDoc,
                                                    Path=IsMouseOver}" Value="True">
-                                            <Setter Property="Background" Value="#777777" />
+                                            <Setter Property="Background" Value="{StaticResource colorFileToolbarButtonPartnerMouseOnBackground}" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -823,7 +828,7 @@
 
             <!--Graphic area-->
             <Grid x:Name="gridGraphicMain"
-                  Background="#111111"
+                  Background="{StaticResource colorMainWindowBackground}"
                   MouseLeftButtonDown="Window_MouseLeftButtonDown"
                   MouseLeftButtonUp="Window_MouseLeftButtonUp"
                   MouseMove="Window_MouseMove"
@@ -831,198 +836,196 @@
                   Grid.Row="1"
                   Margin="0">
 
-                <StackPanel Margin="0">
-                    <Grid Margin="0">
-                        <!--3D graphics-->
-                        <Viewport3D 
-                            x:Name="v3dMain"
-                            ClipToBounds="True"
-                            IsHitTestVisible="True"             
-                            Width="Auto"
-                            Height="Auto">
-                            <Viewport3D.Camera>
-                                <OrthographicCamera 
-                                x:Name="v3dCamera" 
-                                Position="0,0,40" 
-                                LookDirection="0,0,-1" 
-                                UpDirection="0,1,0"
-                                FarPlaneDistance="Infinity"
-                                NearPlaneDistance="-Infinity"
-                                Width="100"/>
-                            </Viewport3D.Camera>
-                            <ModelVisual3D>
-                                <ModelVisual3D.Content>
-                                    <Model3DGroup
-                                    x:Name="v3dScene">
-                                        <AmbientLight Color="#444444"/>
-                                        <PointLight x:Name="v3dLightTop" Color="#777777" Position="1,10,40"/>
-                                        <PointLight x:Name="v3dLightRight" Color="#444444" Position="10,-1,60"/>
-                                        <PointLight x:Name="v3dLightLeft" Color="#333333" Position="-10,2,20"/>
-                                    </Model3DGroup>
-                                </ModelVisual3D.Content>
-                            </ModelVisual3D>
-                        </Viewport3D>
-                
-                        <!--Floating main operation menu-->
-                        <DockPanel 
-                            x:Name="pnlMenu"
-                            HorizontalAlignment="Stretch" 
-                            VerticalAlignment="Top" 
-                            Height="70" 
-                            Width="Auto"
-                            Margin="0,0,10,10" >
-                            <Button 
-                                x:Name="btnMenu"
-                                DockPanel.Dock ="Left"
-                                VerticalAlignment="Bottom" 
-                                HorizontalAlignment="Left" 
-                                Style="{StaticResource MenuButtons}"
-                                MouseEnter="btnMenu_MouseEnter"
-                                Click="btnMenu_Click">
-                                <TextBlock Text="☰" FontWeight="Bold" Margin="0,-5,0,0" FontSize="34"/>
-                            </Button>
-
-                            <StackPanel 
-                                x:Name="pnlSubMenu"
-                                Margin="0" 
-                                DockPanel.Dock ="Right"
-                                VerticalAlignment="Bottom" 
-                                HorizontalAlignment="Stretch"
-                                Height="70"
-                                Width="Auto"
-                                Orientation="Horizontal">
-                                <Button Style="{StaticResource MenuButtons}" 
-                                    ToolTip="New" 
-                                    Command="{Binding NewDocument}">
-                                    <TextBlock Text="📄" Margin="0,1,0,0" FontFamily="Consolas" FontSize="32"/>
-                                </Button>
-                                <Button 
-                                    x:Name="btnXXX"
-                                    Style="{StaticResource MenuButtons}"
-                                    ToolTip="Open">
-                                    <TextBlock Text="📂" Margin="2,-3,0,0" FontFamily="Consolas" FontSize="36"/>
-                                </Button>
-                                <Button 
-                                    x:Name="btnKKK"
-                                    Style="{StaticResource MenuButtons}"
-                                    ToolTip="Save">
-                                    <TextBlock Text="💾" Margin="0,1,0,0" FontFamily="Consolas" FontSize="32"/>
-                                </Button>
-                            </StackPanel>
-                        </DockPanel>
-                
-                        <!-- Selection box -->
-                        <Canvas 
-                        Height="Auto" 
+                <Grid Margin="0">
+                    <!--3D graphics-->
+                    <Viewport3D 
+                        x:Name="v3dMain"
+                        ClipToBounds="True"
+                        IsHitTestVisible="True"             
                         Width="Auto"
-                        VerticalAlignment="Stretch"
-                        HorizontalAlignment="Stretch">
-                            <Rectangle 
-                            x:Name="canvasSelectionBox" 
-                            Stroke="White" 
-                            StrokeThickness="1" 
-                            StrokeDashArray="2 2"                
-                            Visibility="Collapsed"/>
-                        </Canvas>
-                
-                        <!--Bottom: Message & Progressbars-->
-                        <Grid HorizontalAlignment="Stretch" 
-                          VerticalAlignment="Bottom"
-                          Margin="0">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="auto"/>
-                                <RowDefinition Height="auto"/>
-                            </Grid.RowDefinitions>
-                            <Label 
-                            x:Name="messageLabel" 
-                            FontSize="24"
-                            FontFamily="Calibri"
-                            HorizontalAlignment="Stretch" 
-                            VerticalAlignment="Bottom"
-                            HorizontalContentAlignment="Center"
-                            Content="{Binding Message}" 
-                            Foreground="{Binding MessageForeground}"
-                            Background="{Binding MessageBackground}"
-                            Grid.Row="0"
-                            BorderThickness="0"
-                            Margin="0">
-                                <Label.Style>
-                                    <Style TargetType="Label">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding ShowMessage}" Value="True">
-                                                <DataTrigger.EnterActions>
-                                                    <BeginStoryboard>
-                                                        <Storyboard>
-                                                            <DoubleAnimation 
-                                                            Storyboard.TargetProperty="Opacity" 
-                                                            To="1" Duration="0:0:0.200" />
-                                                        </Storyboard>
-                                                    </BeginStoryboard>
-                                                </DataTrigger.EnterActions>
-                                                <DataTrigger.ExitActions>
-                                                    <BeginStoryboard>
-                                                        <Storyboard>
-                                                            <DoubleAnimation 
-                                                            Storyboard.TargetProperty="Opacity" 
-                                                            To="0.05" Duration="0:0:0.500" />
-                                                        </Storyboard>
-                                                    </BeginStoryboard>
-                                                </DataTrigger.ExitActions>
-                                            </DataTrigger>
-                                            <MultiDataTrigger>
-                                                <MultiDataTrigger.Conditions>
-                                                    <Condition Binding="{Binding ShowMessage}" Value="False" />
-                                                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
-                                                </MultiDataTrigger.Conditions>
-                                                <MultiDataTrigger.EnterActions>
-                                                    <BeginStoryboard>
-                                                        <Storyboard>
-                                                            <DoubleAnimation 
-                                                            Storyboard.TargetProperty="Opacity" 
-                                                            To="1" Duration="0:0:0.200" />
-                                                        </Storyboard>
-                                                    </BeginStoryboard>
-                                                </MultiDataTrigger.EnterActions>
-                                                <MultiDataTrigger.ExitActions>
-                                                    <BeginStoryboard>
-                                                        <Storyboard>
-                                                            <DoubleAnimation 
-                                                            Storyboard.TargetProperty="Opacity" 
-                                                            To="0.05" Duration="0:0:0.500" />
-                                                        </Storyboard>
-                                                    </BeginStoryboard>
-                                                </MultiDataTrigger.ExitActions>
-                                            </MultiDataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Label.Style>
-                            </Label>
-                            <StackPanel
-                            HorizontalAlignment="Stretch" 
-                            VerticalAlignment="Bottom"
-                            Orientation="Vertical"
-                            Grid.Row="1"
-                            Margin="0">
-                                <ItemsControl ItemsSource="{Binding ProgressList}" BorderThickness="0">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <ProgressBar Minimum="{Binding Minimum}"
-                                        Maximum="{Binding Maximum}"
-                                        Value="{Binding Current}"
-                                        IsIndeterminate="{Binding IsIndeterminate}" 
-                                        BorderThickness="0"
-                                        Height="3"
-                                        Grid.Row="1"
-                                        Background="#000000"
-                                        Foreground="#FFFFFF"
-                                        Margin="0"/>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </StackPanel>
-                        </Grid>
+                        Height="Auto">
+                        <Viewport3D.Camera>
+                            <OrthographicCamera 
+                            x:Name="v3dCamera" 
+                            Position="0,0,40" 
+                            LookDirection="0,0,-1" 
+                            UpDirection="0,1,0"
+                            FarPlaneDistance="Infinity"
+                            NearPlaneDistance="-Infinity"
+                            Width="100"/>
+                        </Viewport3D.Camera>
+                        <ModelVisual3D>
+                            <ModelVisual3D.Content>
+                                <Model3DGroup
+                                x:Name="v3dScene">
+                                    <AmbientLight Color="#444444"/>
+                                    <PointLight x:Name="v3dLightTop" Color="#777777" Position="1,10,40"/>
+                                    <PointLight x:Name="v3dLightRight" Color="#444444" Position="10,-1,60"/>
+                                    <PointLight x:Name="v3dLightLeft" Color="#333333" Position="-10,2,20"/>
+                                </Model3DGroup>
+                            </ModelVisual3D.Content>
+                        </ModelVisual3D>
+                    </Viewport3D>
+
+                    <!--Floating main operation menu-->
+                    <DockPanel 
+                        x:Name="pnlMenu"
+                        HorizontalAlignment="Stretch" 
+                        VerticalAlignment="Top" 
+                        Height="70" 
+                        Width="Auto"
+                        Margin="0,0,10,10" >
+                        <Button 
+                            x:Name="btnMenu"
+                            DockPanel.Dock ="Left"
+                            VerticalAlignment="Bottom" 
+                            HorizontalAlignment="Left" 
+                            Style="{StaticResource MenuButtons}"
+                            MouseEnter="btnMenu_MouseEnter"
+                            Click="btnMenu_Click">
+                            <TextBlock Text="☰" FontWeight="Bold" Margin="0,-5,0,0" FontSize="34"/>
+                        </Button>
+
+                        <StackPanel 
+                            x:Name="pnlSubMenu"
+                            Margin="0" 
+                            DockPanel.Dock ="Right"
+                            VerticalAlignment="Bottom" 
+                            HorizontalAlignment="Stretch"
+                            Height="70"
+                            Width="Auto"
+                            Orientation="Horizontal">
+                            <Button Style="{StaticResource MenuButtons}" 
+                                ToolTip="New" 
+                                Command="{Binding NewDocument}">
+                                <TextBlock Text="📄" Margin="0,1,0,0" FontFamily="Consolas" FontSize="32"/>
+                            </Button>
+                            <Button 
+                                x:Name="btnXXX"
+                                Style="{StaticResource MenuButtons}"
+                                ToolTip="Open">
+                                <TextBlock Text="📂" Margin="2,-3,0,0" FontFamily="Consolas" FontSize="36"/>
+                            </Button>
+                            <Button 
+                                x:Name="btnKKK"
+                                Style="{StaticResource MenuButtons}"
+                                ToolTip="Save">
+                                <TextBlock Text="💾" Margin="0,1,0,0" FontFamily="Consolas" FontSize="32"/>
+                            </Button>
+                        </StackPanel>
+                    </DockPanel>
+
+                    <!-- Selection box -->
+                    <Canvas 
+                    Height="Auto" 
+                    Width="Auto"
+                    VerticalAlignment="Stretch"
+                    HorizontalAlignment="Stretch">
+                        <Rectangle 
+                        x:Name="canvasSelectionBox" 
+                        Stroke="White" 
+                        StrokeThickness="1" 
+                        StrokeDashArray="2 2"                
+                        Visibility="Collapsed"/>
+                    </Canvas>
+
+                    <!--Bottom: Message & Progressbars-->
+                    <Grid HorizontalAlignment="Stretch" 
+                        VerticalAlignment="Bottom"
+                        Margin="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <Label 
+                        x:Name="messageLabel" 
+                        FontSize="24"
+                        FontFamily="Calibri"
+                        HorizontalAlignment="Stretch" 
+                        VerticalAlignment="Bottom"
+                        HorizontalContentAlignment="Center"
+                        Content="{Binding Message}" 
+                        Foreground="{Binding MessageForeground}"
+                        Background="{Binding MessageBackground}"
+                        Grid.Row="0"
+                        BorderThickness="0"
+                        Margin="0">
+                            <Label.Style>
+                                <Style TargetType="Label">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ShowMessage}" Value="True">
+                                            <DataTrigger.EnterActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <DoubleAnimation 
+                                                        Storyboard.TargetProperty="Opacity" 
+                                                        To="1" Duration="0:0:0.200" />
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </DataTrigger.EnterActions>
+                                            <DataTrigger.ExitActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <DoubleAnimation 
+                                                        Storyboard.TargetProperty="Opacity" 
+                                                        To="0.05" Duration="0:0:0.500" />
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </DataTrigger.ExitActions>
+                                        </DataTrigger>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding ShowMessage}" Value="False" />
+                                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+                                            </MultiDataTrigger.Conditions>
+                                            <MultiDataTrigger.EnterActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <DoubleAnimation 
+                                                        Storyboard.TargetProperty="Opacity" 
+                                                        To="1" Duration="0:0:0.200" />
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </MultiDataTrigger.EnterActions>
+                                            <MultiDataTrigger.ExitActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <DoubleAnimation 
+                                                        Storyboard.TargetProperty="Opacity" 
+                                                        To="0.05" Duration="0:0:0.500" />
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </MultiDataTrigger.ExitActions>
+                                        </MultiDataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Label.Style>
+                        </Label>
+                        <StackPanel
+                        HorizontalAlignment="Stretch" 
+                        VerticalAlignment="Bottom"
+                        Orientation="Vertical"
+                        Grid.Row="1"
+                        Margin="0">
+                            <ItemsControl ItemsSource="{Binding ProgressList}" BorderThickness="0">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <ProgressBar Minimum="{Binding Minimum}"
+                                    Maximum="{Binding Maximum}"
+                                    Value="{Binding Current}"
+                                    IsIndeterminate="{Binding IsIndeterminate}" 
+                                    BorderThickness="0"
+                                    Height="3"
+                                    Grid.Row="1"
+                                    Background="#000000"
+                                    Foreground="#FFFFFF"
+                                    Margin="0"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
                     </Grid>
-                </StackPanel>
+                </Grid>
             </Grid>
 
             
