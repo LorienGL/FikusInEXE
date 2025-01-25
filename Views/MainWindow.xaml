@@ -1,189 +1,222 @@
-﻿<Window 
-    x:Class="FikusIn.Views.MainWindow"
-    x:Name="wMain"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
-    xmlns:local="clr-namespace:FikusIn" 
-    xmlns:conv="clr-namespace:FikusIn.UIConverters"
-    xmlns:utils="clr-namespace:FikusIn.Utils"
-    xmlns:properties="clr-namespace:FikusIn.Properties"
-    mc:Ignorable="d"
-    Title="FikusIn" 
-    Height="540" 
-    Width="960" 
-    WindowStyle="SingleBorderWindow"
-    ResizeMode="CanResize" 
-    WindowState="Maximized"
-    WindowStartupLocation="CenterScreen"
-    Background="{StaticResource colorMainWindowBackground}"
-    
-    ContentRendered="wMain_ContentRendered"
-    SizeChanged="wMain_SizeChanged">
+﻿<Window x:Class="FikusIn.Views.MainWindow"
+        x:Name="wMain"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+        xmlns:local="clr-namespace:FikusIn"
+        xmlns:views="clr-namespace:FikusIn.Views"
+        xmlns:conv="clr-namespace:FikusIn.UIConverters"
+        xmlns:utils="clr-namespace:FikusIn.Utils"
+        xmlns:properties="clr-namespace:FikusIn.Properties"
+        mc:Ignorable="d"
+        Title="FikusIn"
+        Height="540"
+        Width="960"
+        WindowStyle="SingleBorderWindow"
+        ResizeMode="CanResize"
+        WindowState="Maximized"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource colorMainWindowBackground}"
+        ContentRendered="wMain_ContentRendered">
 
     <Window.Resources>
-        <Style x:Key="WindowsButtons" TargetType="{x:Type Button}">
-            <Setter Property="VerticalAlignment" Value="Top"/>
-            <Setter Property="HorizontalAlignment" Value="Right"/>
-            <Setter Property="Margin" Value="0,0,0,0"/>
-            <Setter Property="Width" Value="46"/>
-            <Setter Property="Height" Value="32"/>
-            <Setter Property="FontSize" Value="32"/>
-            <Setter Property="FontWeight" Value="Light"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Opacity" Value="0.5"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="TextBlock.Foreground" Value="{StaticResource colorWindowsButtonForeground}"/>
-            <Setter Property="TextBlock.Opacity" Value="1"/>
-            <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
+        <Style x:Key="WindowsButtons"
+               TargetType="{x:Type Button}">
+            <Setter Property="VerticalAlignment"
+                    Value="Top" />
+            <Setter Property="HorizontalAlignment"
+                    Value="Right" />
+            <Setter Property="Margin"
+                    Value="0,0,0,0" />
+            <Setter Property="Width"
+                    Value="46" />
+            <Setter Property="Height"
+                    Value="32" />
+            <Setter Property="FontSize"
+                    Value="32" />
+            <Setter Property="FontWeight"
+                    Value="Light" />
+            <Setter Property="VerticalContentAlignment"
+                    Value="Center" />
+            <Setter Property="Opacity"
+                    Value="0.5" />
+            <Setter Property="BorderThickness"
+                    Value="0" />
+            <Setter Property="Background"
+                    Value="Transparent" />
+            <Setter Property="TextBlock.Foreground"
+                    Value="{StaticResource colorWindowsButtonForeground}" />
+            <Setter Property="TextBlock.Opacity"
+                    Value="1" />
+            <Setter Property="WindowChrome.IsHitTestVisibleInChrome"
+                    Value="True" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
                         <Border Background="{TemplateBinding Background}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
             <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{StaticResource colorWindowsButtonMouseOnBackground}"/>
-                    <Setter Property="TextBlock.Foreground" Value="{StaticResource colorWindowsButtonMouseOnForeground}"/>
-                    <Setter Property="Opacity" Value="1"/>
+                <Trigger Property="IsMouseOver"
+                         Value="True">
+                    <Setter Property="Background"
+                            Value="{StaticResource colorWindowsButtonMouseOnBackground}" />
+                    <Setter Property="TextBlock.Foreground"
+                            Value="{StaticResource colorWindowsButtonMouseOnForeground}" />
+                    <Setter Property="Opacity"
+                            Value="1" />
                 </Trigger>
             </Style.Triggers>
         </Style>
-        <Style x:Key="WindowsButtonsX" TargetType="{x:Type Button}" BasedOn="{StaticResource WindowsButtons}">
+        <Style x:Key="WindowsButtonsX"
+               TargetType="{x:Type Button}"
+               BasedOn="{StaticResource WindowsButtons}">
             <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{StaticResource colorWindowsButtonXMouseOnBackground}"/>
-                    <Setter Property="TextBlock.Foreground" Value="{StaticResource colorWindowsButtonXMouseOnForeground}"/>
-                    <Setter Property="Opacity" Value="1"/>
+                <Trigger Property="IsMouseOver"
+                         Value="True">
+                    <Setter Property="Background"
+                            Value="{StaticResource colorWindowsButtonXMouseOnBackground}" />
+                    <Setter Property="TextBlock.Foreground"
+                            Value="{StaticResource colorWindowsButtonXMouseOnForeground}" />
+                    <Setter Property="Opacity"
+                            Value="1" />
                 </Trigger>
             </Style.Triggers>
-        </Style>
-       
-        <Style x:Key="MenuButtons" TargetType="{x:Type Button}">
-            <Setter Property="Margin" Value="10"/>
-            <Setter Property="Width" Value="50"/>
-            <Setter Property="Height" Value="50"/>
-            <Setter Property="FontSize" Value="42"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Background" Value="{StaticResource colorFloatingMenuButtonBackground}"/>
-            <Setter Property="TextBlock.Foreground" Value="{StaticResource colorFloatingMenuButtonForeground}"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Button}">
-                        <Border Background="{TemplateBinding Background}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{StaticResource colorFloatingMenuButtonMouseOnBackground}"/>
-                    <Setter Property="TextBlock.Foreground" Value="{StaticResource colorFloatingMenuButtonMouseOnForeground}"/>
-                </Trigger>
-            </Style.Triggers>
-            <Style.Resources>
-                <Style TargetType="Border">
-                    <Setter Property="CornerRadius" Value="25" />
-                </Style>
-            </Style.Resources>
         </Style>
 
-        <Style x:Key="AutoSizeTextBox" TargetType="{x:Type TextBlock}">
-            <Setter Property="FontSize" Value="18" />
-            <Setter Property="MaxWidth" Value="500" />
-            <Setter Property="Margin" Value="0,1,5,0" />
+        <Style x:Key="AutoSizeTextBox"
+               TargetType="{x:Type TextBlock}">
+            <Setter Property="FontSize"
+                    Value="18" />
+            <Setter Property="MaxWidth"
+                    Value="500" />
+            <Setter Property="Margin"
+                    Value="0,1,5,0" />
             <Style.Triggers>
-                <DataTrigger 
-                    Binding="{Binding ActualWidth, RelativeSource={RelativeSource Self}, Converter={x:Static conv:IsGreaterThanConverter.Instance}, ConverterParameter=150}" 
-                    Value="True">
-                    <Setter Property="FontSize" Value="14" />
-                    <Setter Property="MaxWidth" Value="200" />
-                    <Setter Property="Margin" Value="0,5,10,0" />
-                    <Setter Property="ToolTip" Value="{Binding Name}" />
+                <DataTrigger Binding="{Binding ActualWidth, RelativeSource={RelativeSource Self}, Converter={x:Static conv:IsGreaterThanConverter.Instance}, ConverterParameter=150}"
+                             Value="True">
+                    <Setter Property="FontSize"
+                            Value="14" />
+                    <Setter Property="MaxWidth"
+                            Value="200" />
+                    <Setter Property="Margin"
+                            Value="0,5,10,0" />
+                    <Setter Property="ToolTip"
+                            Value="{Binding Name}" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
-        <Style x:Key="TabCloseButton" TargetType="{x:Type Button}">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Margin" Value="0,0,5,0"/>
-            <Setter Property="TextBlock.Foreground" Value="{StaticResource colorDocumentTabForeground}"/>
-            <Setter Property="Height" Value="Auto"/>
-            <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
+        <Style x:Key="TabCloseButton"
+               TargetType="{x:Type Button}">
+            <Setter Property="Background"
+                    Value="Transparent" />
+            <Setter Property="BorderThickness"
+                    Value="0" />
+            <Setter Property="Margin"
+                    Value="0,0,5,0" />
+            <Setter Property="TextBlock.Foreground"
+                    Value="{StaticResource colorDocumentTabForeground}" />
+            <Setter Property="Height"
+                    Value="Auto" />
+            <Setter Property="WindowChrome.IsHitTestVisibleInChrome"
+                    Value="True" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
                         <Border Background="{TemplateBinding Background}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
             <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="TextBlock.Foreground" Value="{StaticResource colorDocumentTabMouseOnForeground}"/>
+                <Trigger Property="IsMouseOver"
+                         Value="True">
+                    <Setter Property="TextBlock.Foreground"
+                            Value="{StaticResource colorDocumentTabMouseOnForeground}" />
                 </Trigger>
             </Style.Triggers>
         </Style>
-        <Style x:Key="TabButtonStyle" TargetType="{x:Type Button}">
-            <Setter Property="Tag" Value="{Binding Id}"/>
-            <Setter Property="Background" Value="{StaticResource colorDocumentTabBackground}"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Height" Value="Auto"/>
-            <Setter Property="Margin" Value="2,0,2,0"/>
-            <Setter Property="TextBlock.Foreground" Value="{StaticResource colorDocumentTabForeground}"/>
-            <Setter Property="TextBlock.VerticalAlignment" Value="Center"/>
-            <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
-            <Setter Property="VerticalAlignment" Value="Bottom"/>
-            <Setter Property="Command" Value="{Binding ElementName=tabsItemsControl, Path=DataContext.SetActiveDocument}"/>
-            <Setter Property="CommandParameter" Value="{Binding}"/>
+        <Style x:Key="TabButtonStyle"
+               TargetType="{x:Type Button}">
+            <Setter Property="Tag"
+                    Value="{Binding Id}" />
+            <Setter Property="Background"
+                    Value="{StaticResource colorDocumentTabBackground}" />
+            <Setter Property="BorderThickness"
+                    Value="0" />
+            <Setter Property="Height"
+                    Value="Auto" />
+            <Setter Property="Margin"
+                    Value="2,0,2,0" />
+            <Setter Property="TextBlock.Foreground"
+                    Value="{StaticResource colorDocumentTabForeground}" />
+            <Setter Property="TextBlock.VerticalAlignment"
+                    Value="Center" />
+            <Setter Property="WindowChrome.IsHitTestVisibleInChrome"
+                    Value="True" />
+            <Setter Property="VerticalAlignment"
+                    Value="Bottom" />
+            <Setter Property="Command"
+                    Value="{Binding ElementName=tabsItemsControl, Path=DataContext.SetActiveDocument}" />
+            <Setter Property="CommandParameter"
+                    Value="{Binding}" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
-                        <Border Background="{TemplateBinding Background}" 
+                        <Border Background="{TemplateBinding Background}"
                                 BorderThickness="0">
-                            <StackPanel Orientation="Horizontal" Margin="10,0,0,0">
-                                <TextBlock Text="✏️" FontSize="10" Margin="0,8,2,0">
+                            <StackPanel Orientation="Horizontal"
+                                        Margin="10,0,0,0">
+                                <TextBlock Text="✏️"
+                                           FontSize="10"
+                                           Margin="0,8,2,0">
                                     <TextBlock.Style>
                                         <Style TargetType="{x:Type TextBlock}">
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsModified}" Value="False">
-                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                <DataTrigger Binding="{Binding IsModified}"
+                                                             Value="False">
+                                                    <Setter Property="Visibility"
+                                                            Value="Collapsed" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
                                     </TextBlock.Style>
                                 </TextBlock>
-                                <TextBlock 
-                                    Height ="23" 
-                                    Text="{Binding Name}" 
-                                    TextTrimming="CharacterEllipsis" 
-                                    Style="{StaticResource AutoSizeTextBox}"/>
-                                <Button Style="{StaticResource TabCloseButton}" 
+                                <TextBlock Height="23"
+                                           Text="{Binding Name}"
+                                           TextTrimming="CharacterEllipsis"
+                                           Style="{StaticResource AutoSizeTextBox}" />
+                                <Button Style="{StaticResource TabCloseButton}"
                                         Command="{Binding ElementName=tabsItemsControl, Path=DataContext.CloseDocument}"
                                         CommandParameter="{Binding}"
                                         Margin="0,0,1,1">
-                                    <TextBlock FontSize="16" Text="❎"/>
+                                    <TextBlock FontSize="16"
+                                               Text="❎" />
                                 </Button>
                             </StackPanel>
                         </Border>
                         <ControlTemplate.Triggers>
-                            <DataTrigger Binding="{Binding IsActive}" Value="True">
-                                <Setter Property="Background" Value="{StaticResource colorActiveDocumentTabBackground}" />
-                                <Setter Property="TextBlock.Foreground" Value="{StaticResource colorActiveDocumentTabForeground}"/>
-                                <Setter Property="utils:FocusBehavior.IsFocus" Value="True"/>
+                            <DataTrigger Binding="{Binding IsActive}"
+                                         Value="True">
+                                <Setter Property="Background"
+                                        Value="{StaticResource colorActiveDocumentTabBackground}" />
+                                <Setter Property="TextBlock.Foreground"
+                                        Value="{StaticResource colorActiveDocumentTabForeground}" />
+                                <Setter Property="utils:FocusBehavior.IsFocus"
+                                        Value="True" />
                             </DataTrigger>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="TextBlock.Foreground" Value="{StaticResource colorDocumentTabMouseOnForeground}"/>
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+                                <Setter Property="TextBlock.Foreground"
+                                        Value="{StaticResource colorDocumentTabMouseOnForeground}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -191,100 +224,141 @@
             </Setter>
         </Style>
 
-        <Style x:Key="FileToolbarButton" TargetType="{x:Type Button}">
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="TextBlock.Foreground" Value="{StaticResource colorFileToolbarButtonForeground}"/>
-            <Setter Property="TextBlock.FontSize" Value="20"/>
-            <Setter Property="TextBlock.FontFamily" Value="Consolas"/>
-            <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
-            <Setter Property="Margin" Value="0"/>
+        <Style x:Key="FileToolbarButton"
+               TargetType="{x:Type Button}">
+            <Setter Property="BorderThickness"
+                    Value="0" />
+            <Setter Property="Background"
+                    Value="Transparent" />
+            <Setter Property="TextBlock.Foreground"
+                    Value="{StaticResource colorFileToolbarButtonForeground}" />
+            <Setter Property="TextBlock.FontSize"
+                    Value="20" />
+            <Setter Property="TextBlock.FontFamily"
+                    Value="Consolas" />
+            <Setter Property="WindowChrome.IsHitTestVisibleInChrome"
+                    Value="True" />
+            <Setter Property="Margin"
+                    Value="0" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
                         <Border Background="{TemplateBinding Background}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
             <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{StaticResource colorFileToolbarButtonMouseOnBackground}"/>
-                    <Setter Property="TextBlock.Foreground" Value="{StaticResource colorFileToolbarButtonMouseOnForeground}"/>
+                <Trigger Property="IsMouseOver"
+                         Value="True">
+                    <Setter Property="Background"
+                            Value="{StaticResource colorFileToolbarButtonMouseOnBackground}" />
+                    <Setter Property="TextBlock.Foreground"
+                            Value="{StaticResource colorFileToolbarButtonMouseOnForeground}" />
                 </Trigger>
             </Style.Triggers>
-        </Style>        
-        <Style x:Key="FileToolbarToggleButton" TargetType="{x:Type ToggleButton}">
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="TextBlock.Foreground" Value="{StaticResource colorFileToolbarButtonForeground}"/>
-            <Setter Property="TextBlock.FontSize" Value="20"/>
-            <Setter Property="TextBlock.FontFamily" Value="Consolas"/>
-            <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
+        </Style>
+        <Style x:Key="FileToolbarToggleButton"
+               TargetType="{x:Type ToggleButton}">
+            <Setter Property="BorderThickness"
+                    Value="0" />
+            <Setter Property="Background"
+                    Value="Transparent" />
+            <Setter Property="TextBlock.Foreground"
+                    Value="{StaticResource colorFileToolbarButtonForeground}" />
+            <Setter Property="TextBlock.FontSize"
+                    Value="20" />
+            <Setter Property="TextBlock.FontFamily"
+                    Value="Consolas" />
+            <Setter Property="WindowChrome.IsHitTestVisibleInChrome"
+                    Value="True" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ToggleButton}">
                         <Border x:Name="border"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            Background="{TemplateBinding Background}"
-                            SnapsToDevicePixels="True">
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Background="{TemplateBinding Background}"
+                                SnapsToDevicePixels="True">
                             <ContentPresenter x:Name="contentPresenter"
-                                ContentTemplate="{TemplateBinding ContentTemplate}"
-                                Content="{TemplateBinding Content}"
-                                ContentStringFormat="{TemplateBinding ContentStringFormat}"
-                                Focusable="False"
-                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                Margin="{TemplateBinding Padding}"
-                                RecognizesAccessKey="True"
-                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              Content="{TemplateBinding Content}"
+                                              ContentStringFormat="{TemplateBinding ContentStringFormat}"
+                                              Focusable="False"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              Margin="{TemplateBinding Padding}"
+                                              RecognizesAccessKey="True"
+                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
             <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{StaticResource colorFileToolbarButtonMouseOnBackground}"/>
-                    <Setter Property="TextBlock.Foreground" Value="{StaticResource colorFileToolbarButtonMouseOnForeground}"/>
+                <Trigger Property="IsMouseOver"
+                         Value="True">
+                    <Setter Property="Background"
+                            Value="{StaticResource colorFileToolbarButtonMouseOnBackground}" />
+                    <Setter Property="TextBlock.Foreground"
+                            Value="{StaticResource colorFileToolbarButtonMouseOnForeground}" />
                 </Trigger>
-                <Trigger Property="IsChecked" Value="True">
-                    <Setter Property="Background" Value="{StaticResource colorFileToolbarButtonMouseOnBackground}"/>
-                    <Setter Property="TextBlock.Foreground" Value="{StaticResource colorFileToolbarButtonMouseOnForeground}"/>
+                <Trigger Property="IsChecked"
+                         Value="True">
+                    <Setter Property="Background"
+                            Value="{StaticResource colorFileToolbarButtonMouseOnBackground}" />
+                    <Setter Property="TextBlock.Foreground"
+                            Value="{StaticResource colorFileToolbarButtonMouseOnForeground}" />
                 </Trigger>
             </Style.Triggers>
         </Style>
 
-        <Style x:Key="DocumentListMenuButton" TargetType="{x:Type Button}">
-            <Setter Property="Tag" Value="{Binding Id}"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Background" Value="#333333"/>
-            <Setter Property="TextBlock.Foreground" Value="#BBBBBB"/>
-            <Setter Property="TextBlock.FontSize" Value="18"/>
-            <Setter Property="TextBlock.FontFamily" Value="Consolas"/>
-            <Setter Property="HorizontalAlignment" Value="Left"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
-            <Setter Property="Margin" Value="0"/>
-            <Setter Property="MinWidth" Value="150"/>
-            <Setter Property="Command" Value="{Binding ElementName=icDocumentsList, 
-                Path=DataContext.SetActiveDocument}"/>
-            <Setter Property="CommandParameter" Value="{Binding}"/>
-            <Setter Property="Content" Value="{Binding Name}"/>
+        <Style x:Key="DocumentListMenuButton"
+               TargetType="{x:Type Button}">
+            <Setter Property="Tag"
+                    Value="{Binding Id}" />
+            <Setter Property="BorderThickness"
+                    Value="0" />
+            <Setter Property="Background"
+                    Value="#333333" />
+            <Setter Property="TextBlock.Foreground"
+                    Value="#BBBBBB" />
+            <Setter Property="TextBlock.FontSize"
+                    Value="18" />
+            <Setter Property="TextBlock.FontFamily"
+                    Value="Consolas" />
+            <Setter Property="HorizontalAlignment"
+                    Value="Left" />
+            <Setter Property="VerticalAlignment"
+                    Value="Center" />
+            <Setter Property="WindowChrome.IsHitTestVisibleInChrome"
+                    Value="True" />
+            <Setter Property="Margin"
+                    Value="0" />
+            <Setter Property="MinWidth"
+                    Value="150" />
+            <Setter Property="Command"
+                    Value="{Binding ElementName=icDocumentsList, 
+                Path=DataContext.SetActiveDocument}" />
+            <Setter Property="CommandParameter"
+                    Value="{Binding}" />
+            <Setter Property="Content"
+                    Value="{Binding Name}" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
                         <Grid>
                             <Border Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="0">
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="0">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition SharedSizeGroup="shsgDocumentListPopup"/>
+                                        <ColumnDefinition SharedSizeGroup="shsgDocumentListPopup" />
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Grid.Column="0"
-                                               Text="{Binding Name}" Margin="21,2,10,4"/>
+                                               Text="{Binding Name}"
+                                               Margin="21,2,10,4" />
                                 </Grid>
                             </Border>
                         </Grid>
@@ -292,38 +366,52 @@
                 </Setter.Value>
             </Setter>
             <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#BBBBBB"/>
-                    <Setter Property="TextBlock.Foreground" Value="#444444"/>
+                <Trigger Property="IsMouseOver"
+                         Value="True">
+                    <Setter Property="Background"
+                            Value="#BBBBBB" />
+                    <Setter Property="TextBlock.Foreground"
+                            Value="#444444" />
                 </Trigger>
             </Style.Triggers>
         </Style>
 
-        <Style x:Key="PopupMenuButton" TargetType="{x:Type Button}">
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Background" Value="{StaticResource colorPopupMenuButtonBackground}"/>
-            <Setter Property="TextBlock.Foreground" Value="{StaticResource colorPopupMenuButtonForeground}"/>
-            <Setter Property="TextBlock.FontSize" Value="18"/>
-            <Setter Property="TextBlock.FontFamily" Value="Consolas"/>
-            <Setter Property="HorizontalAlignment" Value="Left"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
-            <Setter Property="Margin" Value="0"/>
-            <Setter Property="MinWidth" Value="150"/>
+        <Style x:Key="PopupMenuButton"
+               TargetType="{x:Type Button}">
+            <Setter Property="BorderThickness"
+                    Value="0" />
+            <Setter Property="Background"
+                    Value="{StaticResource colorPopupMenuButtonBackground}" />
+            <Setter Property="TextBlock.Foreground"
+                    Value="{StaticResource colorPopupMenuButtonForeground}" />
+            <Setter Property="TextBlock.FontSize"
+                    Value="18" />
+            <Setter Property="TextBlock.FontFamily"
+                    Value="Consolas" />
+            <Setter Property="HorizontalAlignment"
+                    Value="Left" />
+            <Setter Property="VerticalAlignment"
+                    Value="Center" />
+            <Setter Property="WindowChrome.IsHitTestVisibleInChrome"
+                    Value="True" />
+            <Setter Property="Margin"
+                    Value="0" />
+            <Setter Property="MinWidth"
+                    Value="150" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
                         <Grid>
                             <Border Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="0">
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="0">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition SharedSizeGroup="shsgDocumentListPopup"/>
+                                        <ColumnDefinition SharedSizeGroup="shsgDocumentListPopup" />
                                     </Grid.ColumnDefinitions>
-                                    <ContentPresenter HorizontalAlignment="Left" 
-                                                      VerticalAlignment="Center" 
-                                                      Margin="21,2,10,4"/>
+                                    <ContentPresenter HorizontalAlignment="Left"
+                                                      VerticalAlignment="Center"
+                                                      Margin="21,2,10,4" />
                                 </Grid>
                             </Border>
                         </Grid>
@@ -331,33 +419,47 @@
                 </Setter.Value>
             </Setter>
             <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{StaticResource colorPopupMenuButtonMouseOnBackground}"/>
-                    <Setter Property="TextBlock.Foreground" Value="{StaticResource colorPopupMenuButtonMouseOnForeground}"/>
+                <Trigger Property="IsMouseOver"
+                         Value="True">
+                    <Setter Property="Background"
+                            Value="{StaticResource colorPopupMenuButtonMouseOnBackground}" />
+                    <Setter Property="TextBlock.Foreground"
+                            Value="{StaticResource colorPopupMenuButtonMouseOnForeground}" />
                 </Trigger>
             </Style.Triggers>
         </Style>
 
-        <CollectionViewSource x:Key="SortedDocuments" Source="{Binding Documents}">
+        <CollectionViewSource x:Key="SortedDocuments"
+                              Source="{Binding Documents}">
             <CollectionViewSource.SortDescriptions>
-                <scm:SortDescription PropertyName="Name" Direction="Ascending"/>
+                <scm:SortDescription PropertyName="Name"
+                                     Direction="Ascending" />
             </CollectionViewSource.SortDescriptions>
         </CollectionViewSource>
     </Window.Resources>
 
     <WindowChrome.WindowChrome>
-        <WindowChrome 
-            CaptionHeight="32"  
-            ResizeBorderThickness="4"         
-            GlassFrameThickness="1"/>
+        <WindowChrome CaptionHeight="32"
+                      ResizeBorderThickness="4"
+                      GlassFrameThickness="1" />
     </WindowChrome.WindowChrome>
 
     <Window.InputBindings>
-        <KeyBinding Command="{Binding NewDocument}" Modifiers="Ctrl" Key="N"/>
-        <KeyBinding Command="{Binding OpenDocument}" Modifiers="Ctrl" Key="O"/>
-        <KeyBinding Command="{Binding SaveDocument}" Modifiers="Ctrl" Key="S"/>
-        <KeyBinding Command="{Binding SaveDocumentAs}" Modifiers="Ctrl+Shift" Key="S"/>
-        <KeyBinding Command="{Binding SaveAllDocuments}" Modifiers="Ctrl+Shift+Alt" Key="S"/>
+        <KeyBinding Command="{Binding NewDocument}"
+                    Modifiers="Ctrl"
+                    Key="N" />
+        <KeyBinding Command="{Binding OpenDocument}"
+                    Modifiers="Ctrl"
+                    Key="O" />
+        <KeyBinding Command="{Binding SaveDocument}"
+                    Modifiers="Ctrl"
+                    Key="S" />
+        <KeyBinding Command="{Binding SaveDocumentAs}"
+                    Modifiers="Ctrl+Shift"
+                    Key="S" />
+        <KeyBinding Command="{Binding SaveAllDocuments}"
+                    Modifiers="Ctrl+Shift+Alt"
+                    Key="S" />
     </Window.InputBindings>
 
     <Border Background="{StaticResource colorMainWindowBackground}">
@@ -365,97 +467,115 @@
             <Style TargetType="{x:Type Border}">
                 <Style.Triggers>
                     <!-- Add to avoid border disappearing when window is maximised -->
-                    <DataTrigger Binding="{Binding WindowState, RelativeSource={RelativeSource AncestorType=Window}}" 
+                    <DataTrigger Binding="{Binding WindowState, RelativeSource={RelativeSource AncestorType=Window}}"
                                  Value="Maximized">
-                        <Setter Property="Margin" Value="8"/>
+                        <Setter Property="Margin"
+                                Value="8" />
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding WindowState, RelativeSource={RelativeSource AncestorType=Window}}" 
+                    <DataTrigger Binding="{Binding WindowState, RelativeSource={RelativeSource AncestorType=Window}}"
                                  Value="Normal">
-                        <Setter Property="Margin" Value="0"/>
+                        <Setter Property="Margin"
+                                Value="0" />
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
         </Border.Style>
 
-        <Grid Background="{StaticResource colorMainWindowBackground}" Margin="0">
+        <Grid Background="{StaticResource colorMainWindowBackground}"
+              Margin="0">
             <Grid.LayoutTransform>
-                <ScaleTransform ScaleX="{Binding WindowScale}" ScaleY="{Binding WindowScale}" CenterX=".5" CenterY=".5" />
+                <ScaleTransform ScaleX="{Binding WindowScale}"
+                                ScaleY="{Binding WindowScale}"
+                                CenterX=".5"
+                                CenterY=".5" />
             </Grid.LayoutTransform>
             <Grid.RowDefinitions>
-                <RowDefinition Height="26"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="26" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
             <!-- Top window bar (file menu + doc tabs + window operation-->
-            <DockPanel
-                x:Name="pnlTop"
-                HorizontalAlignment="Stretch" 
-                VerticalAlignment="Top" 
-                Height="Auto" 
-                Width="Auto"
-                Background="#444444"
-                Grid.Row="0"
-                Margin="0">
+            <DockPanel x:Name="pnlTop"
+                       HorizontalAlignment="Stretch"
+                       VerticalAlignment="Top"
+                       Height="Auto"
+                       Width="Auto"
+                       Background="#444444"
+                       Grid.Row="0"
+                       Margin="0">
                 <Grid HorizontalAlignment="Stretch"
                       Margin="0">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
                     </Grid.ColumnDefinitions>
-                    
+
                     <!--File menu-->
-                    <StackPanel
-                        Height="Auto" 
-                        Width="Auto"
-                        Background="Transparent"
-                        Orientation="Horizontal"
-                        Margin="0,0,0,0"
-                        Grid.Column="0">
-                        <TextBlock Text="🌿" FontSize="20" Foreground="Green"/>
-                        <Button x:Name="btnNewDoc" 
+                    <StackPanel Height="Auto"
+                                Width="Auto"
+                                Background="Transparent"
+                                Orientation="Horizontal"
+                                Margin="0,0,0,0"
+                                Grid.Column="0">
+                        <TextBlock Text="🌿"
+                                   FontSize="20"
+                                   Foreground="Green" />
+                        <Button x:Name="btnNewDoc"
                                 Style="{StaticResource FileToolbarButton}"
-                                ToolTip="New&#x0a;Ctrl+N" 
+                                ToolTip="New&#x0a;Ctrl+N"
                                 Command="{Binding NewDocument}">
-                            <TextBlock Text="📄" Margin="0,1,0,0"/>
+                            <TextBlock Text="📄"
+                                       Margin="0,1,0,0" />
                         </Button>
                         <Button x:Name="btnOpenDoc"
                                 ToolTip="Open&#x0a;Ctrl+O"
                                 Command="{Binding OpenDocument}">
                             <Button.Style>
-                                <Style TargetType="Button" BasedOn="{StaticResource FileToolbarButton}">
+                                <Style TargetType="Button"
+                                       BasedOn="{StaticResource FileToolbarButton}">
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding ElementName=btnOpenDoc2,
-                                                   Path=IsMouseOver}" Value="True">
-                                            <Setter Property="Background" Value="{StaticResource colorFileToolbarButtonPartnerMouseOnBackground}" />
+                                                   Path=IsMouseOver}"
+                                                     Value="True">
+                                            <Setter Property="Background"
+                                                    Value="{StaticResource colorFileToolbarButtonPartnerMouseOnBackground}" />
                                         </DataTrigger>
-                                        <DataTrigger Binding="{Binding IsChecked, ElementName=btnOpenDoc2}" Value="True">
-                                            <Setter Property="Background" Value="{StaticResource colorFileToolbarButtonPartnerMouseOnBackground}" />
+                                        <DataTrigger Binding="{Binding IsChecked, ElementName=btnOpenDoc2}"
+                                                     Value="True">
+                                            <Setter Property="Background"
+                                                    Value="{StaticResource colorFileToolbarButtonPartnerMouseOnBackground}" />
                                         </DataTrigger>
 
                                     </Style.Triggers>
                                 </Style>
                             </Button.Style>
-                            <TextBlock Text="📂" Margin="0,0,0,0"/>
+                            <TextBlock Text="📂"
+                                       Margin="0,0,0,0" />
                         </Button>
-                        <ToggleButton x:Name="btnOpenDoc2" 
+                        <ToggleButton x:Name="btnOpenDoc2"
                                       IsHitTestVisible="{Binding ElementName=popupOpen, 
                                         Path=IsOpen, 
                                         Mode=OneWay, Converter={conv:BoolInverter}}"
                                       Grid.Column="1">
                             <ToggleButton.Style>
-                                <Style TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource FileToolbarToggleButton}">
+                                <Style TargetType="{x:Type ToggleButton}"
+                                       BasedOn="{StaticResource FileToolbarToggleButton}">
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding ElementName=btnOpenDoc,
-                                                   Path=IsMouseOver}" Value="True">
-                                            <Setter Property="Background" Value="{StaticResource colorFileToolbarButtonPartnerMouseOnBackground}" />
+                                                   Path=IsMouseOver}"
+                                                     Value="True">
+                                            <Setter Property="Background"
+                                                    Value="{StaticResource colorFileToolbarButtonPartnerMouseOnBackground}" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
                             </ToggleButton.Style>
                             <StackPanel Margin="0">
-                                <TextBlock Text="🔻" Margin="0,10,0,0" FontSize="14"/>
-                                <Popup x:Name="popupOpen" 
+                                <TextBlock Text="🔻"
+                                           Margin="0,10,0,0"
+                                           FontSize="14" />
+                                <Popup x:Name="popupOpen"
                                        IsOpen="{Binding IsChecked, ElementName=btnOpenDoc2}"
                                        StaysOpen="False"
                                        AllowsTransparency="True">
@@ -469,10 +589,10 @@
                                                       HorizontalScrollBarVisibility="Auto"
                                                       VerticalScrollBarVisibility="Auto">
                                             <StackPanel Margin="0"
-                                                VerticalAlignment="Center"
-                                                HorizontalAlignment="Left"
-                                                Orientation="Vertical"
-                                                Grid.IsSharedSizeScope="True">
+                                                        VerticalAlignment="Center"
+                                                        HorizontalAlignment="Left"
+                                                        Orientation="Vertical"
+                                                        Grid.IsSharedSizeScope="True">
                                             </StackPanel>
                                         </ScrollViewer>
                                     </Border>
@@ -483,38 +603,49 @@
                                 ToolTip="Save&#x0a;Ctrl+S"
                                 Command="{Binding SaveDocument}">
                             <Button.Style>
-                                <Style TargetType="Button" BasedOn="{StaticResource FileToolbarButton}">
+                                <Style TargetType="Button"
+                                       BasedOn="{StaticResource FileToolbarButton}">
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding ElementName=btnSaveDoc2,
-                                                   Path=IsMouseOver}" Value="True">
-                                            <Setter Property="Background" Value="{StaticResource colorFileToolbarButtonPartnerMouseOnBackground}" />
+                                                   Path=IsMouseOver}"
+                                                     Value="True">
+                                            <Setter Property="Background"
+                                                    Value="{StaticResource colorFileToolbarButtonPartnerMouseOnBackground}" />
                                         </DataTrigger>
-                                        <DataTrigger Binding="{Binding IsChecked, ElementName=btnSaveDoc2}" Value="True">
-                                            <Setter Property="Background" Value="{StaticResource colorFileToolbarButtonPartnerMouseOnBackground}" />
+                                        <DataTrigger Binding="{Binding IsChecked, ElementName=btnSaveDoc2}"
+                                                     Value="True">
+                                            <Setter Property="Background"
+                                                    Value="{StaticResource colorFileToolbarButtonPartnerMouseOnBackground}" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
                             </Button.Style>
-                            <TextBlock Text="💾" Margin="0,1,0,0"/>
+                            <TextBlock Text="💾"
+                                       Margin="0,1,0,0" />
                         </Button>
-                        <ToggleButton x:Name="btnSaveDoc2" 
+                        <ToggleButton x:Name="btnSaveDoc2"
                                       IsHitTestVisible="{Binding ElementName=popupSave, 
                                         Path=IsOpen, 
                                         Mode=OneWay, Converter={conv:BoolInverter}}"
                                       Grid.Column="1">
                             <ToggleButton.Style>
-                                <Style TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource FileToolbarToggleButton}">
+                                <Style TargetType="{x:Type ToggleButton}"
+                                       BasedOn="{StaticResource FileToolbarToggleButton}">
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding ElementName=btnSaveDoc,
-                                                   Path=IsMouseOver}" Value="True">
-                                            <Setter Property="Background" Value="{StaticResource colorFileToolbarButtonPartnerMouseOnBackground}" />
+                                                   Path=IsMouseOver}"
+                                                     Value="True">
+                                            <Setter Property="Background"
+                                                    Value="{StaticResource colorFileToolbarButtonPartnerMouseOnBackground}" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
                             </ToggleButton.Style>
                             <StackPanel Margin="0">
-                                <TextBlock Text="🔻" Margin="0,10,0,0" FontSize="14"/>
-                                <Popup x:Name="popupSave" 
+                                <TextBlock Text="🔻"
+                                           Margin="0,10,0,0"
+                                           FontSize="14" />
+                                <Popup x:Name="popupSave"
                                        IsOpen="{Binding IsChecked, ElementName=btnSaveDoc2}"
                                        StaysOpen="False"
                                        AllowsTransparency="True">
@@ -528,21 +659,23 @@
                                                       HorizontalScrollBarVisibility="Auto"
                                                       VerticalScrollBarVisibility="Auto">
                                             <StackPanel Margin="0"
-                                                VerticalAlignment="Center"
-                                                HorizontalAlignment="Left"
-                                                Orientation="Vertical"
-                                                Grid.IsSharedSizeScope="True">
+                                                        VerticalAlignment="Center"
+                                                        HorizontalAlignment="Left"
+                                                        Orientation="Vertical"
+                                                        Grid.IsSharedSizeScope="True">
                                                 <Button ToolTip="Save As...&#x0a;Ctrl+Shift+S"
                                                         Style="{StaticResource PopupMenuButton}"
                                                         Command="{Binding SaveDocumentAs}"
                                                         Click="popupSaveButton_Click">
-                                                    <TextBlock Text="Save As..." Margin="0,1,0,0"/>
+                                                    <TextBlock Text="Save As..."
+                                                               Margin="0,1,0,0" />
                                                 </Button>
                                                 <Button ToolTip="Save All&#x0a;Ctrl+Shift+Alt+S"
                                                         Style="{StaticResource PopupMenuButton}"
                                                         Command="{Binding SaveAllDocuments}"
                                                         Click="popupSaveButton_Click">
-                                                    <TextBlock Text="Save All" Margin="0,1,0,0"/>
+                                                    <TextBlock Text="Save All"
+                                                               Margin="0,1,0,0" />
                                                 </Button>
                                             </StackPanel>
                                         </ScrollViewer>
@@ -550,7 +683,7 @@
                                 </Popup>
                             </StackPanel>
                         </ToggleButton>
-                        <ToggleButton x:Name="tbtnSettings" 
+                        <ToggleButton x:Name="tbtnSettings"
                                       Style="{StaticResource FileToolbarToggleButton}"
                                       IsHitTestVisible="{Binding ElementName=popupSettings, 
                                         Path=IsOpen, 
@@ -558,7 +691,7 @@
                                       Grid.Column="1">
                             <StackPanel Margin="0">
                                 <TextBlock Text="⚙️" />
-                                <Popup x:Name="popupSettings" 
+                                <Popup x:Name="popupSettings"
                                        IsOpen="{Binding IsChecked, ElementName=tbtnSettings}"
                                        StaysOpen="False"
                                        AllowsTransparency="True">
@@ -580,16 +713,22 @@
                                                         Height="28"
                                                         Click="popupSettingsButton_Click">
                                                     <Button.Style>
-                                                        <Style TargetType="Button" BasedOn="{StaticResource FileToolbarButton}">
+                                                        <Style TargetType="Button"
+                                                               BasedOn="{StaticResource FileToolbarButton}">
                                                             <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding WindowScale}" Value="1">
-                                                                    <Setter Property="Background" Value="#BBBBBB"/>
-                                                                    <Setter Property="TextBlock.Foreground" Value="#444444"/>
+                                                                <DataTrigger Binding="{Binding WindowScale}"
+                                                                             Value="1">
+                                                                    <Setter Property="Background"
+                                                                            Value="#BBBBBB" />
+                                                                    <Setter Property="TextBlock.Foreground"
+                                                                            Value="#444444" />
                                                                 </DataTrigger>
                                                             </Style.Triggers>
                                                         </Style>
                                                     </Button.Style>
-                                                    <TextBlock Text="🗚" Margin="0,0,0,0" FontSize="10"/>
+                                                    <TextBlock Text="🗚"
+                                                               Margin="0,0,0,0"
+                                                               FontSize="10" />
                                                 </Button>
                                                 <Button ToolTip="Window Scale: Medium"
                                                         HorizontalAlignment="Center"
@@ -599,16 +738,22 @@
                                                         Height="28"
                                                         Click="popupSettingsButton_Click">
                                                     <Button.Style>
-                                                        <Style TargetType="Button" BasedOn="{StaticResource FileToolbarButton}">
+                                                        <Style TargetType="Button"
+                                                               BasedOn="{StaticResource FileToolbarButton}">
                                                             <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding WindowScale}" Value="1.2">
-                                                                    <Setter Property="Background" Value="#BBBBBB"/>
-                                                                    <Setter Property="TextBlock.Foreground" Value="#444444"/>
+                                                                <DataTrigger Binding="{Binding WindowScale}"
+                                                                             Value="1.2">
+                                                                    <Setter Property="Background"
+                                                                            Value="#BBBBBB" />
+                                                                    <Setter Property="TextBlock.Foreground"
+                                                                            Value="#444444" />
                                                                 </DataTrigger>
                                                             </Style.Triggers>
                                                         </Style>
                                                     </Button.Style>
-                                                    <TextBlock Text="🗚" Margin="0,0,0,0" FontSize="12"/>
+                                                    <TextBlock Text="🗚"
+                                                               Margin="0,0,0,0"
+                                                               FontSize="12" />
                                                 </Button>
                                                 <Button ToolTip="Window Scale: Big"
                                                         HorizontalAlignment="Center"
@@ -618,16 +763,22 @@
                                                         Height="28"
                                                         Click="popupSettingsButton_Click">
                                                     <Button.Style>
-                                                        <Style TargetType="Button" BasedOn="{StaticResource FileToolbarButton}">
+                                                        <Style TargetType="Button"
+                                                               BasedOn="{StaticResource FileToolbarButton}">
                                                             <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding WindowScale}" Value="1.5">
-                                                                    <Setter Property="Background" Value="#BBBBBB"/>
-                                                                    <Setter Property="TextBlock.Foreground" Value="#444444"/>
+                                                                <DataTrigger Binding="{Binding WindowScale}"
+                                                                             Value="1.5">
+                                                                    <Setter Property="Background"
+                                                                            Value="#BBBBBB" />
+                                                                    <Setter Property="TextBlock.Foreground"
+                                                                            Value="#444444" />
                                                                 </DataTrigger>
                                                             </Style.Triggers>
                                                         </Style>
                                                     </Button.Style>
-                                                    <TextBlock Text="🗚" Margin="0,0,0,0" FontSize="15"/>
+                                                    <TextBlock Text="🗚"
+                                                               Margin="0,0,0,0"
+                                                               FontSize="15" />
                                                 </Button>
                                                 <Button ToolTip="Window Scale: Huge"
                                                         HorizontalAlignment="Center"
@@ -637,31 +788,42 @@
                                                         Height="28"
                                                         Click="popupSettingsButton_Click">
                                                     <Button.Style>
-                                                        <Style TargetType="Button" BasedOn="{StaticResource FileToolbarButton}">
+                                                        <Style TargetType="Button"
+                                                               BasedOn="{StaticResource FileToolbarButton}">
                                                             <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding WindowScale}" Value="2">
-                                                                    <Setter Property="Background" Value="#BBBBBB"/>
-                                                                    <Setter Property="TextBlock.Foreground" Value="#444444"/>
+                                                                <DataTrigger Binding="{Binding WindowScale}"
+                                                                             Value="2">
+                                                                    <Setter Property="Background"
+                                                                            Value="#BBBBBB" />
+                                                                    <Setter Property="TextBlock.Foreground"
+                                                                            Value="#444444" />
                                                                 </DataTrigger>
                                                             </Style.Triggers>
                                                         </Style>
                                                     </Button.Style>
-                                                    <TextBlock Text="🗚" Margin="0,0,0,0" FontSize="20"/>
+                                                    <TextBlock Text="🗚"
+                                                               Margin="0,0,0,0"
+                                                               FontSize="20" />
                                                 </Button>
                                                 <Button ToolTip="Wireframe"
                                                         Command="{Binding ToggleWireframe}"
                                                         Click="popupSettingsButton_Click">
                                                     <Button.Style>
-                                                        <Style TargetType="Button" BasedOn="{StaticResource FileToolbarButton}">
+                                                        <Style TargetType="Button"
+                                                               BasedOn="{StaticResource FileToolbarButton}">
                                                             <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding Wireframe}" Value="True">
-                                                                    <Setter Property="Background" Value="#BBBBBB"/>
-                                                                    <Setter Property="TextBlock.Foreground" Value="#444444"/>
+                                                                <DataTrigger Binding="{Binding Wireframe}"
+                                                                             Value="True">
+                                                                    <Setter Property="Background"
+                                                                            Value="#BBBBBB" />
+                                                                    <Setter Property="TextBlock.Foreground"
+                                                                            Value="#444444" />
                                                                 </DataTrigger>
                                                             </Style.Triggers>
                                                         </Style>
                                                     </Button.Style>
-                                                    <TextBlock Text="➿" Margin="0,1,0,0"/>
+                                                    <TextBlock Text="➿"
+                                                               Margin="0,1,0,0" />
                                                 </Button>
                                             </UniformGrid>
                                         </ScrollViewer>
@@ -670,45 +832,43 @@
                             </StackPanel>
                         </ToggleButton>
                     </StackPanel>
-                    
+
                     <!--Document tabs-->
-                    <Grid Margin="0" 
+                    <Grid Margin="0"
                           Grid.Column="1">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
 
                         <!--Actual list of document tabs-->
                         <Grid x:Name="grdDocumentTabs"
-                            utils:ScrollViewerHelper.WheelScrollsHorizontally="True" 
-                            Margin="0"
-                            Grid.Column="0">
-                            <ScrollViewer x:Name="tabsScrollViewer" 
-                                      HorizontalScrollBarVisibility="Hidden" 
-                                      VerticalScrollBarVisibility="Hidden" 
-                                      CanContentScroll="True"
-                                      BorderThickness="0"
-                                      Margin="0">
-                                <Grid
-                                DockPanel.Dock="Left"
-                                Height="Auto"
-                                Width="Auto"
-                                Margin="0,0,0,0"
-                                VerticalAlignment="Bottom"
-                                HorizontalAlignment="Left">
-                                    <ItemsControl x:Name="tabsItemsControl" 
-                                          ItemsSource="{Binding Documents}"
+                              utils:ScrollViewerHelper.WheelScrollsHorizontally="True"
+                              Margin="0"
+                              Grid.Column="0">
+                            <ScrollViewer x:Name="tabsScrollViewer"
+                                          HorizontalScrollBarVisibility="Hidden"
+                                          VerticalScrollBarVisibility="Hidden"
+                                          CanContentScroll="True"
+                                          BorderThickness="0"
                                           Margin="0">
+                                <Grid DockPanel.Dock="Left"
+                                      Height="Auto"
+                                      Width="Auto"
+                                      Margin="0,0,0,0"
+                                      VerticalAlignment="Bottom"
+                                      HorizontalAlignment="Left">
+                                    <ItemsControl x:Name="tabsItemsControl"
+                                                  ItemsSource="{Binding Documents}"
+                                                  Margin="0">
                                         <ItemsControl.ItemsPanel>
                                             <ItemsPanelTemplate>
-                                                <StackPanel 
-                                                Height="Auto"
-                                                Width="Auto"
-                                                Margin="0,2,0,0"
-                                                VerticalAlignment="Bottom"
-                                                HorizontalAlignment="Left"
-                                                Orientation="Horizontal"/>
+                                                <StackPanel Height="Auto"
+                                                            Width="Auto"
+                                                            Margin="0,2,0,0"
+                                                            VerticalAlignment="Bottom"
+                                                            HorizontalAlignment="Left"
+                                                            Orientation="Horizontal" />
                                             </ItemsPanelTemplate>
                                         </ItemsControl.ItemsPanel>
                                         <ItemsControl.ItemTemplate>
@@ -716,8 +876,10 @@
                                                 <Button Style="{StaticResource TabButtonStyle}">
                                                     <Button.Resources>
                                                         <Style TargetType="{x:Type Border}">
-                                                            <Setter Property="CornerRadius" Value="5,5,0,0"/>
-                                                            <Setter Property="BorderThickness" Value="0"/>
+                                                            <Setter Property="CornerRadius"
+                                                                    Value="5,5,0,0" />
+                                                            <Setter Property="BorderThickness"
+                                                                    Value="0" />
                                                         </Style>
                                                     </Button.Resources>
                                                 </Button>
@@ -729,7 +891,7 @@
                         </Grid>
 
                         <!--Tab list button and popup-->
-                        <ToggleButton x:Name="tbtnDocumentList" 
+                        <ToggleButton x:Name="tbtnDocumentList"
                                       Style="{StaticResource FileToolbarToggleButton}"
                                       IsHitTestVisible="{Binding ElementName=popupDocumentList, 
                                         Path=IsOpen, 
@@ -739,14 +901,16 @@
                                 <StackPanel.Style>
                                     <Style TargetType="{x:Type StackPanel}">
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding ElementName=tabsScrollViewer, Path=ScrollableWidth}" Value="0">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            <DataTrigger Binding="{Binding ElementName=tabsScrollViewer, Path=ScrollableWidth}"
+                                                         Value="0">
+                                                <Setter Property="Visibility"
+                                                        Value="Collapsed" />
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
                                 </StackPanel.Style>
                                 <TextBlock Text="🔻" />
-                                <Popup x:Name="popupDocumentList" 
+                                <Popup x:Name="popupDocumentList"
                                        IsOpen="{Binding IsChecked, ElementName=tbtnDocumentList}"
                                        StaysOpen="False"
                                        AllowsTransparency="True">
@@ -759,23 +923,22 @@
                                                       MaxWidth="600"
                                                       HorizontalScrollBarVisibility="Auto"
                                                       VerticalScrollBarVisibility="Auto">
-                                            <ItemsControl x:Name="icDocumentsList" 
-                                                ItemsSource="{Binding Documents}"
-                                                Margin="0">
+                                            <ItemsControl x:Name="icDocumentsList"
+                                                          ItemsSource="{Binding Documents}"
+                                                          Margin="0">
                                                 <ItemsControl.ItemsPanel>
                                                     <ItemsPanelTemplate>
-                                                        <StackPanel 
-                                                            Margin="0"
-                                                            VerticalAlignment="Center"
-                                                            HorizontalAlignment="Left"
-                                                            Orientation="Vertical"
-                                                            Grid.IsSharedSizeScope="True"/>
+                                                        <StackPanel Margin="0"
+                                                                    VerticalAlignment="Center"
+                                                                    HorizontalAlignment="Left"
+                                                                    Orientation="Vertical"
+                                                                    Grid.IsSharedSizeScope="True" />
                                                     </ItemsPanelTemplate>
                                                 </ItemsControl.ItemsPanel>
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
                                                         <Button Style="{StaticResource DocumentListMenuButton}"
-                                                                Click="popupDocumentListButton_Click"/>
+                                                                Click="popupDocumentListButton_Click" />
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>
                                             </ItemsControl>
@@ -787,39 +950,38 @@
                     </Grid>
 
                     <!--Right menu + window menu-->
-                    <StackPanel 
-                        x:Name="pnlTopRight"
-                        Margin="0" 
-                        VerticalAlignment="Top" 
-                        HorizontalAlignment="Right"
-                        Height="Auto"
-                        Width="Auto"
-                        Orientation="Horizontal"
-                        Visibility="Visible"
-                        DockPanel.Dock ="Right"
-                        Grid.Column="2">
+                    <StackPanel x:Name="pnlTopRight"
+                                Margin="0"
+                                VerticalAlignment="Top"
+                                HorizontalAlignment="Right"
+                                Height="Auto"
+                                Width="Auto"
+                                Orientation="Horizontal"
+                                Visibility="Visible"
+                                DockPanel.Dock="Right"
+                                Grid.Column="2">
                         <StackPanel Orientation="Horizontal"
                                     Margin="50,0,0,0">
-                            <Button             
-                                x:Name="btnMinimize"
-                                Style="{StaticResource WindowsButtons}"
-                                Margin="0,0,0,0" 
-                                Click="btnMinimize_Click">
-                                <TextBlock Text="_" Margin="0,-25,0,0"/>
+                            <Button x:Name="btnMinimize"
+                                    Style="{StaticResource WindowsButtons}"
+                                    Margin="0,0,0,0"
+                                    Click="btnMinimize_Click">
+                                <TextBlock Text="_"
+                                           Margin="0,-25,0,0" />
                             </Button>
-                            <Button
-                                x:Name="btnMaximize"
-                                Style="{StaticResource WindowsButtons}"
-                                Margin="0,0,0,0" 
-                                Click="btnMaximize_Click">
-                                <TextBlock Text="□" Margin="0,-14,0,0"/>
+                            <Button x:Name="btnMaximize"
+                                    Style="{StaticResource WindowsButtons}"
+                                    Margin="0,0,0,0"
+                                    Click="btnMaximize_Click">
+                                <TextBlock Text="□"
+                                           Margin="0,-14,0,0" />
                             </Button>
-                            <Button 
-                                x:Name="btnClose"
-                                Style="{StaticResource WindowsButtonsX}" 
-                                Click="btnClose_Click"
-                                Margin="0">
-                                <TextBlock Text="×" Margin="0,-11,0,0"/>
+                            <Button x:Name="btnClose"
+                                    Style="{StaticResource WindowsButtonsX}"
+                                    Click="btnClose_Click"
+                                    Margin="0">
+                                <TextBlock Text="×"
+                                           Margin="0,-11,0,0" />
                             </Button>
                         </StackPanel>
                     </StackPanel>
@@ -829,208 +991,43 @@
             <!--Graphic area-->
             <Grid x:Name="gridGraphicMain"
                   Background="{StaticResource colorMainWindowBackground}"
-                  MouseLeftButtonDown="Window_MouseLeftButtonDown"
-                  MouseLeftButtonUp="Window_MouseLeftButtonUp"
-                  MouseMove="Window_MouseMove"
-                  MouseWheel="Window_MouseWheel"
                   Grid.Row="1"
                   Margin="0">
 
-                <Grid Margin="0">
-                    <!--3D graphics-->
-                    <Viewport3D 
-                        x:Name="v3dMain"
-                        ClipToBounds="True"
-                        IsHitTestVisible="True"             
-                        Width="Auto"
-                        Height="Auto">
-                        <Viewport3D.Camera>
-                            <OrthographicCamera 
-                            x:Name="v3dCamera" 
-                            Position="0,0,40" 
-                            LookDirection="0,0,-1" 
-                            UpDirection="0,1,0"
-                            FarPlaneDistance="Infinity"
-                            NearPlaneDistance="-Infinity"
-                            Width="100"/>
-                        </Viewport3D.Camera>
-                        <ModelVisual3D>
-                            <ModelVisual3D.Content>
-                                <Model3DGroup
-                                x:Name="v3dScene">
-                                    <AmbientLight Color="#444444"/>
-                                    <PointLight x:Name="v3dLightTop" Color="#777777" Position="1,10,40"/>
-                                    <PointLight x:Name="v3dLightRight" Color="#444444" Position="10,-1,60"/>
-                                    <PointLight x:Name="v3dLightLeft" Color="#333333" Position="-10,2,20"/>
-                                </Model3DGroup>
-                            </ModelVisual3D.Content>
-                        </ModelVisual3D>
-                    </Viewport3D>
-
-                    <!--Floating main operation menu-->
-                    <DockPanel 
-                        x:Name="pnlMenu"
-                        HorizontalAlignment="Stretch" 
-                        VerticalAlignment="Top" 
-                        Height="70" 
-                        Width="Auto"
-                        Margin="0,0,10,10" >
-                        <Button 
-                            x:Name="btnMenu"
-                            DockPanel.Dock ="Left"
-                            VerticalAlignment="Bottom" 
-                            HorizontalAlignment="Left" 
-                            Style="{StaticResource MenuButtons}"
-                            MouseEnter="btnMenu_MouseEnter"
-                            Click="btnMenu_Click">
-                            <TextBlock Text="☰" FontWeight="Bold" Margin="0,-5,0,0" FontSize="34"/>
-                        </Button>
-
-                        <StackPanel 
-                            x:Name="pnlSubMenu"
-                            Margin="0" 
-                            DockPanel.Dock ="Right"
-                            VerticalAlignment="Bottom" 
-                            HorizontalAlignment="Stretch"
-                            Height="70"
-                            Width="Auto"
-                            Orientation="Horizontal">
-                            <Button Style="{StaticResource MenuButtons}" 
-                                ToolTip="New" 
-                                Command="{Binding NewDocument}">
-                                <TextBlock Text="📄" Margin="0,1,0,0" FontFamily="Consolas" FontSize="32"/>
-                            </Button>
-                            <Button 
-                                x:Name="btnXXX"
-                                Style="{StaticResource MenuButtons}"
-                                ToolTip="Open">
-                                <TextBlock Text="📂" Margin="2,-3,0,0" FontFamily="Consolas" FontSize="36"/>
-                            </Button>
-                            <Button 
-                                x:Name="btnKKK"
-                                Style="{StaticResource MenuButtons}"
-                                ToolTip="Save">
-                                <TextBlock Text="💾" Margin="0,1,0,0" FontFamily="Consolas" FontSize="32"/>
-                            </Button>
-                        </StackPanel>
-                    </DockPanel>
-
-                    <!-- Selection box -->
-                    <Canvas 
-                    Height="Auto" 
-                    Width="Auto"
-                    VerticalAlignment="Stretch"
-                    HorizontalAlignment="Stretch">
-                        <Rectangle 
-                        x:Name="canvasSelectionBox" 
-                        Stroke="White" 
-                        StrokeThickness="1" 
-                        StrokeDashArray="2 2"                
-                        Visibility="Collapsed"/>
-                    </Canvas>
-
-                    <!--Bottom: Message & Progressbars-->
-                    <Grid HorizontalAlignment="Stretch" 
-                        VerticalAlignment="Bottom"
-                        Margin="0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto"/>
-                            <RowDefinition Height="auto"/>
-                        </Grid.RowDefinitions>
-                        <Label 
-                        x:Name="messageLabel" 
-                        FontSize="24"
-                        FontFamily="Calibri"
-                        HorizontalAlignment="Stretch" 
-                        VerticalAlignment="Bottom"
-                        HorizontalContentAlignment="Center"
-                        Content="{Binding Message}" 
-                        Foreground="{Binding MessageForeground}"
-                        Background="{Binding MessageBackground}"
-                        Grid.Row="0"
-                        BorderThickness="0"
-                        Margin="0">
-                            <Label.Style>
-                                <Style TargetType="Label">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ShowMessage}" Value="True">
-                                            <DataTrigger.EnterActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <DoubleAnimation 
-                                                        Storyboard.TargetProperty="Opacity" 
-                                                        To="1" Duration="0:0:0.200" />
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </DataTrigger.EnterActions>
-                                            <DataTrigger.ExitActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <DoubleAnimation 
-                                                        Storyboard.TargetProperty="Opacity" 
-                                                        To="0.05" Duration="0:0:0.500" />
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </DataTrigger.ExitActions>
-                                        </DataTrigger>
-                                        <MultiDataTrigger>
-                                            <MultiDataTrigger.Conditions>
-                                                <Condition Binding="{Binding ShowMessage}" Value="False" />
-                                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
-                                            </MultiDataTrigger.Conditions>
-                                            <MultiDataTrigger.EnterActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <DoubleAnimation 
-                                                        Storyboard.TargetProperty="Opacity" 
-                                                        To="1" Duration="0:0:0.200" />
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </MultiDataTrigger.EnterActions>
-                                            <MultiDataTrigger.ExitActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <DoubleAnimation 
-                                                        Storyboard.TargetProperty="Opacity" 
-                                                        To="0.05" Duration="0:0:0.500" />
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </MultiDataTrigger.ExitActions>
-                                        </MultiDataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Label.Style>
-                        </Label>
-                        <StackPanel
-                        HorizontalAlignment="Stretch" 
-                        VerticalAlignment="Bottom"
-                        Orientation="Vertical"
-                        Grid.Row="1"
-                        Margin="0">
-                            <ItemsControl ItemsSource="{Binding ProgressList}" BorderThickness="0">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <ProgressBar Minimum="{Binding Minimum}"
-                                    Maximum="{Binding Maximum}"
-                                    Value="{Binding Current}"
-                                    IsIndeterminate="{Binding IsIndeterminate}" 
-                                    BorderThickness="0"
-                                    Height="3"
-                                    Grid.Row="1"
-                                    Background="#000000"
-                                    Foreground="#FFFFFF"
-                                    Margin="0"/>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </StackPanel>
-                    </Grid>
-                </Grid>
+                <ItemsControl x:Name="docsGfxItemsControl"
+                              ItemsSource="{Binding Documents}"
+                              Margin="0">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Grid Margin="0">
+                            </Grid>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="0"
+                                  Visibility="Visible">
+                                <Grid.Style>
+                                    <Style TargetType="{x:Type Grid}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsActive}"
+                                                         Value="True">
+                                                <Setter Property="Visibility"
+                                                        Value="Visible" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Grid.Style>
+                                <views:DocumentWindow />
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </Grid>
 
-            
-            <!--Floating windows and menus-->           
-            
+
+            <!--Floating windows and menus-->
+
         </Grid>
     </Border>
 </Window>

@@ -67,7 +67,8 @@ namespace FikusIn.Model.GraphicEngine
             mesh.Freeze();
 
             MaterialGroup materialGroup = new();
-            materialGroup.Children.Add(new DiffuseMaterial(new SolidColorBrush(Color.FromRgb(0xA7, 0xB9, 0xCC))));
+            //materialGroup.Children.Add(new DiffuseMaterial(new SolidColorBrush(Color.FromRgb(0xA7, 0xB9, 0xCC))));
+            materialGroup.Children.Add(new DiffuseMaterial(new SolidColorBrush(Color.FromRgb(0xE7, 0x79, 0x7C))));
             materialGroup.Children.Add(new SpecularMaterial(Brushes.White, 70));
             materialGroup.Freeze();
 

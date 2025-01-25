@@ -27,15 +27,15 @@ namespace FikusIn.Views
         {
             InitializeComponent();
 
-            pnlSubMenu.Visibility = Visibility.Collapsed;
+            //pnlSubMenu.Visibility = Visibility.Collapsed;
 
             var mainViewModel = new MainViewModel();
             DataContext = mainViewModel;
-            messageLabel.DataContext = mainViewModel.MessagesViewModel;
+            //messageLabel.DataContext = mainViewModel.MessagesViewModel;
 
-            gfxEngine = new Model.GraphicEngine.GraphicEngine(v3dMain, v3dCamera, [v3dLightTop, v3dLightRight, v3dLightLeft]);
+            //gfxEngine = new Model.GraphicEngine.GraphicEngine(v3dMain, v3dCamera, [v3dLightTop, v3dLightRight, v3dLightLeft]);
 
-            gfxEngine.PaintCube(10);
+            //gfxEngine.PaintCube(10);
         }
 
 
@@ -58,176 +58,10 @@ namespace FikusIn.Views
                 WindowState = System.Windows.WindowState.Normal;
         }
 
-        private void SetMenuOrientation()
-        {
-            if (Width <= Height)
-            {
-                pnlMenu.HorizontalAlignment = HorizontalAlignment.Stretch;
-                pnlMenu.VerticalAlignment = VerticalAlignment.Top;
-                pnlMenu.Height = 70;
-                pnlMenu.Width = double.NaN;
-                DockPanel.SetDock(pnlMenu, Dock.Right);
-
-                DockPanel.SetDock(btnMenu, Dock.Left);
-
-                pnlSubMenu.HorizontalAlignment = HorizontalAlignment.Stretch;
-                pnlSubMenu.VerticalAlignment = VerticalAlignment.Top;
-                pnlSubMenu.Height = 70;
-                pnlSubMenu.Width = double.NaN;
-                pnlSubMenu.Orientation = Orientation.Horizontal;
-            }
-            else
-            {
-                pnlMenu.HorizontalAlignment = HorizontalAlignment.Left;
-                pnlMenu.VerticalAlignment = VerticalAlignment.Stretch;
-                pnlMenu.Width = 70;
-                pnlMenu.Height = double.NaN;
-                DockPanel.SetDock(pnlMenu, Dock.Bottom);
-
-                DockPanel.SetDock(btnMenu, Dock.Top);
-
-                pnlSubMenu.HorizontalAlignment = HorizontalAlignment.Left;
-                pnlSubMenu.VerticalAlignment = VerticalAlignment.Top;
-                pnlSubMenu.Width = 70;
-                pnlSubMenu.Height = double.NaN;
-                pnlSubMenu.Orientation = Orientation.Vertical;
-            }
-            //pnlSubMenu.UpdateLayout();
-        }
-
-        private void ShowMenu()
-        {
-            SetMenuOrientation();
-            pnlSubMenu.Visibility = Visibility.Visible;
-        }
-
-        private void btnMenu_MouseEnter(object sender, MouseEventArgs e)
-        {
-           ShowMenu();
-        }
-
-        private void btnMenu_Click(object sender, RoutedEventArgs e)
-        {
-            if (pnlSubMenu.Visibility == Visibility.Visible)
-                pnlSubMenu.Visibility = Visibility.Collapsed;
-            else
-                ShowMenu();
-        }
-
-        private Point? dragStartingPosition;
-
-        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            pnlSubMenu.Visibility = Visibility.Collapsed;
-            dragStartingPosition = Mouse.GetPosition(this);
-        }
-
-        private void Window_MouseMove(object sender, MouseEventArgs e)
-        {
-            // No button pressed, we release dragstart
-            if(e.LeftButton == MouseButtonState.Released && e.MiddleButton == MouseButtonState.Released && e.RightButton == MouseButtonState.Released)
-            {
-                dragStartingPosition = null;
-                return;
-            }
-
-            if ((e.LeftButton == MouseButtonState.Pressed || e.MiddleButton == MouseButtonState.Pressed || e.RightButton == MouseButtonState.Pressed) && !dragStartingPosition.HasValue)
-            { 
-                dragStartingPosition = Mouse.GetPosition(this);
-                return;
-            }
-
-            if(!dragStartingPosition.HasValue)
-                return;
-
-            Point dragCurrentPosition = Mouse.GetPosition(this);
-            Vector dragOffset = dragCurrentPosition - dragStartingPosition.Value;
-
-            // Left click: Selection (& box sel)
-            if (e.LeftButton == MouseButtonState.Pressed && e.MiddleButton == MouseButtonState.Released && e.RightButton == MouseButtonState.Released && dragStartingPosition.HasValue)
-            {
-                canvasSelectionBox.Width = Math.Abs(dragStartingPosition.Value.X - dragCurrentPosition.X);
-                canvasSelectionBox.Height = Math.Abs(dragStartingPosition.Value.Y - dragCurrentPosition.Y);
-                Canvas.SetLeft(canvasSelectionBox, Math.Min(dragStartingPosition.Value.X, dragCurrentPosition.X));
-                Canvas.SetTop(canvasSelectionBox, Math.Min(dragStartingPosition.Value.Y, dragCurrentPosition.Y));
-                canvasSelectionBox.Visibility = Visibility.Visible;
-
-                if (dragCurrentPosition.X > dragStartingPosition.Value.X)
-                    canvasSelectionBox.StrokeDashArray = new DoubleCollection() { 2, 2 };
-                else
-                    canvasSelectionBox.StrokeDashArray = new DoubleCollection() { 1, 0 };
-
-                //v3dMain.InvalidateVisual();
-            }
-            else
-            {
-                canvasSelectionBox.Visibility = Visibility.Collapsed;
-
-                // Middle click: Pan
-                if (e.LeftButton == MouseButtonState.Released && e.MiddleButton == MouseButtonState.Pressed && e.RightButton == MouseButtonState.Released && dragStartingPosition.HasValue)
-                {
-                    gfxEngine.Camera.Pan(dragOffset, Width, (Keyboard.GetKeyStates(Key.LeftShift) & KeyStates.Down) > 0, (Keyboard.GetKeyStates(Key.LeftCtrl) & KeyStates.Down) > 0);
-                }
-                // Right click: Rotate
-                else if (e.LeftButton == MouseButtonState.Released && e.MiddleButton == MouseButtonState.Released && e.RightButton == MouseButtonState.Pressed && dragStartingPosition.HasValue)
-                {
-                    gfxEngine.Camera.Rotate(dragOffset, new Point3D(0, 0, 0));
-                }
-                // Left + Right click: Camera Roll
-                else if (e.LeftButton == MouseButtonState.Pressed && e.MiddleButton == MouseButtonState.Released && e.RightButton == MouseButtonState.Pressed && dragStartingPosition.HasValue)
-                {
-                    gfxEngine.Camera.Roll(dragStartingPosition.Value, dragCurrentPosition, Width, Height);
-                }
-
-                dragStartingPosition = dragCurrentPosition;
-            }
-        }
-
-        private void Window_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            if(!dragStartingPosition.HasValue)
-                return;
-
-            canvasSelectionBox.Visibility = Visibility.Collapsed;
-
-            Point dragEndingPosition = Mouse.GetPosition(this);
-            Vector dragOffset = dragEndingPosition - dragStartingPosition.Value;
-
-            //TODO: Add code to do the box selection
-            if(dragOffset.X < 5)
-                dragOffset.X = 5;
-            if(dragOffset.Y < 5) 
-                dragOffset.Y = 5;
-
-            dragStartingPosition = null;
-        }
-
-
-        private void Window_MouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            if(e.Delta != 0)
-                gfxEngine.Camera.Zoom(Mouse.GetPosition(this), e.Delta, Width, Height, (Keyboard.GetKeyStates(Key.LeftShift) & KeyStates.Down) > 0, (Keyboard.GetKeyStates(Key.LeftCtrl) & KeyStates.Down) > 0);
-        }
-
-        private void Window_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
-        {
-
-        }
-
-        private void Window_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
-        {
-
-        }
-
-        private void v3dMesh_MouseEnter(object sender, MouseEventArgs e)
-        {
-
-        }
-
         bool firstRender = true;
         private void wMain_ContentRendered(object sender, EventArgs e)
         {
-            if(firstRender)
+            if (firstRender)
             {
                 firstRender = false;
 
@@ -245,10 +79,6 @@ namespace FikusIn.Views
             }
         }
 
-        private void wMain_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            SetMenuOrientation();
-        }
 
         private void popupDocumentListButton_Click(object sender, RoutedEventArgs e)
         {
