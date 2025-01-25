@@ -7,46 +7,51 @@
              mc:Ignorable="d"
              d:DesignHeight="450"
              d:DesignWidth="800"
-             SizeChanged="wDoc_SizeChanged">
-    <Grid MouseLeftButtonDown="Window_MouseLeftButtonDown"
-          MouseLeftButtonUp="Window_MouseLeftButtonUp"
-          MouseMove="Window_MouseMove"
-          MouseWheel="Window_MouseWheel">
+             SizeChanged="wDoc_SizeChanged"
+             >
+    <Grid Margin="0">
         <!--<Label Content="{Binding Name}" 
                Foreground="#FFFF00"/>-->
         <!--3D graphics-->
-        <Viewport3D x:Name="v3dMain"
-                    ClipToBounds="True"
-                    IsHitTestVisible="True"
-                    Width="Auto"
-                    Height="Auto"
-                    Margin="0">
-            <Viewport3D.Camera>
-                <OrthographicCamera x:Name="v3dCamera"
-                                    Position="0,0,40"
-                                    LookDirection="0,0,-1"
-                                    UpDirection="0,1,0"
-                                    FarPlaneDistance="Infinity"
-                                    NearPlaneDistance="-Infinity"
-                                    Width="100" />
-            </Viewport3D.Camera>
-            <ModelVisual3D>
-                <ModelVisual3D.Content>
-                    <Model3DGroup x:Name="v3dScene">
-                        <AmbientLight Color="#444444" />
-                        <PointLight x:Name="v3dLightTop"
-                                    Color="#777777"
-                                    Position="1,10,40" />
-                        <PointLight x:Name="v3dLightRight"
-                                    Color="#444444"
-                                    Position="10,-1,60" />
-                        <PointLight x:Name="v3dLightLeft"
-                                    Color="#333333"
-                                    Position="-10,2,20" />
-                    </Model3DGroup>
-                </ModelVisual3D.Content>
-            </ModelVisual3D>
-        </Viewport3D>
+        <Grid Margin="0" 
+              Background="{StaticResource colorMainWindowBackground}"
+              MouseLeftButtonDown="Window_MouseLeftButtonDown"
+              MouseLeftButtonUp="Window_MouseLeftButtonUp"
+              MouseMove="Window_MouseMove"
+              MouseWheel="Window_MouseWheel">
+            <Viewport3D x:Name="v3dMain"
+                        ClipToBounds="True"
+                        IsHitTestVisible="True"
+                        Width="Auto"
+                        Height="Auto"
+                        Margin="0">
+                <Viewport3D.Camera>
+                    <OrthographicCamera x:Name="v3dCamera"
+                                        Position="0,0,40"
+                                        LookDirection="0,0,-1"
+                                        UpDirection="0,1,0"
+                                        FarPlaneDistance="Infinity"
+                                        NearPlaneDistance="-Infinity"
+                                        Width="100" />
+                </Viewport3D.Camera>
+                <ModelVisual3D>
+                    <ModelVisual3D.Content>
+                        <Model3DGroup x:Name="v3dScene">
+                            <AmbientLight Color="#444444" />
+                            <PointLight x:Name="v3dLightTop"
+                                        Color="#777777"
+                                        Position="1,10,40" />
+                            <PointLight x:Name="v3dLightRight"
+                                        Color="#444444"
+                                        Position="10,-1,60" />
+                            <PointLight x:Name="v3dLightLeft"
+                                        Color="#333333"
+                                        Position="-10,2,20" />
+                        </Model3DGroup>
+                    </ModelVisual3D.Content>
+                </ModelVisual3D>
+            </Viewport3D>
+        </Grid>
 
         <!--Floating main operation menu-->
         <DockPanel x:Name="pnlMenu"

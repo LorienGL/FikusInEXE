@@ -1006,9 +1006,11 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Grid Margin="0"
-                                  Visibility="Visible">
+                                  Background="{StaticResource colorMainWindowBackground}">
                                 <Grid.Style>
                                     <Style TargetType="{x:Type Grid}">
+                                        <Setter Property="Visibility"
+                                                Value="Collapsed" />
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding IsActive}"
                                                          Value="True">

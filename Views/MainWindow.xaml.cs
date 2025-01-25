@@ -21,21 +21,11 @@ namespace FikusIn.Views
     /// </summary>
     public partial class MainWindow : Window
     {
-        Model.GraphicEngine.GraphicEngine gfxEngine;
-
         public MainWindow()
         {
             InitializeComponent();
-
-            //pnlSubMenu.Visibility = Visibility.Collapsed;
-
             var mainViewModel = new MainViewModel();
             DataContext = mainViewModel;
-            //messageLabel.DataContext = mainViewModel.MessagesViewModel;
-
-            //gfxEngine = new Model.GraphicEngine.GraphicEngine(v3dMain, v3dCamera, [v3dLightTop, v3dLightRight, v3dLightLeft]);
-
-            //gfxEngine.PaintCube(10);
         }
 
 
