@@ -1,4 +1,5 @@
-﻿using FikusIn.ViewModel;
+﻿using FikusIn.OCCTViewer;
+using FikusIn.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,8 +23,7 @@ namespace FikusIn.Views
     /// </summary>
     public partial class DocumentWindow : UserControl
     {
-
-        Model.GraphicEngine.GraphicEngine gfxEngine;
+        private D3DViewer? aViewer = null;
 
         public DocumentWindow()
         {
@@ -31,13 +31,7 @@ namespace FikusIn.Views
 
             pnlSubMenu.Visibility = Visibility.Collapsed;
 
-            //var mainViewModel = new MainViewModel();
-            //DataContext = mainViewModel;
-            //messageLabel.DataContext = mainViewModel.MessagesViewModel;
-
-            gfxEngine = new Model.GraphicEngine.GraphicEngine(v3dMain, v3dCamera, [v3dLightTop, v3dLightRight, v3dLightLeft]);
-
-            gfxEngine.PaintCube(10);
+            // DataContext is the opened document
         }
 
         private void SetMenuOrientation()
@@ -134,9 +128,9 @@ namespace FikusIn.Views
                 canvasSelectionBox.Visibility = Visibility.Visible;
 
                 if (dragCurrentPosition.X > dragStartingPosition.Value.X)
-                    canvasSelectionBox.StrokeDashArray = new DoubleCollection() { 2, 2 };
-                else
                     canvasSelectionBox.StrokeDashArray = new DoubleCollection() { 1, 0 };
+                else
+                    canvasSelectionBox.StrokeDashArray = new DoubleCollection() { 2, 2 };
 
                 //v3dMain.InvalidateVisual();
             }
@@ -147,17 +141,18 @@ namespace FikusIn.Views
                 // Middle click: Pan
                 if (e.LeftButton == MouseButtonState.Released && e.MiddleButton == MouseButtonState.Pressed && e.RightButton == MouseButtonState.Released && dragStartingPosition.HasValue)
                 {
-                    gfxEngine.Camera.Pan(dragOffset, Width, (Keyboard.GetKeyStates(Key.LeftShift) & KeyStates.Down) > 0, (Keyboard.GetKeyStates(Key.LeftCtrl) & KeyStates.Down) > 0);
+                    //gfxEngine.Camera.Pan(dragOffset, Width, (Keyboard.GetKeyStates(Key.LeftShift) & KeyStates.Down) > 0, (Keyboard.GetKeyStates(Key.LeftCtrl) & KeyStates.Down) > 0);
                 }
                 // Right click: Rotate
                 else if (e.LeftButton == MouseButtonState.Released && e.MiddleButton == MouseButtonState.Released && e.RightButton == MouseButtonState.Pressed && dragStartingPosition.HasValue)
                 {
-                    gfxEngine.Camera.Rotate(dragOffset, new Point3D(0, 0, 0));
+                    aViewer?.Viewer?.View.Rotation((int)dragCurrentPosition.X, (int)dragCurrentPosition.Y);
+                    //gfxEngine.Camera.Rotate(dragOffset, new Point3D(0, 0, 0));
                 }
                 // Left + Right click: Camera Roll
                 else if (e.LeftButton == MouseButtonState.Pressed && e.MiddleButton == MouseButtonState.Released && e.RightButton == MouseButtonState.Pressed && dragStartingPosition.HasValue)
                 {
-                    gfxEngine.Camera.Roll(dragStartingPosition.Value, dragCurrentPosition, Width, Height);
+                    //gfxEngine.Camera.Roll(dragStartingPosition.Value, dragCurrentPosition, Width, Height);
                 }
 
                 dragStartingPosition = dragCurrentPosition;
@@ -186,8 +181,8 @@ namespace FikusIn.Views
 
         private void Window_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            if (e.Delta != 0)
-                gfxEngine.Camera.Zoom(Mouse.GetPosition(this), e.Delta, Width, Height, (Keyboard.GetKeyStates(Key.LeftShift) & KeyStates.Down) > 0, (Keyboard.GetKeyStates(Key.LeftCtrl) & KeyStates.Down) > 0);
+            //if (e.Delta != 0)
+                //gfxEngine.Camera.Zoom(Mouse.GetPosition(this), e.Delta, Width, Height, (Keyboard.GetKeyStates(Key.LeftShift) & KeyStates.Down) > 0, (Keyboard.GetKeyStates(Key.LeftCtrl) & KeyStates.Down) > 0);
         }
 
         private void Window_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
@@ -209,6 +204,22 @@ namespace FikusIn.Views
         private void wDoc_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             SetMenuOrientation();
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            aViewer = new D3DViewer();
+            ImageBrush anImage = new(aViewer.Image);
+            gridD3D.Background = anImage;
+
+            //aViewer.Viewer?.ImportModel(ModelFormat.STEP);
+
+            aViewer.Resize((int)gridD3D.ActualWidth, (int)gridD3D.ActualHeight);
+        }
+
+        private void gridD3D_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            aViewer?.Resize((int)gridD3D.ActualWidth, (int)gridD3D.ActualHeight);
         }
     }
 }

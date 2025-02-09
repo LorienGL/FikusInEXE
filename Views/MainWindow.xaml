@@ -19,7 +19,8 @@
         WindowState="Maximized"
         WindowStartupLocation="CenterScreen"
         Background="{StaticResource colorMainWindowBackground}"
-        ContentRendered="wMain_ContentRendered">
+        ContentRendered="wMain_ContentRendered"
+        Loaded="wMain_Loaded">
 
     <Window.Resources>
         <Style x:Key="WindowsButtons"
@@ -993,10 +994,14 @@
                   Background="{StaticResource colorMainWindowBackground}"
                   Grid.Row="1"
                   Margin="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="37*" />
+                    <ColumnDefinition Width="443*" />
+                </Grid.ColumnDefinitions>
 
                 <ItemsControl x:Name="docsGfxItemsControl"
                               ItemsSource="{Binding Documents}"
-                              Margin="0">
+                              Grid.ColumnSpan="2">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <Grid Margin="0">

@@ -8,18 +8,22 @@
              d:DesignHeight="450"
              d:DesignWidth="800"
              SizeChanged="wDoc_SizeChanged"
+             Loaded="UserControl_Loaded"
              >
     <Grid Margin="0">
         <!--<Label Content="{Binding Name}" 
                Foreground="#FFFF00"/>-->
         <!--3D graphics-->
-        <Grid Margin="0" 
-              Background="{StaticResource colorMainWindowBackground}"
+        <Grid x:Name="gridD3D"
+              Margin="0"
               MouseLeftButtonDown="Window_MouseLeftButtonDown"
               MouseLeftButtonUp="Window_MouseLeftButtonUp"
               MouseMove="Window_MouseMove"
-              MouseWheel="Window_MouseWheel">
-            <Viewport3D x:Name="v3dMain"
+              MouseWheel="Window_MouseWheel" 
+              Background="Black"
+              SizeChanged="gridD3D_SizeChanged"/>
+        <!--Background="{StaticResource colorMainWindowBackground}"-->
+        <!--<Viewport3D x:Name="v3dMain"
                         ClipToBounds="True"
                         IsHitTestVisible="True"
                         Width="Auto"
@@ -50,8 +54,8 @@
                         </Model3DGroup>
                     </ModelVisual3D.Content>
                 </ModelVisual3D>
-            </Viewport3D>
-        </Grid>
+            </Viewport3D>-->
+
 
         <!--Floating main operation menu-->
         <DockPanel x:Name="pnlMenu"
@@ -112,7 +116,10 @@
         <Canvas Height="Auto"
                 Width="Auto"
                 VerticalAlignment="Stretch"
-                HorizontalAlignment="Stretch">
+                HorizontalAlignment="Stretch"
+                MouseLeftButtonUp="Window_MouseLeftButtonUp"
+                MouseMove="Window_MouseMove"
+                MouseWheel="Window_MouseWheel">
             <Rectangle x:Name="canvasSelectionBox"
                        Stroke="White"
                        StrokeThickness="1"

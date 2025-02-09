@@ -13,7 +13,13 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>FikusIn</Title>
     <Copyright>(c) Dario Dura 2024</Copyright>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove=".gitattributes" />
+    <None Remove=".gitignore" />
+  </ItemGroup>
 
   <ItemGroup>
     <Content Include="f.ico" />
@@ -46,6 +52,10 @@
 
   <ItemGroup>
     <Folder Include="Resources\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OCCTProxy_D3D\OCCTProxy_D3D.vcxproj" />
   </ItemGroup>
 
   <ItemGroup>

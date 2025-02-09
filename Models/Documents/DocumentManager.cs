@@ -11,7 +11,7 @@ namespace FikusIn.Model.Documents
     internal static class DocumentManager
     {
         private static readonly ObservableCollection<Document> _documents = 
-            [new Document(new Guid(), "New Job", true)];
+            [];
 
         public static void SetActiveDocument(Document? document)
         {
