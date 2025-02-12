@@ -61,7 +61,7 @@ namespace FikusIn.Model.Documents
         public static Document NewDocument()
         {
             int njc = GetMaxJobNumber();
-            var res = new Document(Guid.NewGuid(), NewJobName + (njc > 0? $" {njc}": ""), false);
+            var res = new Document(Guid.NewGuid(), NewJobName + (njc > 0? $" {njc}": ""), "", false);
 
             AddDocument(res);
 
@@ -70,9 +70,10 @@ namespace FikusIn.Model.Documents
 
         public static Document? OpenDocument(string path)
         {
-            var res = new Document(Guid.NewGuid(), Path.GetFileNameWithoutExtension(path), false);
+            var res = new Document(Guid.NewGuid(), Path.GetFileNameWithoutExtension(path), path, false);
 
-            //TODO: Open the document => if failed, return null
+            if(res.GetOCDocument() == null)
+                return null;
 
             AddDocument(res);
 
@@ -104,18 +105,6 @@ namespace FikusIn.Model.Documents
 
             if (!document.Close())
                 return;
-        }
-
-        internal static void SaveActiveDocument()
-        {
-            GetActiveDocument()?.Save();
-        }
-
-        internal static void SaveAllDocuments()
-        {
-            foreach (var doc in _documents)
-                if(doc.IsModified)
-                    doc.Save();
         }
     }
 }

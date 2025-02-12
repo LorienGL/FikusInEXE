@@ -109,6 +109,9 @@ namespace FikusIn.Views
             if ((e.LeftButton == MouseButtonState.Pressed || e.MiddleButton == MouseButtonState.Pressed || e.RightButton == MouseButtonState.Pressed) && !dragStartingPosition.HasValue)
             {
                 dragStartingPosition = Mouse.GetPosition(this);
+                if(e.RightButton == MouseButtonState.Pressed)
+                    aViewer?.Viewer?.View.Rotation((int)dragStartingPosition.Value.X, (int)dragStartingPosition.Value.Y);
+
                 return;
             }
 

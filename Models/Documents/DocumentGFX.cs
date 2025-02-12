@@ -1,27 +1,29 @@
-﻿using System;
+﻿using FikusIn.Model.Documents;
+using FikusIn.OCCTViewer;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Media;
 using System.Windows.Interop;
-using System.Runtime.InteropServices;
+using System.Windows.Media;
 
-namespace FikusIn.OCCTViewer
+namespace FikusIn.Models.Documents
 {
-    /// <summary>
-    /// Tool object for output OCCT rendering with Direct3D.
-    /// </summary>
-    class D3DViewer
+    public class DocumentGFX
     {
-        /// <summary> Direct3D output image. </summary>
         private readonly D3DImage myD3DImage = new();
 
         /// <summary> Direct3D color surface. </summary>
         private nint myColorSurf;
 
-        public OCCViewer? Viewer = null;
+        private Document doc;
 
-        /// <summary> Creates new Direct3D-based OCCT viewer. </summary>
-        public D3DViewer()
+        public DocumentGFX(Document doc)
         {
+            this.doc = doc;
+
             myD3DImage.IsFrontBufferAvailableChanged
               += new DependencyPropertyChangedEventHandler(OnIsFrontBufferAvailableChanged);
 
@@ -53,18 +55,13 @@ namespace FikusIn.OCCTViewer
             if (HasFailed || !myD3DImage.IsFrontBufferAvailable)
                 return;
 
-            if (Viewer == null)
+            if (!doc.GetOCDocument()?.InitViewer())
             {
-                Viewer = new OCCViewer();
+                MessageBox.Show("Failed to initialize OpenGL-Direct3D interoperability!",
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
-                if (!Viewer.InitViewer())
-                {
-                    MessageBox.Show("Failed to initialize OpenGL-Direct3D interoperability!",
-                        "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-
-                    HasFailed = true;
-                    return;
-                }
+                HasFailed = true;
+                return;
             }
 
             // Leverage the Rendering event of WPF composition

@@ -1,4 +1,5 @@
-﻿using FikusIn.Utils;
+﻿using FikusIn.Models.Documents;
+using FikusIn.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -6,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using static FikusIn.Utils.Message;
 
 namespace FikusIn.Model.Documents
 {
@@ -16,18 +18,33 @@ namespace FikusIn.Model.Documents
     /// <param name="_id"></param>
     /// <param name="_name"></param>
     /// <param name="p_isActive"></param>
-    public class Document(Guid _id, string p_name, bool p_isActive): ObservableObjectBase
+    public class Document: ObservableObjectBase
     {
-        public Guid Id { get; set; } = _id;
+        public Document(Guid _id, string p_name, string p_path = "", bool p_isActive = true)
+        {
+            Id = _id;
+            _name = p_name;
+            Path = p_path;
+            _isActive = p_isActive;
 
-        private string _name = p_name;
+            if(Path == "")
+                m_OCDoc = OCDocument.Create(new OCMessageDelegate(this.OnNewMessage));
+            else
+                m_OCDoc = OCDocument.Open(Path, new OCMessageDelegate(this.OnNewMessage));
+        }
+
+        public Guid Id { get; private set; }
+
+        public string Path { get; private set; }
+
+        private string _name;
         public string Name 
         { 
             get => _name; 
             set => SetProperty(ref _name, value);
         }
 
-        private bool _isActive = p_isActive;
+        private bool _isActive;
         public bool IsActive
         {
             get => _isActive;
@@ -46,11 +63,53 @@ namespace FikusIn.Model.Documents
             return true;
         }
 
-        public void Save()
+        public bool Save()
         {
+            if (Path == "" || !Path.ToLower().EndsWith(FikusExtension))
+                return false;
+
+            if (!m_OCDoc.Save())
+                return false;
+
             IsModified = false;
+            return true;
+        }
+
+        public bool SaveAs(String p_FileName)
+        {
+            if(!m_OCDoc.SaveAs(p_FileName))
+                return false;
+
+            IsModified = false;
+            Path = p_FileName;
+            Name = System.IO.Path.GetFileNameWithoutExtension(p_FileName);
+
+            return true;
         }
 
         public override string ToString() => Name;
+
+        private readonly OCDocument m_OCDoc;
+
+        public OCDocument? GetOCDocument() => m_OCDoc;
+
+        private void OnNewMessage(OCMessageType p_Type, String p_Msg)
+        {
+
+        }
+
+        public DocumentGFX? GFX { get; private set; }
+
+        public void InitGFX()
+        {
+            if(GFX != null)
+                return;
+
+            m_OCDoc.InitViewer();
+            GFX = new DocumentGFX(this);
+
+        }
+
+        public static readonly string FikusExtension = ".fikus";
     }
 }

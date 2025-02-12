@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -56,23 +57,39 @@ namespace FikusIn.ViewModel
         );
 
         public static ICommand CloseDocument => new RelayCommand(
-            (object? obj) => { DocumentManager.CloseDocument(obj as Document); },
+            (object? obj) => 
+            { 
+                if(obj == null || obj is not Document)
+                    return;
+
+                Document? doc = obj as Document;
+                if (doc == null || !doc.IsModified)
+                    return;
+
+                var result = MessageBox.Show($"Do you want to save changes to {doc.Name}?", "FikusIn", MessageBoxButton.YesNoCancel);
+                if (result == MessageBoxResult.Yes)
+                    _SaveDocument(doc);
+                else if (result == MessageBoxResult.Cancel)
+                    return;
+
+                DocumentManager.CloseDocument(doc);
+            },
             (object? obj) => { return true; }
         );
 
         public static ICommand SaveDocument => new RelayCommand(
-            (object? obj) => { DocumentManager.SaveActiveDocument(); },
-            (object? obj) => { return true; }
+            (object? obj) => { _SaveDocument(DocumentManager.GetActiveDocument()); },
+            (object? obj) => { return DocumentManager.GetActiveDocument() != null && DocumentManager.GetActiveDocument().IsModified; }
         );
 
         public static ICommand SaveDocumentAs => new RelayCommand(
-            (object? obj) => { DocumentManager.SaveActiveDocument(); },
+            (object? obj) => { _SaveDocumentAs(DocumentManager.GetActiveDocument()); },
             (object? obj) => { return true; }
         );
 
         public static ICommand SaveAllDocuments => new RelayCommand(
-            (object? obj) => { DocumentManager.SaveAllDocuments(); },
-            (object? obj) => { return true; }
+            (object? obj) => { _SaveAllDocuments(); },
+            (object? obj) => { return DocumentManager.GetDocuments().Any(d => d.IsModified); }
         );
 
         public static ICommand OpenDocument => new RelayCommand(
@@ -81,6 +98,10 @@ namespace FikusIn.ViewModel
                 var dlg = new OpenFileDialog();
                 dlg.Filter = "Supported Files (*.fikus, *.dwg, *.dxf, *.stp, *.step, *.igs, *.iges, *.brep, *.obj)|*.fikus;*.dwg;*.dxf;*.stp;*.step;*.igs;*.iges;*.brep;*.obj";
                 dlg.Multiselect = true;
+                dlg.CheckFileExists = true;
+                dlg.CheckPathExists = true;
+                dlg.Title = "Open or Import Document";
+                dlg.ValidateNames = true;
 
                 if (dlg.ShowDialog() == true)
                     foreach (var path in dlg.FileNames)
@@ -139,6 +160,53 @@ namespace FikusIn.ViewModel
 
             ProgressList = Progress.StartProgressList();
         }
+
+        private static bool? _SaveDocumentAs(Document? p_Doc)
+        {
+            if (p_Doc == null)
+                return false;
+
+            var dlg = new SaveFileDialog
+            {
+                Filter = "FikusIn Document (*.fikus)|*.fikus",
+                FileName = p_Doc.Name,
+                DefaultExt = ".fikus",
+                AddExtension = true,
+                OverwritePrompt = true,
+                CheckPathExists = true,
+                CreateTestFile = true,
+                DereferenceLinks = true,
+                ValidateNames = true,
+                Title = "Save FikusIn Document As"
+            };
+
+            var res = dlg.ShowDialog();
+            if (res == true)
+                return p_Doc.SaveAs(dlg.FileName);
+            else if (res == null)
+                return null;
+            else
+                return false;
+        }
+
+        private static bool? _SaveDocument(Document? p_Doc)
+        {
+            if (p_Doc == null || !p_Doc.IsModified)
+                return false;
+
+            if (p_Doc.Path == "" || !p_Doc.Path.ToLower().EndsWith(Document.FikusExtension))
+                return _SaveDocumentAs(p_Doc);
+            else
+                return p_Doc.Save();
+        }
+
+        private static void _SaveAllDocuments()
+        {
+            foreach (var doc in DocumentManager.GetDocuments())
+                if(_SaveDocument(doc) == null)
+                    break;
+        }
+
 
         private void Documents_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
