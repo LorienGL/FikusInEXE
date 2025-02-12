@@ -1,5 +1,4 @@
 ﻿using FikusIn.Model.Documents;
-using FikusIn.OCCTViewer;
 using System;
 using System.Collections.Generic;
 using System.Linq;

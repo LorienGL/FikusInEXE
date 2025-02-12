@@ -91,7 +91,7 @@ namespace FikusIn.Model.Documents
 
         private readonly OCDocument m_OCDoc;
 
-        public OCDocument? GetOCDocument() => m_OCDoc;
+        public OCDocument GetOCDocument() => m_OCDoc;
 
         private void OnNewMessage(OCMessageType p_Type, String p_Msg)
         {

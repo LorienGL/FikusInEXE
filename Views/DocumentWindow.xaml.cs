@@ -1,4 +1,4 @@
-﻿using FikusIn.OCCTViewer;
+﻿using FikusIn.Model.Documents;
 using FikusIn.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -23,15 +23,16 @@ namespace FikusIn.Views
     /// </summary>
     public partial class DocumentWindow : UserControl
     {
-        private D3DViewer? aViewer = null;
+        private Document GetDocument()
+        {
+            return (Document)DataContext;
+        }
 
         public DocumentWindow()
         {
             InitializeComponent();
 
             pnlSubMenu.Visibility = Visibility.Collapsed;
-
-            // DataContext is the opened document
         }
 
         private void SetMenuOrientation()
@@ -110,7 +111,7 @@ namespace FikusIn.Views
             {
                 dragStartingPosition = Mouse.GetPosition(this);
                 if(e.RightButton == MouseButtonState.Pressed)
-                    aViewer?.Viewer?.View.Rotation((int)dragStartingPosition.Value.X, (int)dragStartingPosition.Value.Y);
+                    GetDocument().GetOCDocument()?.GetView()?.StartRotation((int)dragStartingPosition.Value.X, (int)dragStartingPosition.Value.Y);
 
                 return;
             }
@@ -149,7 +150,7 @@ namespace FikusIn.Views
                 // Right click: Rotate
                 else if (e.LeftButton == MouseButtonState.Released && e.MiddleButton == MouseButtonState.Released && e.RightButton == MouseButtonState.Pressed && dragStartingPosition.HasValue)
                 {
-                    aViewer?.Viewer?.View.Rotation((int)dragCurrentPosition.X, (int)dragCurrentPosition.Y);
+                    GetDocument().GetOCDocument()?.GetView()?.Rotation((int)dragCurrentPosition.X, (int)dragCurrentPosition.Y);
                     //gfxEngine.Camera.Rotate(dragOffset, new Point3D(0, 0, 0));
                 }
                 // Left + Right click: Camera Roll
@@ -211,18 +212,16 @@ namespace FikusIn.Views
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            aViewer = new D3DViewer();
-            ImageBrush anImage = new(aViewer.Image);
+            GetDocument().InitGFX();
+            ImageBrush anImage = new(GetDocument().GFX?.Image);
             gridD3D.Background = anImage;
 
-            //aViewer.Viewer?.ImportModel(ModelFormat.STEP);
-
-            aViewer.Resize((int)gridD3D.ActualWidth, (int)gridD3D.ActualHeight);
+            GetDocument().GFX?.Resize((int)gridD3D.ActualWidth, (int)gridD3D.ActualHeight);
         }
 
         private void gridD3D_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            aViewer?.Resize((int)gridD3D.ActualWidth, (int)gridD3D.ActualHeight);
+            GetDocument().GFX?.Resize((int)gridD3D.ActualWidth, (int)gridD3D.ActualHeight);
         }
     }
 }
