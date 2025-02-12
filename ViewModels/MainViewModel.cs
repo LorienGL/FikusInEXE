@@ -79,7 +79,11 @@ namespace FikusIn.ViewModel
 
         public static ICommand SaveDocument => new RelayCommand(
             (object? obj) => { _SaveDocument(DocumentManager.GetActiveDocument()); },
-            (object? obj) => { return DocumentManager.GetActiveDocument() != null && DocumentManager.GetActiveDocument().IsModified; }
+            (object? obj) => 
+            { 
+                var doc = DocumentManager.GetActiveDocument();
+                return doc != null && doc.IsModified; 
+            }
         );
 
         public static ICommand SaveDocumentAs => new RelayCommand(

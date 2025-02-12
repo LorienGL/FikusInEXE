@@ -55,9 +55,10 @@ namespace FikusIn.Models.Documents
             if (HasFailed || !myD3DImage.IsFrontBufferAvailable)
                 return;
 
-            if (!doc.GetOCDocument()?.InitViewer())
+            var ocDoc = doc.GetOCDocument();
+            if (ocDoc != null && !ocDoc.CreateView())
             {
-                MessageBox.Show("Failed to initialize OpenGL-Direct3D interoperability!",
+                MessageBox.Show("Failed to initialize Direct3D interoperability!",
                     "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
                 HasFailed = true;
@@ -95,7 +96,7 @@ namespace FikusIn.Models.Documents
                 myD3DImage.Lock();
                 {
                     // Update the scene (via a call into our custom library)
-                    Viewer?.View.RedrawView();
+                    doc.GetOCDocument()?.GetView().RedrawView();
 
                     // Invalidate the updated region of the D3DImage
                     myD3DImage.AddDirtyRect(new Int32Rect(0, 0, myD3DImage.PixelWidth, myD3DImage.PixelHeight));
@@ -113,8 +114,9 @@ namespace FikusIn.Models.Documents
                 myD3DImage.Lock();
                 {
                     myD3DImage.SetBackBuffer(D3DResourceType.IDirect3DSurface9, nint.Zero);
-                    if (Viewer != null)
-                        myColorSurf = Viewer.View.ResizeBridgeFBO(theSizeX, theSizeY);
+                    var ocDoc = doc.GetOCDocument();
+                    if (ocDoc != null && ocDoc.GetView() != null)
+                        myColorSurf = ocDoc.GetView().ResizeBridgeFBO(theSizeX, theSizeY);
                     myD3DImage.SetBackBuffer(D3DResourceType.IDirect3DSurface9, myColorSurf);
                 }
                 myD3DImage.Unlock();

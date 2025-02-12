@@ -105,9 +105,7 @@ namespace FikusIn.Model.Documents
             if(GFX != null)
                 return;
 
-            m_OCDoc.InitViewer();
             GFX = new DocumentGFX(this);
-
         }
 
         public static readonly string FikusExtension = ".fikus";
