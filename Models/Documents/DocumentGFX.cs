@@ -14,14 +14,15 @@ namespace FikusIn.Models.Documents
     {
         private readonly D3DImage myD3DImage = new();
 
-        /// <summary> Direct3D color surface. </summary>
-        private nint myColorSurf;
+        private nint myColorSurf; // Direct3D color surface pointer
 
-        private Document doc;
+        private Document myDoc;
 
-        public DocumentGFX(Document doc)
+        private Size mySize = new Size(0, 0);
+
+        public DocumentGFX(Document p_Doc)
         {
-            this.doc = doc;
+            myDoc = p_Doc;
 
             myD3DImage.IsFrontBufferAvailableChanged
               += new DependencyPropertyChangedEventHandler(OnIsFrontBufferAvailableChanged);
@@ -29,32 +30,22 @@ namespace FikusIn.Models.Documents
             BeginRenderingScene();
         }
 
-        /// <summary> Creates new Direct3D-based OCCT viewer. </summary>
         private void OnIsFrontBufferAvailableChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            // If the front buffer is available, then WPF has just created a new
-            // Direct3D device, thus we need to start rendering our custom scene
             if (myD3DImage.IsFrontBufferAvailable)
-            {
                 BeginRenderingScene();
-            }
             else
-            {
-                // If the front buffer is no longer available, then WPF has lost Direct3D
-                // device, thus we need to stop rendering until the new device is created
-                StopRenderingScene();
-            }
+                StopRenderingScene(); // Device not avilable
         }
 
         private bool HasFailed = false;
 
-        /// <summary> Initializes Direct3D-OCCT rendering. </summary>
         private void BeginRenderingScene()
         {
             if (HasFailed || !myD3DImage.IsFrontBufferAvailable)
                 return;
 
-            var ocDoc = doc.GetOCDocument();
+            var ocDoc = myDoc.GetOCDocument();
             if (ocDoc != null && !ocDoc.CreateView())
             {
                 MessageBox.Show("Failed to initialize Direct3D interoperability!",
@@ -64,27 +55,24 @@ namespace FikusIn.Models.Documents
                 return;
             }
 
-            // Leverage the Rendering event of WPF composition
-            // target to update the our custom Direct3D scene
+            // Need this so when the Direct3D device is available, we can start rendering (else surface isn't created)
+            if (mySize.Width != 0 && mySize.Height != 0 && myColorSurf == nint.Zero)
+                Resize((int)mySize.Width, (int)mySize.Height);
+
             CompositionTarget.Rendering += OnRendering;
         }
 
-        /// <summary> Releases Direct3D-OCCT rendering. </summary>
         public void StopRenderingScene()
         {
-            // This method is called when WPF loses its Direct3D device,
-            // so we should just release our custom Direct3D scene
             CompositionTarget.Rendering -= OnRendering;
             myColorSurf = nint.Zero;
         }
 
-        /// <summary> Performs Direct3D-OCCT rendering. </summary>
         private void OnRendering(object? sender, EventArgs e)
         {
             UpdateScene();
         }
 
-        /// <summary> Performs Direct3D-OCCT rendering. </summary>
         private void UpdateScene()
         {
             if (!HasFailed
@@ -94,26 +82,23 @@ namespace FikusIn.Models.Documents
             {
                 myD3DImage.Lock();
                 {
-                    // Update the scene (via a call into our custom library)
-                    doc.GetOCDocument()?.GetView().RedrawView();
-
-                    // Invalidate the updated region of the D3DImage
+                    myDoc.GetOCDocument()?.GetView().RedrawView();
                     myD3DImage.AddDirtyRect(new Int32Rect(0, 0, myD3DImage.PixelWidth, myD3DImage.PixelHeight));
                 }
                 myD3DImage.Unlock();
             }
         }
 
-        /// <summary> Resizes Direct3D surfaces and OpenGL FBO. </summary>
         public void Resize(int theSizeX, int theSizeY)
         {
+            mySize = new Size(theSizeX, theSizeY);
+
             if (!HasFailed && myD3DImage.IsFrontBufferAvailable)
             {
-                // Set the back buffer for Direct3D WPF image
                 myD3DImage.Lock();
                 {
                     myD3DImage.SetBackBuffer(D3DResourceType.IDirect3DSurface9, nint.Zero);
-                    var ocDoc = doc.GetOCDocument();
+                    var ocDoc = myDoc.GetOCDocument();
                     if (ocDoc != null && ocDoc.GetView() != null)
                         myColorSurf = ocDoc.GetView().ResizeBridgeFBO(theSizeX, theSizeY);
                     myD3DImage.SetBackBuffer(D3DResourceType.IDirect3DSurface9, myColorSurf);

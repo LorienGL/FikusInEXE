@@ -102,7 +102,7 @@ namespace FikusIn.Views
 
         private void wMain_Loaded(object sender, RoutedEventArgs e)
         {
-            MainViewModel.NewDocument.Execute(this);
+            DocumentManager.NewDocument();
         }
     }
 }

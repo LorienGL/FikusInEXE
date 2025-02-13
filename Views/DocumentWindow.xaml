@@ -7,10 +7,9 @@
              mc:Ignorable="d"
              d:DesignHeight="450"
              d:DesignWidth="800"
-             SizeChanged="wDoc_SizeChanged"
-             Loaded="UserControl_Loaded"
-             >
-    <Grid Margin="0">
+             SizeChanged="UserControl_SizeChanged"
+             Loaded="UserControl_Loaded">
+    <Grid Margin="0" x:Name="gridMain">
         <!--<Label Content="{Binding Name}" 
                Foreground="#FFFF00"/>-->
         <!--3D graphics-->
@@ -21,7 +20,7 @@
               MouseMove="Window_MouseMove"
               MouseWheel="Window_MouseWheel" 
               Background="Black"
-              SizeChanged="gridD3D_SizeChanged"/>
+              SizeChanged="Window_SizeChanged"/>
         <!--Background="{StaticResource colorMainWindowBackground}"-->
         <!--<Viewport3D x:Name="v3dMain"
                         ClipToBounds="True"

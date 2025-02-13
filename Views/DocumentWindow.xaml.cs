@@ -199,13 +199,7 @@ namespace FikusIn.Views
 
         }
 
-        private void v3dMesh_MouseEnter(object sender, MouseEventArgs e)
-        {
-
-        }
-
-
-        private void wDoc_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             SetMenuOrientation();
         }
@@ -215,13 +209,12 @@ namespace FikusIn.Views
             GetDocument().InitGFX();
             ImageBrush anImage = new(GetDocument().GFX?.Image);
             gridD3D.Background = anImage;
-
-            GetDocument().GFX?.Resize((int)gridD3D.ActualWidth, (int)gridD3D.ActualHeight);
+            GetDocument().GFX?.Resize(Convert.ToInt32(gridD3D.ActualWidth), Convert.ToInt32(gridD3D.ActualHeight));
         }
 
-        private void gridD3D_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            GetDocument().GFX?.Resize((int)gridD3D.ActualWidth, (int)gridD3D.ActualHeight);
+            GetDocument()?.GFX?.Resize(Convert.ToInt32(e.NewSize.Width), Convert.ToInt32(e.NewSize.Height));
         }
     }
 }
