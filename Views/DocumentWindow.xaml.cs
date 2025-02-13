@@ -104,6 +104,7 @@ namespace FikusIn.Views
             if (e.LeftButton == MouseButtonState.Released && e.MiddleButton == MouseButtonState.Released && e.RightButton == MouseButtonState.Released)
             {
                 dragStartingPosition = null;
+                GetDocument().GetOCDocument()?.GetView()?.MoveTo((int)Mouse.GetPosition(this).X, (int)Mouse.GetPosition(this).Y);
                 return;
             }
 
