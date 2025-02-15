@@ -1,4 +1,5 @@
-﻿using FikusIn.Utils;
+﻿using FikusIn.Models;
+using FikusIn.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -58,17 +59,17 @@ namespace FikusIn.ViewModels
         private void MessageReceivedEventHandler(Object? sender, Message message)
         {
             Message = message.Text;
-            if (message.Type == Utils.Message.MessageType.Info)
+            if (message.Type == Models.Message.MessageType.Info)
             {
                 MessageBackground = Brushes.Black;
                 MessageForeground = Brushes.White;
             }
-            else if (message.Type == Utils.Message.MessageType.Warning)
+            else if (message.Type == Models.Message.MessageType.Warning)
             {
                 MessageBackground = Brushes.Yellow;
                 MessageForeground = Brushes.Black;
             }
-            else if (message.Type == Utils.Message.MessageType.Error)
+            else if (message.Type == Models.Message.MessageType.Error)
             {
                 MessageBackground = Brushes.DarkRed;
                 MessageForeground = Brushes.White;

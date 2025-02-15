@@ -1,5 +1,6 @@
 ﻿using FikusIn.Commands;
 using FikusIn.Model.Documents;
+using FikusIn.Models;
 using FikusIn.Utils;
 using FikusIn.ViewModels;
 using Microsoft.Win32;
@@ -74,26 +75,22 @@ namespace FikusIn.ViewModel
 
                 DocumentManager.CloseDocument(doc);
             },
-            (object? obj) => { return true; }
+            (object? obj) => { return obj != null; }
         );
 
         public static ICommand SaveDocument => new RelayCommand(
             (object? obj) => { _SaveDocument(DocumentManager.GetActiveDocument()); },
-            (object? obj) => 
-            { 
-                var doc = DocumentManager.GetActiveDocument();
-                return doc != null && doc.IsModified; 
-            }
+            (object? obj) => { return DocumentManager.GetActiveDocument() != null; }
         );
 
         public static ICommand SaveDocumentAs => new RelayCommand(
             (object? obj) => { _SaveDocumentAs(DocumentManager.GetActiveDocument()); },
-            (object? obj) => { return true; }
+            (object? obj) => { return DocumentManager.GetActiveDocument() != null; }
         );
 
         public static ICommand SaveAllDocuments => new RelayCommand(
             (object? obj) => { _SaveAllDocuments(); },
-            (object? obj) => { return DocumentManager.GetDocuments().Any(d => d.IsModified); }
+            (object? obj) => { return DocumentManager.GetDocuments().Count > 0; }
         );
 
         public static ICommand OpenDocument => new RelayCommand(
@@ -117,7 +114,7 @@ namespace FikusIn.ViewModel
 
         public static ICommand SetActiveDocument => new RelayCommand(
             (object? obj) => { DocumentManager.SetActiveDocument(obj as Document); },
-            (object? obj) => { return true; }
+            (object? obj) => { return obj != null; }
         );
 
         public ICommand SetSmallZoomFactor => new RelayCommand(

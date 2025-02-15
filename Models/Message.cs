@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FikusIn.Utils
+namespace FikusIn.Models
 {
     public class Message(string text, Message.MessageType type)
     {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FikusIn.Utils;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,14 +9,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 
-namespace FikusIn.Utils
+namespace FikusIn.Models
 {
     /// <summary>
     /// Just do: 
     ///     using Progress myProgress = new Progress();
     /// MUST do the using or the progress will remain in screen forever even when done
     /// </summary>
-    public class Progress: ObservableObjectBase, IDisposable
+    public class Progress : ObservableObjectBase, IDisposable
     {
         private static readonly ConcurrentDictionary<Guid, Progress> _progressList = []; // This will be used in many threads
         private static readonly BindingList<Progress> _bindedProgressList = []; // Thid list is used by the main thread only (UI)
@@ -27,7 +28,7 @@ namespace FikusIn.Utils
         private Guid Id { get; }
 
         private double _current = 0;
-        public double Current 
+        public double Current
         {
             get => _current;
             set => SetProperty(ref _current, value);
@@ -39,11 +40,11 @@ namespace FikusIn.Utils
         public Progress(double max = 0, double min = 0, bool isIndeterminate = false)
         {
             Minimum = min;
-            Maximum = max; 
+            Maximum = max;
             IsIndeterminate = isIndeterminate;
             Id = Guid.NewGuid();
 
-            while(!_progressList.TryAdd(Id, this)) // Should never be false, ever
+            while (!_progressList.TryAdd(Id, this)) // Should never be false, ever
                 Id = Guid.NewGuid();
         }
 
@@ -66,7 +67,7 @@ namespace FikusIn.Utils
             refreshBindedListTimer.Tick += refreshBindedListTimer_Tick;
             refreshBindedListTimer.Start();
 
-            return _bindedProgressList; 
+            return _bindedProgressList;
         }
 
         // If we recreate the objects everytime, the UI felt clumsy, plus no determinate progress bars will not show (destroyed and created every tick, not fun)
@@ -80,11 +81,11 @@ namespace FikusIn.Utils
             foreach (var progress in newList)
                 _bindedProgressList.Add(new Progress(progress.Minimum, progress.Maximum, progress.IsIndeterminate, progress.Current, progress.Id));
 
-            foreach(var progress in _bindedProgressList)
+            foreach (var progress in _bindedProgressList)
             {
                 Progress? thProgress;
                 if (_progressList.TryGetValue(progress.Id, out thProgress))
-                    if(progress != null)
+                    if (progress != null)
                         progress.Current = thProgress.Current;
             }
         }

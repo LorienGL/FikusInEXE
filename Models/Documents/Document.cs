@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using static FikusIn.Utils.Message;
+using static FikusIn.Models.Message;
 
 namespace FikusIn.Model.Documents
 {

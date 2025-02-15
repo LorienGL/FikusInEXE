@@ -26,6 +26,7 @@ namespace FikusIn.Views
             InitializeComponent();
             var mainViewModel = new MainViewModel();
             DataContext = mainViewModel;
+            messageLabel.DataContext = mainViewModel.MessagesViewModel;
         }
 
 
