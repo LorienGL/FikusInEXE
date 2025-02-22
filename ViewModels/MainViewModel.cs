@@ -64,18 +64,21 @@ namespace FikusIn.ViewModel
                     return;
 
                 Document? doc = obj as Document;
-                if (doc == null || !doc.IsModified)
+                if (doc == null)
                     return;
 
-                var result = MessageBox.Show($"Do you want to save changes to {doc.Name}?", "FikusIn", MessageBoxButton.YesNoCancel);
-                if (result == MessageBoxResult.Yes)
-                    _SaveDocument(doc);
-                else if (result == MessageBoxResult.Cancel)
-                    return;
+                if (doc.IsModified)
+                {
+                    var result = MessageBox.Show($"Do you want to save changes for {doc.Name}?", "FikusIn", MessageBoxButton.YesNoCancel);
+                    if (result == MessageBoxResult.Yes)
+                        _SaveDocument(doc);
+                    else if (result == MessageBoxResult.Cancel)
+                        return;
+                }
 
                 DocumentManager.CloseDocument(doc);
             },
-            (object? obj) => { return obj != null; }
+            (object? obj) => { return obj != null && obj is Document; }
         );
 
         public static ICommand SaveDocument => new RelayCommand(

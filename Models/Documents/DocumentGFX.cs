@@ -1,6 +1,7 @@
 ﻿using FikusIn.Model.Documents;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,8 +21,15 @@ namespace FikusIn.Models.Documents
 
         private Size mySize = new Size(0, 0);
 
+        //private bool myRenderNeeded = true;
+        private Stopwatch? myLastRenderStartStopwatch;
+        private Stopwatch? myLastRenderEndStopwatch;
+
         public DocumentGFX(Document p_Doc)
         {
+            myLastRenderStartStopwatch = Stopwatch.StartNew();
+            myLastRenderEndStopwatch = Stopwatch.StartNew();
+
             myDoc = p_Doc;
 
             myD3DImage.IsFrontBufferAvailableChanged
@@ -39,6 +47,7 @@ namespace FikusIn.Models.Documents
         }
 
         private bool HasFailed = false;
+        private double myCurrFPS2ms = 1000.0 / 45.0;
 
         private void BeginRenderingScene()
         {
@@ -60,33 +69,66 @@ namespace FikusIn.Models.Documents
                 Resize((int)mySize.Width, (int)mySize.Height);
 
             CompositionTarget.Rendering += OnRendering;
+            Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}: DocumentGFX.BeginRenderingScene() =====>");
         }
 
         public void StopRenderingScene()
         {
             CompositionTarget.Rendering -= OnRendering;
             myColorSurf = nint.Zero;
+            Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}: <===== DocumentGFX.StopRenderingScene()");
         }
 
         private void OnRendering(object? sender, EventArgs e)
         {
-            UpdateScene();
+            //Render();
+
+            //myRenderNeeded = true;
+            TryRender();
         }
 
-        private void UpdateScene()
+        public void TryRender()
+        {
+            //if (!myRenderNeeded)
+            //    return;
+
+            if (myLastRenderStartStopwatch?.Elapsed.TotalMilliseconds > myCurrFPS2ms && myLastRenderEndStopwatch?.Elapsed.TotalMilliseconds > 7.0) // 45 FPS
+            {
+                //Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}:   DocumentGFX.TryRender() {myLastRenderStartStopwatch?.Elapsed.TotalMilliseconds} {myLastRenderEndStopwatch?.Elapsed.TotalMilliseconds} => ");
+                myLastRenderStartStopwatch.Restart();
+                Stopwatch renderSW = Stopwatch.StartNew();
+                Render();
+                renderSW.Stop();
+                if(renderSW.Elapsed.TotalMilliseconds > 2 * myCurrFPS2ms)
+                    myCurrFPS2ms = 1000.0 / 30.0;
+                else if(renderSW.Elapsed.TotalMilliseconds < 0.5 * myCurrFPS2ms)
+                    myCurrFPS2ms = 1000.0 / 45.0;
+                myLastRenderEndStopwatch.Restart();
+                //Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}:   DocumentGFX.TryRender() <= ");
+                //myRenderNeeded = false;
+            }
+        }
+
+        private void Render()
         {
             if (!HasFailed
               && myD3DImage.IsFrontBufferAvailable
               && myColorSurf != nint.Zero
               && myD3DImage.PixelWidth != 0 && myD3DImage.PixelHeight != 0)
             {
+                //Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}:     DocumentGFX.Render() => myD3DImage.Lock()");
                 myD3DImage.Lock();
                 {
+                    //Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}:       DocumentGFX.Render() => BEGIN RedrawView");
                     myDoc.GetOCDocument()?.GetView().RedrawView();
+                    //Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}:       DocumentGFX.Render() => END   RedrawView");
                     myD3DImage.AddDirtyRect(new Int32Rect(0, 0, myD3DImage.PixelWidth, myD3DImage.PixelHeight));
                 }
                 myD3DImage.Unlock();
+                //Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}:     DocumentGFX.Render() => myD3DImage.Unlock()");
             }
+            else
+                Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}:     DocumentGFX.Render() ##### NOT UPDATED ===> {HasFailed} {myD3DImage.IsFrontBufferAvailable} {myColorSurf} {myD3DImage.PixelWidth} {myD3DImage.PixelHeight}");
         }
 
         public void Resize(int theSizeX, int theSizeY)
