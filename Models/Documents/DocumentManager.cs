@@ -28,6 +28,8 @@ namespace FikusIn.Model.Documents
         {
             _documents.Add(document);
             SetActiveDocument(document);
+            if(document.Path != "" && _documents.Count == 2 && _documents[0].IsModified == false && _documents[0].Path == "")
+                _documents.RemoveAt(0);
         }
 
         private static void RemoveDocument(Document document)

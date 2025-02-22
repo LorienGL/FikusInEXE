@@ -99,7 +99,7 @@ namespace FikusIn.ViewModels
             };
 
             Messenger.Instance.MessageReceived += MessageReceivedEventHandler;
-            Message = DateTime.Now.Hour < 12 ? "Good Morning!" : DateTime.Now.Hour < 18 ? "Good afternoon!" : "Good Night!";
+            Message = DateTime.Now.Hour < 12 ? "Good Morning!" : DateTime.Now.Hour < 18 ? "Good afternoon!" : "Good Evening!";
         }
     }
 }
