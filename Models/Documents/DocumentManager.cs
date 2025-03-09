@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FikusIn.Models.Documents;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -10,8 +11,7 @@ namespace FikusIn.Model.Documents
 {
     internal static class DocumentManager
     {
-        private static readonly ObservableCollection<Document> _documents = 
-            [];
+        private static readonly ObservableCollection<Document> _documents = [];
 
         public static void SetActiveDocument(Document? document)
         {
@@ -28,8 +28,11 @@ namespace FikusIn.Model.Documents
         {
             _documents.Add(document);
             SetActiveDocument(document);
+
             if(document.Path != "" && _documents.Count == 2 && _documents[0].IsModified == false && _documents[0].Path == "")
                 _documents.RemoveAt(0);
+
+            RecentDocuments.Add(document, new System.Windows.Media.Imaging.BitmapImage());
         }
 
         private static void RemoveDocument(Document document)
@@ -60,19 +63,20 @@ namespace FikusIn.Model.Documents
 
             return jobNumbers.Count != 0 ? jobNumbers.Max() + 1: _documents.Any(d => d.Name == NewJobName)? 2: 0;
         }
-        public static Document NewDocument()
+
+        public static Document NewDocument(double windowScale)
         {
             int njc = GetMaxJobNumber();
-            var res = new Document(Guid.NewGuid(), NewJobName + (njc > 0? $" {njc}": ""), "", false);
+            var res = new Document(Guid.NewGuid(), NewJobName + (njc > 0? $" {njc}": ""), "", false, 1.0 / windowScale);
 
             AddDocument(res);
 
             return res;
         }
 
-        public static Document? OpenDocument(string path)
+        public static Document? OpenDocument(string path, double windowScale)
         {
-            var res = new Document(Guid.NewGuid(), Path.GetFileNameWithoutExtension(path), path, false);
+            var res = new Document(Guid.NewGuid(), Path.GetFileNameWithoutExtension(path), path, false, 1.0 / windowScale);
 
             if(res.GetOCDocument() == null)
                 return null;
@@ -96,6 +100,11 @@ namespace FikusIn.Model.Documents
         public static ObservableCollection<Document> GetDocuments()
         {
             return _documents;
+        }
+
+        public static ObservableCollection<DocumentInfo> GetRecentDocuments()
+        {
+            return RecentDocuments.GetRecentDocuments();
         }
 
         public static void CloseDocument(Document? document)

@@ -119,17 +119,19 @@ namespace FikusIn.Views
 
             try
             {
+                if (canvasSelectionBox.Visibility != Visibility.Collapsed 
+                    && (dragStartingPosition == null || e.LeftButton == MouseButtonState.Released || e.MiddleButton == MouseButtonState.Pressed || e.RightButton == MouseButtonState.Pressed))
+                    canvasSelectionBox.Visibility = Visibility.Collapsed;
+
                 // No button pressed, we release dragstart and we do just picking/highlighting
                 if (e.LeftButton == MouseButtonState.Released && e.MiddleButton == MouseButtonState.Released && e.RightButton == MouseButtonState.Released)
                 {
                     dragStartingPosition = null;
-                    if(canvasSelectionBox.Visibility != Visibility.Collapsed)
-                        canvasSelectionBox.Visibility = Visibility.Collapsed;
-                    GetDocument().GetOCDocument()?.GetView()?.MoveTo((int)Mouse.GetPosition(this).X, (int)Mouse.GetPosition(this).Y);
+                    GetDocument()?.GetOCDocument()?.GetView()?.MoveTo((int)e.GetPosition(gridD3D).X, (int)e.GetPosition(gridD3D).Y);
                     return;
                 }
 
-                Point dragCurrentPosition = Mouse.GetPosition(this);
+                Point dragCurrentPosition = e.GetPosition(gridD3D);
                 bool isCtrlDown = Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl);
 
                 // Left click: Selection (& box sel)
@@ -137,7 +139,7 @@ namespace FikusIn.Views
                 {
                     if (dragStartingPosition == null)
                     {
-                        dragStartingPosition = Mouse.GetPosition(this);
+                        dragStartingPosition = e.GetPosition(gridD3D);
                         return;
                     }
 
@@ -153,16 +155,14 @@ namespace FikusIn.Views
                     else
                         canvasSelectionBox.StrokeDashArray = new DoubleCollection() { 2, 2 };
 
-                    GetDocument().GetOCDocument()?.GetView()?.MoveTo((int)dragStartingPosition.Value.X, (int)dragStartingPosition.Value.Y, (int)dragCurrentPosition.X, (int)dragCurrentPosition.Y);
+                    GetDocument()?.GetOCDocument()?.GetView()?.MoveTo((int)dragStartingPosition.Value.X, (int)dragStartingPosition.Value.Y, (int)dragCurrentPosition.X, (int)dragCurrentPosition.Y);
                 }
                 // Middle click: Pan
                 else if (e.LeftButton == MouseButtonState.Released && e.MiddleButton == MouseButtonState.Pressed && e.RightButton == MouseButtonState.Released)
                 {
                     if (dragStartingPosition != null)
                     {
-                        GetDocument().GetOCDocument()?.GetView()?.Pan(dragCurrentPosition.X - dragStartingPosition.Value.X, dragStartingPosition.Value.Y - dragCurrentPosition.Y);
-                        if (canvasSelectionBox.Visibility != Visibility.Collapsed)
-                            canvasSelectionBox.Visibility = Visibility.Collapsed;
+                        GetDocument()?.GetOCDocument()?.GetView()?.Pan(dragCurrentPosition.X - dragStartingPosition.Value.X, dragStartingPosition.Value.Y - dragCurrentPosition.Y);
                     }
 
                     dragStartingPosition = dragCurrentPosition;
@@ -172,22 +172,18 @@ namespace FikusIn.Views
                 {
                     if (dragStartingPosition == null)
                     {
-                        dragStartingPosition = Mouse.GetPosition(this);
-                        GetDocument().GetOCDocument()?.GetView()?.StartRotation(dragStartingPosition.Value.X, dragStartingPosition.Value.Y, isCtrlDown);
-                        if (canvasSelectionBox.Visibility != Visibility.Collapsed)
-                            canvasSelectionBox.Visibility = Visibility.Collapsed;
+                        dragStartingPosition = e.GetPosition(gridD3D);
+                        GetDocument()?.GetOCDocument()?.GetView()?.StartRotation(dragStartingPosition.Value.X, dragStartingPosition.Value.Y, isCtrlDown);
                     }
                     else
                     {
-                        GetDocument().GetOCDocument()?.GetView()?.Rotation(dragCurrentPosition.X, dragCurrentPosition.Y);
+                        GetDocument()?.GetOCDocument()?.GetView()?.Rotation(dragCurrentPosition.X, dragCurrentPosition.Y);
                         Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}     Rotation({(int)dragCurrentPosition.X}, {(int)dragCurrentPosition.Y})");
                     }
                 }
                 else
                 {
                     dragStartingPosition = null;
-                    if (canvasSelectionBox.Visibility != Visibility.Collapsed)
-                        canvasSelectionBox.Visibility = Visibility.Collapsed;
                 }
             }
             finally
@@ -202,7 +198,7 @@ namespace FikusIn.Views
             // No drag started, just select whatever is under the mouse (MoveTo already called in MouseMove)
             if (!dragStartingPosition.HasValue) 
             {
-                GetDocument().GetOCDocument()?.GetView()?.Select((int)Mouse.GetPosition(this).X, (int)Mouse.GetPosition(this).Y);
+                GetDocument()?.GetOCDocument()?.GetView()?.Select((int)Mouse.GetPosition(this).X, (int)Mouse.GetPosition(this).Y);
                 return;
             }
 
@@ -211,7 +207,7 @@ namespace FikusIn.Views
             Point dragEndingPosition = Mouse.GetPosition(this);
 
             // Left click: Selection (& box sel)
-            GetDocument().GetOCDocument()?.GetView()?.Select((int)dragStartingPosition.Value.X, (int)dragStartingPosition.Value.Y, (int)dragEndingPosition.X, (int)dragEndingPosition.Y);
+            GetDocument()?.GetOCDocument()?.GetView()?.Select((int)dragStartingPosition.Value.X, (int)dragStartingPosition.Value.Y, (int)dragEndingPosition.X, (int)dragEndingPosition.Y);
 
             dragStartingPosition = null;
         }
@@ -222,16 +218,16 @@ namespace FikusIn.Views
             if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
             {
                 if (e.Delta > 0)
-                    GetDocument().GetOCDocument()?.GetView()?.NextDetected();
+                    GetDocument()?.GetOCDocument()?.GetView()?.NextDetected();
                 else
-                    GetDocument().GetOCDocument()?.GetView()?.PreviousDetected();
+                    GetDocument()?.GetOCDocument()?.GetView()?.PreviousDetected();
             }
             else
             {
                 if (e.Delta > 0)
-                    GetDocument().GetOCDocument()?.GetView()?.ZoomOut();
+                    GetDocument()?.GetOCDocument()?.GetView()?.ZoomOut();
                 else
-                    GetDocument().GetOCDocument()?.GetView()?.ZoomIn();
+                    GetDocument()?.GetOCDocument()?.GetView()?.ZoomIn();
             }
         }
 
@@ -252,10 +248,10 @@ namespace FikusIn.Views
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            GetDocument().InitGFX();
-            ImageBrush anImage = new(GetDocument().GFX?.Image);
+            GetDocument()?.InitGFX();
+            ImageBrush anImage = new(GetDocument()?.GFX?.Image);
             gridD3D.Background = anImage;
-            GetDocument().GFX?.Resize(Convert.ToInt32(gridD3D.ActualWidth), Convert.ToInt32(gridD3D.ActualHeight));
+            GetDocument()?.GFX?.Resize(Convert.ToInt32(gridD3D.ActualWidth), Convert.ToInt32(gridD3D.ActualHeight));
 
             myRenderTimer = new Timer(OnRenderTimer, null, 0, 1000 / 30); // 30 FPS when iddle (45 when moving)
 

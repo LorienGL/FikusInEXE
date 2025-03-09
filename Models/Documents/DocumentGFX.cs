@@ -21,8 +21,8 @@ namespace FikusIn.Models.Documents
 
         private Size mySize = new Size(0, 0);
 
-        //private bool myRenderNeeded = true;
-        private Stopwatch? myLastRenderStartStopwatch;
+        private bool myRenderNeeded = true;
+        private Stopwatch? myLastRenderStartStopwatch = Stopwatch.StartNew();
         private Stopwatch? myLastRenderEndStopwatch;
 
         public DocumentGFX(Document p_Doc)
@@ -83,14 +83,14 @@ namespace FikusIn.Models.Documents
         {
             //Render();
 
-            //myRenderNeeded = true;
+            myRenderNeeded = true;
             TryRender();
         }
 
         public void TryRender()
         {
-            //if (!myRenderNeeded)
-            //    return;
+            if (!myRenderNeeded && (myDoc.GetOCDocument() == null || !myDoc.GetOCDocument().GetView().IsInvalidated()))
+                return;
 
             if (myLastRenderStartStopwatch?.Elapsed.TotalMilliseconds > myCurrFPS2ms && myLastRenderEndStopwatch?.Elapsed.TotalMilliseconds > 7.0) // 45 FPS
             {
@@ -99,7 +99,7 @@ namespace FikusIn.Models.Documents
                 Stopwatch renderSW = Stopwatch.StartNew();
                 Render();
                 renderSW.Stop();
-                if(renderSW.Elapsed.TotalMilliseconds > 2 * myCurrFPS2ms)
+                if(renderSW.Elapsed.TotalMilliseconds > 2.0 * myCurrFPS2ms)
                     myCurrFPS2ms = 1000.0 / 30.0;
                 else if(renderSW.Elapsed.TotalMilliseconds < 0.5 * myCurrFPS2ms)
                     myCurrFPS2ms = 1000.0 / 45.0;

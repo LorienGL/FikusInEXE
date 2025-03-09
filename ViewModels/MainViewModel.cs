@@ -52,8 +52,8 @@ namespace FikusIn.ViewModel
         #endregion
 
         #region Commands
-        public static ICommand NewDocument => new RelayCommand(
-            (object? obj) => { DocumentManager.NewDocument(); },
+        public ICommand NewDocument => new RelayCommand(
+            (object? obj) => { DocumentManager.NewDocument(_windowScale); },
             (object? obj) => { return true; }
         );
 
@@ -96,7 +96,7 @@ namespace FikusIn.ViewModel
             (object? obj) => { return DocumentManager.GetDocuments().Count > 0; }
         );
 
-        public static ICommand OpenDocument => new RelayCommand(
+        public ICommand OpenDocument => new RelayCommand(
             (object? obj) => 
             {
                 var dlg = new OpenFileDialog();
@@ -109,7 +109,7 @@ namespace FikusIn.ViewModel
 
                 if (dlg.ShowDialog() == true)
                     foreach (var path in dlg.FileNames)
-                        DocumentManager.OpenDocument(path);
+                        DocumentManager.OpenDocument(path, _windowScale);
             },
             (object? obj) => { return true; }
         );

@@ -19,9 +19,17 @@
               MouseLeftButtonDown="Window_MouseLeftButtonDown"
               MouseLeftButtonUp="Window_MouseLeftButtonUp"
               MouseMove="Window_MouseMove"
-              MouseWheel="Window_MouseWheel" 
+              MouseWheel="Window_MouseWheel"
               Background="Black"
-              SizeChanged="Window_SizeChanged"/>
+              SizeChanged="Window_SizeChanged">
+            <Grid.LayoutTransform>
+                <ScaleTransform ScaleX="{Binding GraphicsUnscale}"
+                                ScaleY="{Binding GraphicsUnscale}"
+                                CenterX=".5"
+                                CenterY=".5" />
+            </Grid.LayoutTransform>
+
+        </Grid>
         <!--Background="{StaticResource colorMainWindowBackground}"-->
         <!--<Viewport3D x:Name="v3dMain"
                         ClipToBounds="True"
