@@ -1,5 +1,4 @@
 ﻿using FikusIn.Model.Documents;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,12 +11,12 @@ namespace FikusIn.Serializers
     {
         public static string Serialize(Document document)
         {
-            return JsonConvert.SerializeObject(document);
+            throw new NotImplementedException();
         }
 
         public static Document? Deserialize(string serializedData)
         {
-            return JsonConvert.DeserializeObject<Document>(serializedData);
+            throw new NotImplementedException();
         }
     }
 }

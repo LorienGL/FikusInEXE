@@ -26,11 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="3DTools" Version="1.0.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -55,7 +50,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OCCTProxy_D3D\OCCTProxy_D3D.vcxproj" />
+    <ProjectReference Include="OCCTProxy_D3D\OCCTProxy_D3D.vcxproj" />
   </ItemGroup>
 
   <ItemGroup>
