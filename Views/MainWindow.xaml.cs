@@ -50,28 +50,6 @@ namespace FikusIn.Views
                 WindowState = System.Windows.WindowState.Normal;
         }
 
-        bool firstRender = true;
-        private void wMain_ContentRendered(object sender, EventArgs e)
-        {
-            if (firstRender)
-            {
-                firstRender = false;
-
-                double w = ActualWidth - 17; // 17 is the size of the border or something... but uless we substract it, the window is too big
-                double h = ActualHeight - 16; // 16 is the size of the title bar+border
-
-                //WindowStyle = WindowStyle.None;
-                //ResizeMode = ResizeMode.CanResize;
-                //WindowState = WindowState.Normal;
-                //Height = h;
-                //Width = w / 2.0;
-                //Top = 0;
-                //Left = w / 2.0;
-                //btnMaximize.Visibility = Visibility.Collapsed;
-            }
-        }
-
-
         private void popupDocumentListButton_Click(object sender, RoutedEventArgs e)
         {
             popupDocumentList.IsOpen = false;

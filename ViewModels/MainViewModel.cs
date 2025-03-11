@@ -40,7 +40,15 @@ namespace FikusIn.ViewModel
         public double WindowScale
         {
             get => _windowScale;
-            set { SetProperty(ref _windowScale, value); Properties.Settings.Default.WindowScale = value; Properties.Settings.Default.Save(); }
+            set 
+            { 
+                SetProperty(ref _windowScale, value);
+                foreach (var doc in Documents)
+                    if(doc != null)
+                        doc.GraphicsUnscale = 1.0 / value;
+                Properties.Settings.Default.WindowScale = value; 
+                Properties.Settings.Default.Save(); 
+            }
         }
 
         private bool _wireframe = Properties.Settings.Default.Wireframe;

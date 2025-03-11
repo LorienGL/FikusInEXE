@@ -44,12 +44,6 @@ namespace FikusIn.Views
             pnlSubMenu.Visibility = Visibility.Collapsed;
         }
 
-        ~DocumentWindow()
-        {
-            myRenderTimer?.Dispose();
-            myRenderTimer = null;
-        }
-
         private void SetMenuOrientation()
         {
             if (Width <= Height)
@@ -117,6 +111,8 @@ namespace FikusIn.Views
         {
             //Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff} Window_MouseMove ===>");
 
+            var p = Mouse.GetPosition(gridD3D); //e.GetPosition(gridD3D);
+
             try
             {
                 if (canvasSelectionBox.Visibility != Visibility.Collapsed 
@@ -127,11 +123,11 @@ namespace FikusIn.Views
                 if (e.LeftButton == MouseButtonState.Released && e.MiddleButton == MouseButtonState.Released && e.RightButton == MouseButtonState.Released)
                 {
                     dragStartingPosition = null;
-                    GetDocument()?.GetOCDocument()?.GetView()?.MoveTo((int)e.GetPosition(gridD3D).X, (int)e.GetPosition(gridD3D).Y);
+                    GetDocument()?.GetOCDocument()?.GetView()?.MoveTo((int)p.X, (int)p.Y);
                     return;
                 }
 
-                Point dragCurrentPosition = e.GetPosition(gridD3D);
+                Point dragCurrentPosition = p;
                 bool isCtrlDown = Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl);
 
                 // Left click: Selection (& box sel)
@@ -139,7 +135,7 @@ namespace FikusIn.Views
                 {
                     if (dragStartingPosition == null)
                     {
-                        dragStartingPosition = e.GetPosition(gridD3D);
+                        dragStartingPosition = p;
                         return;
                     }
 
@@ -172,13 +168,13 @@ namespace FikusIn.Views
                 {
                     if (dragStartingPosition == null)
                     {
-                        dragStartingPosition = e.GetPosition(gridD3D);
+                        dragStartingPosition = p;
                         GetDocument()?.GetOCDocument()?.GetView()?.StartRotation(dragStartingPosition.Value.X, dragStartingPosition.Value.Y, isCtrlDown);
                     }
                     else
                     {
                         GetDocument()?.GetOCDocument()?.GetView()?.Rotation(dragCurrentPosition.X, dragCurrentPosition.Y);
-                        Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}     Rotation({(int)dragCurrentPosition.X}, {(int)dragCurrentPosition.Y})");
+                        //Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}     Rotation({(int)dragCurrentPosition.X}, {(int)dragCurrentPosition.Y})");
                     }
                 }
                 else
@@ -189,7 +185,7 @@ namespace FikusIn.Views
             finally
             {
                 //Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff} <=== Window_MouseMove");
-                GetDocument()?.GFX?.TryRender();
+                //GetDocument()?.GFX?.TryRender();
             }
         }
 
@@ -198,13 +194,13 @@ namespace FikusIn.Views
             // No drag started, just select whatever is under the mouse (MoveTo already called in MouseMove)
             if (!dragStartingPosition.HasValue) 
             {
-                GetDocument()?.GetOCDocument()?.GetView()?.Select((int)Mouse.GetPosition(this).X, (int)Mouse.GetPosition(this).Y);
+                GetDocument()?.GetOCDocument()?.GetView()?.Select((int)Mouse.GetPosition(gridD3D).X, (int)Mouse.GetPosition(gridD3D).Y);
                 return;
             }
 
             canvasSelectionBox.Visibility = Visibility.Collapsed;
 
-            Point dragEndingPosition = Mouse.GetPosition(this);
+            Point dragEndingPosition = Mouse.GetPosition(gridD3D);
 
             // Left click: Selection (& box sel)
             GetDocument()?.GetOCDocument()?.GetView()?.Select((int)dragStartingPosition.Value.X, (int)dragStartingPosition.Value.Y, (int)dragEndingPosition.X, (int)dragEndingPosition.Y);
@@ -248,37 +244,16 @@ namespace FikusIn.Views
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            GetDocument()?.InitGFX();
+            GetDocument()?.InitGFX(this);
             ImageBrush anImage = new(GetDocument()?.GFX?.Image);
             gridD3D.Background = anImage;
             GetDocument()?.GFX?.Resize(Convert.ToInt32(gridD3D.ActualWidth), Convert.ToInt32(gridD3D.ActualHeight));
-
-            myRenderTimer = new Timer(OnRenderTimer, null, 0, 1000 / 30); // 30 FPS when iddle (45 when moving)
-
-        }
-
-        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
-        {
-            myRenderTimer?.Dispose();
-            myRenderTimer = null;
         }
 
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             GetDocument()?.GFX?.Resize(Convert.ToInt32(e.NewSize.Width), Convert.ToInt32(e.NewSize.Height));
-        }
-
-        private Timer? myRenderTimer;
-        private void OnRenderTimer(object? state)
-        {
-            try
-            {
-                Dispatcher?.Invoke(() => GetDocument()?.GFX?.TryRender());
-            }
-            catch (Exception)
-            {
-            }
         }
     }
 }

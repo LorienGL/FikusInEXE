@@ -6,14 +6,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace FikusIn.Models.Documents
 {
     public class DocumentGFX
     {
         private readonly D3DImage myD3DImage = new();
+        private readonly DispatcherObject myDispatcher;
 
         private nint myColorSurf; // Direct3D color surface pointer
 
@@ -25,17 +28,20 @@ namespace FikusIn.Models.Documents
         private Stopwatch? myLastRenderStartStopwatch = Stopwatch.StartNew();
         private Stopwatch? myLastRenderEndStopwatch;
 
-        public DocumentGFX(Document p_Doc)
+        public DocumentGFX(Document p_Doc, DispatcherObject theDispatcher)
         {
             myLastRenderStartStopwatch = Stopwatch.StartNew();
             myLastRenderEndStopwatch = Stopwatch.StartNew();
 
             myDoc = p_Doc;
+            myDispatcher = theDispatcher;
 
             myD3DImage.IsFrontBufferAvailableChanged
               += new DependencyPropertyChangedEventHandler(OnIsFrontBufferAvailableChanged);
 
             BeginRenderingScene();
+
+            //myRenderTimer = new Timer(OnRenderTimer, null, 0, 1000 / 45); // 30 FPS when iddle (45 when moving)
         }
 
         private void OnIsFrontBufferAvailableChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -81,35 +87,57 @@ namespace FikusIn.Models.Documents
 
         private void OnRendering(object? sender, EventArgs e)
         {
-            //Render();
-
             myRenderNeeded = true;
-            TryRender();
+            //TryRender();
+            Render();
         }
+
+        private bool ShouldRender()
+        {
+            //if(myRenderNeeded || (myDoc.GetOCDocument() != null && myDoc.GetOCDocument().GetView().IsInvalidated())) // Need panting (paint request done or model view changed)
+                //if (myLastRenderStartStopwatch?.Elapsed.TotalMilliseconds > myCurrFPS2ms && myLastRenderEndStopwatch?.Elapsed.TotalMilliseconds > 3.0) // 45 FPS min 3 mili between frames
+                //if (myLastRenderEndStopwatch?.Elapsed.TotalMilliseconds > 3.0) // min 3 ms between frames
+                    return true;
+
+            return false;
+        }
+
+        private List<double> myRenderTimes = new();
+        private List<double> myFPSs = new();
+        private double myAvgFPS = 0.0;
+        private double myFPS = 0.0;
 
         public void TryRender()
         {
-            if (!myRenderNeeded && (myDoc.GetOCDocument() == null || !myDoc.GetOCDocument().GetView().IsInvalidated()))
+            if (!ShouldRender())
                 return;
 
-            if (myLastRenderStartStopwatch?.Elapsed.TotalMilliseconds > myCurrFPS2ms && myLastRenderEndStopwatch?.Elapsed.TotalMilliseconds > 7.0) // 45 FPS
-            {
-                //Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}:   DocumentGFX.TryRender() {myLastRenderStartStopwatch?.Elapsed.TotalMilliseconds} {myLastRenderEndStopwatch?.Elapsed.TotalMilliseconds} => ");
-                myLastRenderStartStopwatch.Restart();
-                Stopwatch renderSW = Stopwatch.StartNew();
-                Render();
-                renderSW.Stop();
-                if(renderSW.Elapsed.TotalMilliseconds > 2.0 * myCurrFPS2ms)
-                    myCurrFPS2ms = 1000.0 / 30.0;
-                else if(renderSW.Elapsed.TotalMilliseconds < 0.5 * myCurrFPS2ms)
-                    myCurrFPS2ms = 1000.0 / 45.0;
-                myLastRenderEndStopwatch.Restart();
-                //Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}:   DocumentGFX.TryRender() <= ");
-                //myRenderNeeded = false;
-            }
+            //Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}:   DocumentGFX.TryRender() {myLastRenderStartStopwatch?.Elapsed.TotalMilliseconds} {myLastRenderEndStopwatch?.Elapsed.TotalMilliseconds} => ");            
+            double ms = myLastRenderEndStopwatch == null? 0: myLastRenderEndStopwatch.Elapsed.TotalMilliseconds;
+
+            Stopwatch renderStart = Stopwatch.StartNew();
+            Stopwatch renderSW = Stopwatch.StartNew();
+            if (!Render())
+                return; 
+            renderSW.Stop();
+
+            myRenderTimes.Add(renderSW.Elapsed.TotalMilliseconds);
+            //myAvgFPS = 1000.0 / myRenderTimes.Average();
+            myFPSs.Add(ms);
+
+            if (renderSW.Elapsed.TotalMilliseconds > 2.0 * myCurrFPS2ms)
+                myCurrFPS2ms = 1000.0 / 30.0;
+            else if(renderSW.Elapsed.TotalMilliseconds < 0.5 * myCurrFPS2ms)
+                myCurrFPS2ms = 1000.0 / 45.0;
+
+            myLastRenderStartStopwatch = renderStart;
+            myLastRenderEndStopwatch?.Restart();
+
+            //Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}:   DocumentGFX.TryRender() <= ");
+            myRenderNeeded = false;
         }
 
-        private void Render()
+        private bool Render()
         {
             if (!HasFailed
               && myD3DImage.IsFrontBufferAvailable
@@ -126,9 +154,13 @@ namespace FikusIn.Models.Documents
                 }
                 myD3DImage.Unlock();
                 //Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}:     DocumentGFX.Render() => myD3DImage.Unlock()");
+
+                return true;
             }
             else
                 Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}:     DocumentGFX.Render() ##### NOT UPDATED ===> {HasFailed} {myD3DImage.IsFrontBufferAvailable} {myColorSurf} {myD3DImage.PixelWidth} {myD3DImage.PixelHeight}");
+
+            return false;
         }
 
         public void Resize(int theSizeX, int theSizeY)
@@ -148,6 +180,20 @@ namespace FikusIn.Models.Documents
                 myD3DImage.Unlock();
             }
         }
+
+        private Timer? myRenderTimer;
+        private void OnRenderTimer(object? state)
+        {
+            try
+            {
+                if(ShouldRender())
+                    myDispatcher.Dispatcher?.BeginInvoke(() => TryRender());
+            }
+            catch (Exception)
+            {
+            }
+        }
+
 
         public D3DImage Image
         {

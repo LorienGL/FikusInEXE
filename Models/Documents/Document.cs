@@ -6,6 +6,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
+using System.Windows.Threading;
 using System.Xml.Linq;
 using static FikusIn.Models.Message;
 
@@ -63,7 +65,7 @@ namespace FikusIn.Model.Documents
         public double GraphicsUnscale
         {
             get => _graphicsUnscale;
-            private set => SetProperty(ref _graphicsUnscale, value);
+            set => SetProperty(ref _graphicsUnscale, value);
         }
 
         internal bool Close()
@@ -108,12 +110,12 @@ namespace FikusIn.Model.Documents
 
         public DocumentGFX? GFX { get; private set; }
 
-        public void InitGFX()
+        public void InitGFX(DispatcherObject dispatcher)
         {
             if(GFX != null)
                 return;
 
-            GFX = new DocumentGFX(this);
+            GFX = new DocumentGFX(this, dispatcher);
         }
 
         public static readonly string FikusExtension = ".fikus";

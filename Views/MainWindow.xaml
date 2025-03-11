@@ -19,7 +19,6 @@
         WindowState="Maximized"
         WindowStartupLocation="CenterScreen"
         Background="{StaticResource colorMainWindowBackground}"
-        ContentRendered="wMain_ContentRendered"
         Loaded="wMain_Loaded">
 
     <Window.Resources>
