@@ -22,13 +22,13 @@ namespace FikusIn.Model.Documents
     /// <param name="p_isActive"></param>
     public class Document: ObservableObjectBase
     {
-        public Document(Guid _id, string p_name, string p_path = "", bool p_isActive = true, double p_graphicUnscale = 1)
+        public Document(Guid _id, string p_name, string p_path = "", bool p_isActive = true, double p_windowScale = 1)
         {
             Id = _id;
             _name = p_name;
             Path = p_path;
             _isActive = p_isActive;
-            _graphicsUnscale = p_graphicUnscale;
+            _windowScaleInverted = 1 / p_windowScale;
 
             if (Path == "")
                 m_OCDoc = OCDocument.Create(new OCMessageDelegate(this.OnNewMessage));
@@ -61,15 +61,16 @@ namespace FikusIn.Model.Documents
             private set => SetProperty(ref _isModified, value);
         }
 
-        private double _graphicsUnscale = 1;
-        public double GraphicsUnscale
+        private double _windowScaleInverted = 1;
+        public double WindowScaleInverted
         {
-            get => _graphicsUnscale;
-            set => SetProperty(ref _graphicsUnscale, value);
+            get => _windowScaleInverted;
+            set => SetProperty(ref _windowScaleInverted, value);
         }
 
         internal bool Close()
         {
+            GFX?.Dispose();
             return true;
         }
 

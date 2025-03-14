@@ -29,8 +29,11 @@ namespace FikusIn.Model.Documents
             _documents.Add(document);
             SetActiveDocument(document);
 
-            if(document.Path != "" && _documents.Count == 2 && _documents[0].IsModified == false && _documents[0].Path == "")
+            if (document.Path != "" && _documents.Count == 2 && _documents[0].IsModified == false && _documents[0].Path == "")
+            {
+                _documents[0].Close();
                 _documents.RemoveAt(0);
+            }
 
             RecentDocuments.Add(document, new System.Windows.Media.Imaging.BitmapImage());
         }
@@ -40,6 +43,8 @@ namespace FikusIn.Model.Documents
             int idx = _documents.IndexOf(document);
             if(!_documents.Remove(document))
                 return;
+
+            document.Close();
 
             if (!document.IsActive)
                 return;
@@ -67,7 +72,7 @@ namespace FikusIn.Model.Documents
         public static Document NewDocument(double windowScale)
         {
             int njc = GetMaxJobNumber();
-            var res = new Document(Guid.NewGuid(), NewJobName + (njc > 0? $" {njc}": ""), "", false, 1.0 / windowScale);
+            var res = new Document(Guid.NewGuid(), NewJobName + (njc > 0? $" {njc}": ""), "", false, windowScale);
 
             AddDocument(res);
 
@@ -76,7 +81,7 @@ namespace FikusIn.Model.Documents
 
         public static Document? OpenDocument(string path, double windowScale)
         {
-            var res = new Document(Guid.NewGuid(), Path.GetFileNameWithoutExtension(path), path, false, 1.0 / windowScale);
+            var res = new Document(Guid.NewGuid(), Path.GetFileNameWithoutExtension(path), path, false, windowScale);
 
             if(res.GetOCDocument() == null)
                 return null;
@@ -113,9 +118,6 @@ namespace FikusIn.Model.Documents
                 return;
 
             RemoveDocument(document);
-
-            if (!document.Close())
-                return;
         }
     }
 }

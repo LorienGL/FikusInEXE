@@ -52,6 +52,8 @@
                     Value="1" />
             <Setter Property="WindowChrome.IsHitTestVisibleInChrome"
                     Value="True" />
+            <Setter Property="Focusable"
+                    Value="False" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
@@ -126,6 +128,8 @@
                     Value="Auto" />
             <Setter Property="WindowChrome.IsHitTestVisibleInChrome"
                     Value="True" />
+            <Setter Property="Focusable"
+                    Value="False" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
@@ -168,6 +172,8 @@
                     Value="{Binding ElementName=tabsItemsControl, Path=DataContext.SetActiveDocument}" />
             <Setter Property="CommandParameter"
                     Value="{Binding}" />
+            <Setter Property="Focusable"
+                    Value="False" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
@@ -240,6 +246,8 @@
                     Value="True" />
             <Setter Property="Margin"
                     Value="0" />
+            <Setter Property="Focusable"
+                    Value="False" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
@@ -274,6 +282,8 @@
                     Value="Consolas" />
             <Setter Property="WindowChrome.IsHitTestVisibleInChrome"
                     Value="True" />
+            <Setter Property="Focusable"
+                    Value="False" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ToggleButton}">
@@ -338,6 +348,8 @@
                     Value="0" />
             <Setter Property="MinWidth"
                     Value="150" />
+            <Setter Property="Focusable"
+                    Value="False" />
             <Setter Property="Command"
                     Value="{Binding ElementName=icDocumentsList, 
                 Path=DataContext.SetActiveDocument}" />
@@ -398,6 +410,8 @@
                     Value="0" />
             <Setter Property="MinWidth"
                     Value="150" />
+            <Setter Property="Focusable"
+                    Value="False" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
@@ -483,16 +497,16 @@
 
         <Grid Background="{StaticResource colorMainWindowBackground}"
               Margin="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="26" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
             <Grid.LayoutTransform>
                 <ScaleTransform ScaleX="{Binding WindowScale}"
                                 ScaleY="{Binding WindowScale}"
                                 CenterX=".5"
                                 CenterY=".5" />
             </Grid.LayoutTransform>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="26" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
 
             <!-- Top window bar (file menu + doc tabs + window operation-->
             <DockPanel x:Name="pnlTop"
@@ -860,7 +874,8 @@
                                       HorizontalAlignment="Left">
                                     <ItemsControl x:Name="tabsItemsControl"
                                                   ItemsSource="{Binding Documents}"
-                                                  Margin="0">
+                                                  Margin="0"
+                                                  Focusable="False">
                                         <ItemsControl.ItemsPanel>
                                             <ItemsPanelTemplate>
                                                 <StackPanel Height="Auto"
@@ -868,7 +883,8 @@
                                                             Margin="0,2,0,0"
                                                             VerticalAlignment="Bottom"
                                                             HorizontalAlignment="Left"
-                                                            Orientation="Horizontal" />
+                                                            Orientation="Horizontal" 
+                                                            Focusable="False"/>
                                             </ItemsPanelTemplate>
                                         </ItemsControl.ItemsPanel>
                                         <ItemsControl.ItemTemplate>

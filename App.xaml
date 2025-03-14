@@ -43,6 +43,7 @@
                 <Setter Property="BorderThickness" Value="0"/>
                 <Setter Property="Background" Value="{StaticResource colorFloatingMenuButtonBackground}"/>
                 <Setter Property="TextBlock.Foreground" Value="{StaticResource colorFloatingMenuButtonForeground}"/>
+                <Setter Property="Focusable" Value="False" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type Button}">

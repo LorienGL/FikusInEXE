@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
@@ -14,6 +14,7 @@
     <Title>FikusIn</Title>
     <Copyright>(c) Dario Dura 2024</Copyright>
     <PlatformTarget>x64</PlatformTarget>
+    <UseWindowsForms>False</UseWindowsForms>
   </PropertyGroup>
 
   <ItemGroup>

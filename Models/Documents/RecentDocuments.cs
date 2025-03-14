@@ -13,6 +13,18 @@ namespace FikusIn.Models.Documents
     {
         public string Path { get; set; }
         public BitmapImage Icon { get; set; }
+
+        public DocumentInfo()
+        {
+            Path = "";
+            Icon = new BitmapImage();
+        }
+
+        public DocumentInfo(string path, BitmapImage icon)
+        {
+            Path = path;
+            Icon = icon;
+        }
     }
 
     public class RecentDocuments
@@ -33,7 +45,7 @@ namespace FikusIn.Models.Documents
                 break;
             }
 
-            _recentDocuments.Insert(0, new DocumentInfo() { Path = document.Path, Icon = icon });
+            _recentDocuments.Insert(0, new DocumentInfo(document.Path, icon));
             if (_recentDocuments.Count > 20)
                 _recentDocuments.RemoveAt(20);
         }

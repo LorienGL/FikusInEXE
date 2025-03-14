@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using MessageBox = System.Windows.MessageBox;
 
 namespace FikusIn.ViewModel
 {
@@ -45,7 +46,7 @@ namespace FikusIn.ViewModel
                 SetProperty(ref _windowScale, value);
                 foreach (var doc in Documents)
                     if(doc != null)
-                        doc.GraphicsUnscale = 1.0 / value;
+                        doc.WindowScaleInverted = 1.0 / value;
                 Properties.Settings.Default.WindowScale = value; 
                 Properties.Settings.Default.Save(); 
             }
@@ -107,7 +108,7 @@ namespace FikusIn.ViewModel
         public ICommand OpenDocument => new RelayCommand(
             (object? obj) => 
             {
-                var dlg = new OpenFileDialog();
+                var dlg = new Microsoft.Win32.OpenFileDialog();
                 dlg.Filter = "Supported Files (*.fikus, *.dwg, *.dxf, *.stp, *.step, *.igs, *.iges, *.brep, *.obj)|*.fikus;*.dwg;*.dxf;*.stp;*.step;*.igs;*.iges;*.brep;*.obj";
                 dlg.Multiselect = true;
                 dlg.CheckFileExists = true;
@@ -178,7 +179,7 @@ namespace FikusIn.ViewModel
             if (p_Doc == null)
                 return false;
 
-            var dlg = new SaveFileDialog
+            var dlg = new Microsoft.Win32.SaveFileDialog
             {
                 Filter = "FikusIn Document (*.fikus)|*.fikus",
                 FileName = p_Doc.Name,

@@ -56,7 +56,7 @@ namespace FikusIn.ViewModels
         #endregion
 
         #region Event Handlers
-        private void MessageReceivedEventHandler(Object? sender, Message message)
+        private void MessageReceivedEventHandler(Object? sender, Models.Message message)
         {
             Message = message.Text;
             if (message.Type == Models.Message.MessageType.Info)
