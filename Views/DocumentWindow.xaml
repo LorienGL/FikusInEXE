@@ -132,7 +132,15 @@
                        Stroke="White"
                        StrokeThickness="1"
                        StrokeDashArray="2 2"
-                       Visibility="Collapsed" />
+                       Visibility="Collapsed">
+                <Rectangle.LayoutTransform>
+                    <ScaleTransform ScaleX="{Binding WindowScaleInverted}"
+                                    ScaleY="{Binding WindowScaleInverted}"
+                                    CenterX=".5"
+                                    CenterY=".5" />
+                </Rectangle.LayoutTransform>
+            </Rectangle>
+
         </Canvas>
     </Grid>
 </UserControl>

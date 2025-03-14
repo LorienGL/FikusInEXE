@@ -76,14 +76,14 @@ namespace FikusIn.Models.Documents
                 Resize((int)mySize.Width, (int)mySize.Height);
 
             CompositionTarget.Rendering += OnRendering;
-            Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}: DocumentGFX.BeginRenderingScene() =====>");
+            //Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}: DocumentGFX.BeginRenderingScene() =====>");
         }
 
         public void StopRenderingScene()
         {
             CompositionTarget.Rendering -= OnRendering;
             myColorSurf = nint.Zero;
-            Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}: <===== DocumentGFX.StopRenderingScene()");
+            //Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}: <===== DocumentGFX.StopRenderingScene()");
         }
 
         // Ad a OnBeginRendering event & delegate to be able to perform actions before rendering
@@ -121,7 +121,7 @@ namespace FikusIn.Models.Documents
 
         public void TryRender()
         {
-            Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}:  => DocumentGFX.TryRender() {ShouldRender()}");
+            //Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}:  => DocumentGFX.TryRender() {ShouldRender()}");
 
             if (!ShouldRender())
                 return;
@@ -148,7 +148,7 @@ namespace FikusIn.Models.Documents
 
             myRenderNeeded = false;
 
-            Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}:  <= DocumentGFX.TryRender()");
+            //Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}:  <= DocumentGFX.TryRender()");
         }
 
         private bool Render()
@@ -172,8 +172,10 @@ namespace FikusIn.Models.Documents
                 myD3DImage.Unlock();
                 //Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}:     DocumentGFX.Render() => myD3DImage.Unlock()");
                 renderSW.Stop();
+                ++myFrameCount;
 
-                Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}:  DocumentGFX.Render() {(int)((double)++myFrameCount / totalStopwatch.Elapsed.TotalSeconds)}FPS - {(int)renderSW.Elapsed.TotalMilliseconds}ms");
+                if(myFrameCount % 30 == 0)
+                    Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}:  DocumentGFX.Render() {(int)((double)myFrameCount / totalStopwatch.Elapsed.TotalSeconds)}FPS - {(int)renderSW.Elapsed.TotalMilliseconds}ms");
 
                 return true;
             }

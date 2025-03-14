@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Threading;
 
 namespace FikusIn.Views
 {
@@ -246,7 +247,7 @@ namespace FikusIn.Views
             if(p.X < 0 || p.Y < 0 || p.X > gridD3D.ActualWidth || p.Y > gridD3D.ActualHeight)
                 return;
 
-            Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff} TrackMouseMovement ({(int)p.X},{(int)p.Y}) ===>");
+            //Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff} TrackMouseMovement ({(int)p.X},{(int)p.Y}) ===>");
 
             bool lb = IsMouseButtonDown(MouseButton.Left);
             bool mb = IsMouseButtonDown(MouseButton.Middle);
@@ -265,7 +266,7 @@ namespace FikusIn.Views
                 {
                     dragStartingPosition = null;
                     GetDocument()?.GetOCDocument()?.GetView()?.MoveTo((int)p.X, (int)p.Y);
-                    Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}     Pick ({(int)p.X}, {(int)p.Y})");
+                    //Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}     Pick ({(int)p.X}, {(int)p.Y})");
                     return;
                 }
 
@@ -293,7 +294,7 @@ namespace FikusIn.Views
                         canvasSelectionBox.StrokeDashArray = new DoubleCollection() { 2, 2 };
 
                     GetDocument()?.GetOCDocument()?.GetView()?.MoveTo((int)dragStartingPosition.Value.X, (int)dragStartingPosition.Value.Y, (int)dragCurrentPosition.X, (int)dragCurrentPosition.Y);
-                    Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}     Select Box ({(int)dragCurrentPosition.X}, {(int)dragCurrentPosition.Y})");
+                    //Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}     Select Box ({(int)dragCurrentPosition.X}, {(int)dragCurrentPosition.Y})");
                 }
                 // Middle click: Pan
                 else if (!lb && mb && !rb)
@@ -301,7 +302,7 @@ namespace FikusIn.Views
                     if (dragStartingPosition != null)
                     {
                         GetDocument()?.GetOCDocument()?.GetView()?.Pan(dragCurrentPosition.X - dragStartingPosition.Value.X, dragStartingPosition.Value.Y - dragCurrentPosition.Y);
-                        Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}     Pan ({(int)dragCurrentPosition.X}, {(int)dragCurrentPosition.Y})");
+                        //Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}     Pan ({(int)dragCurrentPosition.X}, {(int)dragCurrentPosition.Y})");
                     }
 
                     dragStartingPosition = dragCurrentPosition;
@@ -313,12 +314,12 @@ namespace FikusIn.Views
                     {
                         dragStartingPosition = p;
                         GetDocument()?.GetOCDocument()?.GetView()?.StartRotation(dragStartingPosition.Value.X, dragStartingPosition.Value.Y, ctrl);
-                        Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}     Start Rotation ({(int)p.X}, {(int)p.Y})");
+                        //Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}     Start Rotation ({(int)p.X}, {(int)p.Y})");
                     }
                     else
                     {
                         GetDocument()?.GetOCDocument()?.GetView()?.Rotation(dragCurrentPosition.X, dragCurrentPosition.Y);
-                        Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}     Rotation ({(int)dragCurrentPosition.X}, {(int)dragCurrentPosition.Y})");
+                        //Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}     Rotation ({(int)dragCurrentPosition.X}, {(int)dragCurrentPosition.Y})");
                     }
                 }
                 else
@@ -328,11 +329,26 @@ namespace FikusIn.Views
             }
             finally
             {
+                DoEvents(); // Allow the mouse wheel events to be processed
+
                 //Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff} <=== Window_MouseMove");
                 //GetDocument()?.GFX?.TryRender();
                 //ImageBrush anImage = new(GetDocument()?.GFX?.Image);
                 //gridD3D.Background = anImage;
             }
+        }
+
+        public static void DoEvents()
+        {
+            var frame = new DispatcherFrame();
+            Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Background,
+                new DispatcherOperationCallback(
+                    delegate (object f)
+                    {
+                        ((DispatcherFrame)f).Continue = false;
+                        return null;
+                    }), frame);
+            Dispatcher.PushFrame(frame);
         }
 
 
@@ -358,6 +374,8 @@ namespace FikusIn.Views
 
         private void Window_MouseWheel(object sender, MouseWheelEventArgs e)
         {
+            //Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}     Zoom ({e.Delta})");
+
             if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
             {
                 if (e.Delta > 0)
@@ -371,7 +389,7 @@ namespace FikusIn.Views
                     GetDocument()?.GetOCDocument()?.GetView()?.ZoomOut();
                 else
                     GetDocument()?.GetOCDocument()?.GetView()?.ZoomIn();
-            }
+            }            
         }
 
         private void Window_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
@@ -411,8 +429,6 @@ namespace FikusIn.Views
 
             Timeline.SetDesiredFrameRate(anim, 30);
             gridD3D.BeginAnimation(UIElement.OpacityProperty, anim);
-            //mouseMoveTimer?.Dispose();
-            //mouseMoveTimer = new Timer(MouseMoveTimer_Tick, null, 0, 1000 / 30);
             if (GetDocument() != null && GetDocument()?.GFX != null)
                 GetDocument().GFX.BeginRendering += TrackMouseMovement;
         }
@@ -420,8 +436,6 @@ namespace FikusIn.Views
         private void gridD3D_MouseLeave(object sender, MouseEventArgs e)
         {
             gridD3D.BeginAnimation(UIElement.OpacityProperty, null);
-            //mouseMoveTimer.Dispose();
-            //mouseMoveTimer = null;
             if (GetDocument() != null && GetDocument()?.GFX != null)
                 GetDocument().GFX.BeginRendering -= TrackMouseMovement;
         }
