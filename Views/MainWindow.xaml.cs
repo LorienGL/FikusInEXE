@@ -29,11 +29,6 @@ namespace FikusIn.Views
             var mainViewModel = new MainViewModel();
             DataContext = mainViewModel;
             messageLabel.DataContext = mainViewModel.MessagesViewModel;
-
-            renderTimer = new System.Windows.Threading.DispatcherTimer();
-            renderTimer.Tick += new EventHandler(OnRenderTimer);
-            renderTimer.Interval = new TimeSpan(0, 0, 0, 0, 1000 / 45);
-            renderTimer.Start();
         }
 
         private void btnClose_Click(object sender, RoutedEventArgs e)
@@ -87,23 +82,6 @@ namespace FikusIn.Views
         private void wMain_Loaded(object sender, RoutedEventArgs e)
         {
             DocumentManager.NewDocument(((MainViewModel)DataContext).WindowScale);
-        }
-
-
-        System.Windows.Threading.DispatcherTimer renderTimer;
-        private void OnRenderTimer(object? sender, EventArgs e)
-        {
-            TryRender();
-        }
-
-
-        private void TryRender()
-        {
-            //var doc = DocumentManager.GetActiveDocument();
-            //if (doc == null)
-            //    return;
-
-            //doc.GFX?.TryRender();
         }
     }
 }

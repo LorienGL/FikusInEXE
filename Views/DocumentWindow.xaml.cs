@@ -240,6 +240,10 @@ namespace FikusIn.Views
         }
 
 
+        private bool leftButtonDown = false;
+        private bool middleButtonDown = false;
+        private bool rightButtonDown = false;
+
         private void TrackMouseMovement(object? sender, EventArgs e)
         {
             //var p = Mouse.GetPosition(gridD3D); //e.GetPosition(gridD3D);
@@ -254,6 +258,33 @@ namespace FikusIn.Views
             bool rb = IsMouseButtonDown(MouseButton.Right);
             bool ctrl = IsKeyDown(Key.LeftCtrl) || IsKeyDown(Key.RightCtrl);
             bool shift = IsKeyDown(Key.LeftShift) || IsKeyDown(Key.RightShift);
+
+            if(lb != leftButtonDown)
+            {
+                leftButtonDown = lb;
+                if (lb)
+                    Window_MouseLeftButtonDown(this, new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left));
+                else
+                    Window_MouseLeftButtonUp(this, new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left));
+            }
+
+            if(mb != rightButtonDown) 
+            {
+                middleButtonDown = mb;
+                if (mb)
+                    Window_MouseRightButtonDown(this, new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Middle));
+                else
+                    Window_MouseRightButtonUp(this, new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Middle));
+            }
+
+            if (rb != rightButtonDown)
+            {
+                rightButtonDown = rb;
+                if (rb)
+                    Window_MouseRightButtonDown(this, new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Right));
+                else
+                    Window_MouseRightButtonUp(this, new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Right));
+            }
 
             try
             {
