@@ -45,6 +45,12 @@ namespace FikusIn.Models.Documents
             //myRenderTimer = new Timer(OnRenderTimer, null, 0, 1000 / 45); // 30 FPS when iddle (45 when moving)
         }
 
+        private OCView? GetDocOCView()
+        {
+            return myDoc.GetOCDocument()?.GetView();
+        }
+
+
         private void OnIsFrontBufferAvailableChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (myD3DImage.IsFrontBufferAvailable)
@@ -165,7 +171,7 @@ namespace FikusIn.Models.Documents
                 myD3DImage.Lock();
                 {
                     //Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}:       DocumentGFX.Render() => BEGIN RedrawView");
-                    myDoc.GetOCDocument()?.GetView().RedrawView();
+                    GetDocOCView()?.RedrawView();
                     //Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}:       DocumentGFX.Render() => END   RedrawView");
                     myD3DImage.AddDirtyRect(new Int32Rect(0, 0, myD3DImage.PixelWidth, myD3DImage.PixelHeight));
                 }
@@ -194,9 +200,9 @@ namespace FikusIn.Models.Documents
                 myD3DImage.Lock();
                 {
                     myD3DImage.SetBackBuffer(D3DResourceType.IDirect3DSurface9, nint.Zero);
-                    var ocDoc = myDoc.GetOCDocument();
-                    if (ocDoc != null && ocDoc.GetView() != null)
-                        myColorSurf = ocDoc.GetView().ResizeBridgeFBO(theSizeX, theSizeY);
+                    var ocView = GetDocOCView();
+                    if (ocView != null)
+                        myColorSurf = ocView.ResizeBridgeFBO(theSizeX, theSizeY);
                     myD3DImage.SetBackBuffer(D3DResourceType.IDirect3DSurface9, myColorSurf);                   
                 }
                 myD3DImage.Unlock();
@@ -209,6 +215,19 @@ namespace FikusIn.Models.Documents
               -= new DependencyPropertyChangedEventHandler(OnIsFrontBufferAvailableChanged);
 
             StopRenderingScene();
+        }
+
+        public void SaveAsPNGFile(string fileName)
+        {
+            if (myColorSurf == nint.Zero)
+                return;
+
+            myD3DImage.Lock();
+            {
+                myD3DImage.SetBackBuffer(D3DResourceType.IDirect3DSurface9, nint.Zero);
+                myD3DImage.SetBackBuffer(D3DResourceType.IDirect3DSurface9, myColorSurf);
+            }
+            myD3DImage.Unlock();
         }
 
         public D3DImage Image

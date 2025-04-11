@@ -27,7 +27,19 @@
                                 CenterX=".5"
                                 CenterY=".5" />
             </Grid.LayoutTransform>
-
+            <!-- Selection box -->
+            <Canvas Height="Auto"
+                    Width="Auto"
+                    VerticalAlignment="Stretch"
+                    HorizontalAlignment="Stretch"
+                    MouseWheel="Window_MouseWheel">
+                <Rectangle x:Name="canvasSelectionBox"
+                           Stroke="White"
+                           StrokeThickness="1"
+                           StrokeDashArray="2 2"
+                           Visibility="Collapsed">
+                </Rectangle>
+            </Canvas>
         </Grid>
         <!--Background="{StaticResource colorMainWindowBackground}"-->
         <!--<Viewport3D x:Name="v3dMain"
@@ -118,26 +130,5 @@
                 </Button>
             </StackPanel>
         </DockPanel>
-
-        <!-- Selection box -->
-        <Canvas Height="Auto"
-                Width="Auto"
-                VerticalAlignment="Stretch"
-                HorizontalAlignment="Stretch"
-                MouseWheel="Window_MouseWheel">
-            <Rectangle x:Name="canvasSelectionBox"
-                       Stroke="White"
-                       StrokeThickness="1"
-                       StrokeDashArray="2 2"
-                       Visibility="Collapsed">
-                <Rectangle.LayoutTransform>
-                    <ScaleTransform ScaleX="{Binding WindowScaleInverted}"
-                                    ScaleY="{Binding WindowScaleInverted}"
-                                    CenterX=".5"
-                                    CenterY=".5" />
-                </Rectangle.LayoutTransform>
-            </Rectangle>
-
-        </Canvas>
     </Grid>
 </UserControl>

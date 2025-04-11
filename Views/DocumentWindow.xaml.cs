@@ -15,15 +15,25 @@ namespace FikusIn.Views
     /// </summary>
     public partial class DocumentWindow : UserControl
     {
-        private Document? GetDocument()
+        private Document? Document
         {
-            try
+            get
             {
-                return (Document)DataContext;
+                if (DataContext is var doc && doc != null && doc is Document)
+                    return doc as Document;
+                else
+                    return null;
             }
-            catch (Exception)
+        }
+
+        private OCView? DocOCView
+        {
+            get
             {
-                return null;
+                if (Document != null && Document.GetOCDocument() is var ocdoc && ocdoc != null)
+                    return ocdoc.GetView();
+                else
+                    return null;
             }
         }
 
@@ -118,7 +128,7 @@ namespace FikusIn.Views
         //        if (e.LeftButton == MouseButtonState.Released && e.MiddleButton == MouseButtonState.Released && e.RightButton == MouseButtonState.Released)
         //        {
         //            dragStartingPosition = null;
-        //            GetDocument()?.GetOCDocument()?.GetView()?.MoveTo((int)p.X, (int)p.Y);
+        //            DocOCView?.MoveTo((int)p.X, (int)p.Y);
         //            Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}     Pick ({(int)p.X}, {(int)p.Y})");
         //            return;
         //        }
@@ -147,7 +157,7 @@ namespace FikusIn.Views
         //            else
         //                canvasSelectionBox.StrokeDashArray = new DoubleCollection() { 2, 2 };
 
-        //            GetDocument()?.GetOCDocument()?.GetView()?.MoveTo((int)dragStartingPosition.Value.X, (int)dragStartingPosition.Value.Y, (int)dragCurrentPosition.X, (int)dragCurrentPosition.Y);
+        //            DocOCView?.MoveTo((int)dragStartingPosition.Value.X, (int)dragStartingPosition.Value.Y, (int)dragCurrentPosition.X, (int)dragCurrentPosition.Y);
         //            Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}     Select Box ({(int)dragCurrentPosition.X}, {(int)dragCurrentPosition.Y})");
         //        }
         //        // Middle click: Pan
@@ -155,7 +165,7 @@ namespace FikusIn.Views
         //        {
         //            if (dragStartingPosition != null)
         //            {
-        //                GetDocument()?.GetOCDocument()?.GetView()?.Pan(dragCurrentPosition.X - dragStartingPosition.Value.X, dragStartingPosition.Value.Y - dragCurrentPosition.Y);
+        //                DocOCView?.Pan(dragCurrentPosition.X - dragStartingPosition.Value.X, dragStartingPosition.Value.Y - dragCurrentPosition.Y);
         //                Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}     Pan ({(int)dragCurrentPosition.X}, {(int)dragCurrentPosition.Y})");
         //            }
 
@@ -167,12 +177,12 @@ namespace FikusIn.Views
         //            if (dragStartingPosition == null)
         //            {
         //                dragStartingPosition = p;
-        //                GetDocument()?.GetOCDocument()?.GetView()?.StartRotation(dragStartingPosition.Value.X, dragStartingPosition.Value.Y, isCtrlDown);
+        //                DocOCView?.StartRotation(dragStartingPosition.Value.X, dragStartingPosition.Value.Y, isCtrlDown);
         //                Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}     Start Rotation ({(int)p.X}, {(int)p.Y})");
         //            }
         //            else
         //            {
-        //                GetDocument()?.GetOCDocument()?.GetView()?.Rotation(dragCurrentPosition.X, dragCurrentPosition.Y);
+        //                DocOCView?.Rotation(dragCurrentPosition.X, dragCurrentPosition.Y);
         //                Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}     Rotation ({(int)dragCurrentPosition.X}, {(int)dragCurrentPosition.Y})");
         //            }
         //        }
@@ -213,6 +223,7 @@ namespace FikusIn.Views
             public Int32 X;
             public Int32 Y;
         };
+
         public static Point GetMousePosition()
         {
             var w32Mouse = new Win32Point();
@@ -243,12 +254,14 @@ namespace FikusIn.Views
         private bool leftButtonDown = false;
         private bool middleButtonDown = false;
         private bool rightButtonDown = false;
+        Point m_CurrentMousePosition = new Point(0, 0);
 
         private void TrackMouseMovement(object? sender, EventArgs e)
         {
             //var p = Mouse.GetPosition(gridD3D); //e.GetPosition(gridD3D);
-            var p = gridD3D.PointFromScreen(GetMousePosition());
-            if(p.X < 0 || p.Y < 0 || p.X > gridD3D.ActualWidth || p.Y > gridD3D.ActualHeight)
+            var mp = gridD3D.PointFromScreen(GetMousePosition());
+            m_CurrentMousePosition = mp;
+            if (mp.X < 0 || mp.Y < 0 || mp.X > gridD3D.ActualWidth || mp.Y > gridD3D.ActualHeight)
                 return;
 
             //Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff} TrackMouseMovement ({(int)p.X},{(int)p.Y}) ===>");
@@ -296,19 +309,19 @@ namespace FikusIn.Views
                 if (!lb && !mb && !rb)
                 {
                     dragStartingPosition = null;
-                    GetDocument()?.GetOCDocument()?.GetView()?.MoveTo((int)p.X, (int)p.Y);
+                    DocOCView?.MoveTo((int)mp.X, (int)mp.Y);
                     //Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}     Pick ({(int)p.X}, {(int)p.Y})");
                     return;
                 }
 
-                Point dragCurrentPosition = p;
+                Point dragCurrentPosition = mp;
 
                 // Left click: Selection (& box sel)
                 if (lb && !mb && !rb)
                 {
                     if (dragStartingPosition == null)
                     {
-                        dragStartingPosition = p;
+                        dragStartingPosition = mp;
                         return;
                     }
 
@@ -324,7 +337,7 @@ namespace FikusIn.Views
                     else
                         canvasSelectionBox.StrokeDashArray = new DoubleCollection() { 2, 2 };
 
-                    GetDocument()?.GetOCDocument()?.GetView()?.MoveTo((int)dragStartingPosition.Value.X, (int)dragStartingPosition.Value.Y, (int)dragCurrentPosition.X, (int)dragCurrentPosition.Y);
+                    DocOCView?.MoveTo((int)dragStartingPosition.Value.X, (int)dragStartingPosition.Value.Y, (int)dragCurrentPosition.X, (int)dragCurrentPosition.Y);
                     //Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}     Select Box ({(int)dragCurrentPosition.X}, {(int)dragCurrentPosition.Y})");
                 }
                 // Middle click: Pan
@@ -332,7 +345,7 @@ namespace FikusIn.Views
                 {
                     if (dragStartingPosition != null)
                     {
-                        GetDocument()?.GetOCDocument()?.GetView()?.Pan(dragCurrentPosition.X - dragStartingPosition.Value.X, dragStartingPosition.Value.Y - dragCurrentPosition.Y);
+                        DocOCView?.Pan(dragCurrentPosition.X - dragStartingPosition.Value.X, dragStartingPosition.Value.Y - dragCurrentPosition.Y);
                         //Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}     Pan ({(int)dragCurrentPosition.X}, {(int)dragCurrentPosition.Y})");
                     }
 
@@ -343,13 +356,13 @@ namespace FikusIn.Views
                 {
                     if (dragStartingPosition == null)
                     {
-                        dragStartingPosition = p;
-                        GetDocument()?.GetOCDocument()?.GetView()?.StartRotation(dragStartingPosition.Value.X, dragStartingPosition.Value.Y, ctrl);
+                        dragStartingPosition = mp;
+                        DocOCView?.StartRotation(dragStartingPosition.Value.X, dragStartingPosition.Value.Y, ctrl);
                         //Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}     Start Rotation ({(int)p.X}, {(int)p.Y})");
                     }
                     else
                     {
-                        GetDocument()?.GetOCDocument()?.GetView()?.Rotation(dragCurrentPosition.X, dragCurrentPosition.Y);
+                        DocOCView?.Rotation(dragCurrentPosition.X, dragCurrentPosition.Y);
                         //Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}     Rotation ({(int)dragCurrentPosition.X}, {(int)dragCurrentPosition.Y})");
                     }
                 }
@@ -382,24 +395,27 @@ namespace FikusIn.Views
             Dispatcher.PushFrame(frame);
         }
 
+        private static readonly double dragThreshold = 4.0; // pixels
+        private bool IsDragStarted()
+        {
+            return dragStartingPosition.HasValue && dragStartingPosition.Value.SquareDistance(m_CurrentMousePosition) >= dragThreshold * dragThreshold;
+        }
 
         private void Window_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            // No drag started, just select whatever is under the mouse (MoveTo already called in MouseMove)
-            if (!dragStartingPosition.HasValue) 
+            if (IsDragStarted())
             {
-                GetDocument()?.GetOCDocument()?.GetView()?.Select((int)Mouse.GetPosition(gridD3D).X, (int)Mouse.GetPosition(gridD3D).Y);
-                return;
+                canvasSelectionBox.Visibility = Visibility.Collapsed;
+
+                if(dragStartingPosition.HasValue)
+                    DocOCView?.Select((int)dragStartingPosition.Value.X, (int)dragStartingPosition.Value.Y, (int)m_CurrentMousePosition.X, (int)m_CurrentMousePosition.Y);
+
+                dragStartingPosition = null;
             }
-
-            canvasSelectionBox.Visibility = Visibility.Collapsed;
-
-            Point dragEndingPosition = Mouse.GetPosition(gridD3D);
-
-            // Left click: Selection (& box sel)
-            GetDocument()?.GetOCDocument()?.GetView()?.Select((int)dragStartingPosition.Value.X, (int)dragStartingPosition.Value.Y, (int)dragEndingPosition.X, (int)dragEndingPosition.Y);
-
-            dragStartingPosition = null;
+            else
+            {
+                DocOCView?.Select((int)m_CurrentMousePosition.X, (int)m_CurrentMousePosition.Y);
+            }
         }
 
 
@@ -410,16 +426,16 @@ namespace FikusIn.Views
             if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
             {
                 if (e.Delta > 0)
-                    GetDocument()?.GetOCDocument()?.GetView()?.NextDetected();
+                    DocOCView?.NextDetected();
                 else
-                    GetDocument()?.GetOCDocument()?.GetView()?.PreviousDetected();
+                    DocOCView?.PreviousDetected();
             }
             else
             {
                 if (e.Delta > 0)
-                    GetDocument()?.GetOCDocument()?.GetView()?.ZoomOut();
+                    DocOCView?.ZoomOut();
                 else
-                    GetDocument()?.GetOCDocument()?.GetView()?.ZoomIn();
+                    DocOCView?.ZoomIn();
             }            
         }
 
@@ -440,16 +456,16 @@ namespace FikusIn.Views
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            GetDocument()?.InitGFX(this);
-            ImageBrush anImage = new(GetDocument()?.GFX?.Image);
+            Document?.InitGFX(this);
+            ImageBrush anImage = new(Document?.GFX?.Image);
             gridD3D.Background = anImage;
-            GetDocument()?.GFX?.Resize(Convert.ToInt32(gridD3D.ActualWidth), Convert.ToInt32(gridD3D.ActualHeight));
+            Document?.GFX?.Resize(Convert.ToInt32(gridD3D.ActualWidth), Convert.ToInt32(gridD3D.ActualHeight));
         }
 
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            GetDocument()?.GFX?.Resize(Convert.ToInt32(e.NewSize.Width), Convert.ToInt32(e.NewSize.Height));
+            Document?.GFX?.Resize(Convert.ToInt32(e.NewSize.Width), Convert.ToInt32(e.NewSize.Height));
         }
 
         private void gridD3D_MouseEnter(object sender, MouseEventArgs e)
@@ -460,15 +476,23 @@ namespace FikusIn.Views
 
             Timeline.SetDesiredFrameRate(anim, 30);
             gridD3D.BeginAnimation(UIElement.OpacityProperty, anim);
-            if (GetDocument() != null && GetDocument()?.GFX != null)
-                GetDocument().GFX.BeginRendering += TrackMouseMovement;
+            if (Document is var doc && doc != null && doc.GFX is var gfx && gfx != null)
+                gfx.BeginRendering += TrackMouseMovement;
         }
 
         private void gridD3D_MouseLeave(object sender, MouseEventArgs e)
         {
             gridD3D.BeginAnimation(UIElement.OpacityProperty, null);
-            if (GetDocument() != null && GetDocument()?.GFX != null)
-                GetDocument().GFX.BeginRendering -= TrackMouseMovement;
+            if (Document is var doc && doc != null && doc.GFX is var gfx && gfx != null)
+                gfx.BeginRendering -= TrackMouseMovement;
+        }
+    }
+
+    public static class PointExtensions
+    {
+        public static double SquareDistance(this Point p1, Point p2)
+        {
+            return (p1.X - p2.X) * (p1.X - p2.X) + (p1.Y - p2.Y) * (p1.Y - p2.Y);
         }
     }
 }
