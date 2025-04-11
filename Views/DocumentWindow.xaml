@@ -11,8 +11,6 @@
              Loaded="UserControl_Loaded"
 >
     <Grid Margin="0" x:Name="gridMain">
-        <!--<Label Content="{Binding Name}" 
-               Foreground="#FFFF00"/>-->
         <!--3D graphics-->
         <Grid x:Name="gridD3D"
               Margin="0"
@@ -27,6 +25,7 @@
                                 CenterX=".5"
                                 CenterY=".5" />
             </Grid.LayoutTransform>
+
             <!-- Selection box -->
             <Canvas Height="Auto"
                     Width="Auto"
@@ -41,40 +40,6 @@
                 </Rectangle>
             </Canvas>
         </Grid>
-        <!--Background="{StaticResource colorMainWindowBackground}"-->
-        <!--<Viewport3D x:Name="v3dMain"
-                        ClipToBounds="True"
-                        IsHitTestVisible="True"
-                        Width="Auto"
-                        Height="Auto"
-                        Margin="0">
-                <Viewport3D.Camera>
-                    <OrthographicCamera x:Name="v3dCamera"
-                                        Position="0,0,40"
-                                        LookDirection="0,0,-1"
-                                        UpDirection="0,1,0"
-                                        FarPlaneDistance="Infinity"
-                                        NearPlaneDistance="-Infinity"
-                                        Width="100" />
-                </Viewport3D.Camera>
-                <ModelVisual3D>
-                    <ModelVisual3D.Content>
-                        <Model3DGroup x:Name="v3dScene">
-                            <AmbientLight Color="#444444" />
-                            <PointLight x:Name="v3dLightTop"
-                                        Color="#777777"
-                                        Position="1,10,40" />
-                            <PointLight x:Name="v3dLightRight"
-                                        Color="#444444"
-                                        Position="10,-1,60" />
-                            <PointLight x:Name="v3dLightLeft"
-                                        Color="#333333"
-                                        Position="-10,2,20" />
-                        </Model3DGroup>
-                    </ModelVisual3D.Content>
-                </ModelVisual3D>
-            </Viewport3D>-->
-
 
         <!--Floating main operation menu-->
         <DockPanel x:Name="pnlMenu"

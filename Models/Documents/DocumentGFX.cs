@@ -1,14 +1,11 @@
 ﻿using FikusIn.Model.Documents;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using MessageBox = System.Windows.MessageBox;
 
@@ -25,15 +22,8 @@ namespace FikusIn.Models.Documents
 
         private System.Windows.Size mySize = new System.Windows.Size(0, 0);
 
-        private bool myRenderNeeded = true;
-        private Stopwatch myLastRenderStartStopwatch;
-        private Stopwatch myLastRenderEndStopwatch;
-
         public DocumentGFX(Document p_Doc, DispatcherObject theDispatcher)
         {
-            myLastRenderStartStopwatch = Stopwatch.StartNew();
-            myLastRenderEndStopwatch = Stopwatch.StartNew();
-
             myDoc = p_Doc;
             myDispatcher = theDispatcher;
 
@@ -41,8 +31,6 @@ namespace FikusIn.Models.Documents
               += new DependencyPropertyChangedEventHandler(OnIsFrontBufferAvailableChanged);
 
             BeginRenderingScene();
-
-            //myRenderTimer = new Timer(OnRenderTimer, null, 0, 1000 / 45); // 30 FPS when iddle (45 when moving)
         }
 
         private OCView? GetDocOCView()
@@ -60,7 +48,6 @@ namespace FikusIn.Models.Documents
         }
 
         private bool HasFailed = false;
-        private double myCurrFPS2ms = 1000.0 / 45.0;
 
         private void BeginRenderingScene()
         {
@@ -107,55 +94,9 @@ namespace FikusIn.Models.Documents
                 _lastRender = args.RenderingTime;
         }
 
-        private bool ShouldRender()
-        {
-            //if(myRenderNeeded || (myDoc.GetOCDocument() != null && myDoc.GetOCDocument().GetView().IsInvalidated())) // Need panting (paint request done or model view changed)
-                if (myLastRenderStartStopwatch?.Elapsed.TotalMilliseconds > myCurrFPS2ms && myLastRenderEndStopwatch?.Elapsed.TotalMilliseconds > 5.0) // 45 FPS min 3 mili between frames
-                //if (myLastRenderEndStopwatch?.Elapsed.TotalMilliseconds > 3.0) // min 3 ms between frames
-                    return true;
-
-            return false;
-        }
-
-        private List<double> myRenderTimes = new();
-        private List<double> myFPSs = new();
-        private double myAvgFPS = 0.0;
-        private double myFPS = 0.0;
         private TimeSpan _lastRender;
         private Stopwatch? totalStopwatch = null;
         private int myFrameCount = 0;
-
-        public void TryRender()
-        {
-            //Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}:  => DocumentGFX.TryRender() {ShouldRender()}");
-
-            if (!ShouldRender())
-                return;
-
-            //double ms = myLastRenderEndStopwatch == null? 0: myLastRenderEndStopwatch.Elapsed.TotalMilliseconds;
-
-            Stopwatch renderStart = Stopwatch.StartNew();
-            Stopwatch renderSW = Stopwatch.StartNew();
-            if (!Render())
-                return; 
-            renderSW.Stop();
-
-            //myRenderTimes.Add(renderSW.Elapsed.TotalMilliseconds);
-            //myAvgFPS = 1000.0 / myRenderTimes.Average();
-            //myFPSs.Add(ms);
-
-            if (myCurrFPS2ms > 1000.0 / 30.0 && renderSW.Elapsed.TotalMilliseconds > 2.0 * myCurrFPS2ms)
-                myCurrFPS2ms = 1000.0 / 30.0;
-            else if(myCurrFPS2ms < 1000.0 / 45.0 && renderSW.Elapsed.TotalMilliseconds < 0.5 * myCurrFPS2ms)
-                myCurrFPS2ms = 1000.0 / 45.0;
-
-            myLastRenderStartStopwatch = renderStart;
-            myLastRenderEndStopwatch?.Restart();
-
-            myRenderNeeded = false;
-
-            //Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}:  <= DocumentGFX.TryRender()");
-        }
 
         private bool Render()
         {
@@ -222,12 +163,19 @@ namespace FikusIn.Models.Documents
             if (myColorSurf == nint.Zero)
                 return;
 
-            myD3DImage.Lock();
+            Image image = new Image();
+            image.Source = myD3DImage;
+            RenderTargetBitmap renderTargetBitmap = new RenderTargetBitmap(myD3DImage.PixelWidth, myD3DImage.PixelHeight, 96d, 96d, PixelFormats.Pbgra32);
+            renderTargetBitmap.Render(image);
+            PngBitmapEncoder pngBitmapEncoder = new PngBitmapEncoder();
+            pngBitmapEncoder.Frames.Add(BitmapFrame.Create(renderTargetBitmap));
+
+            if(File.Exists(fileName))
+                File.Delete(fileName);
+            using (FileStream fileStream = new FileStream(fileName, FileMode.Create))
             {
-                myD3DImage.SetBackBuffer(D3DResourceType.IDirect3DSurface9, nint.Zero);
-                myD3DImage.SetBackBuffer(D3DResourceType.IDirect3DSurface9, myColorSurf);
+                pngBitmapEncoder.Save(fileStream);
             }
-            myD3DImage.Unlock();
         }
 
         public D3DImage Image

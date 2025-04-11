@@ -42,11 +42,6 @@ namespace FikusIn.Views
             InitializeComponent();
 
             pnlSubMenu.Visibility = Visibility.Collapsed;
-
-            //mouseMoveTimer = new System.Windows.Threading.DispatcherTimer();
-            //mouseMoveTimer.Tick += new EventHandler(MouseMoveTimer_Tick);
-            //mouseMoveTimer.Interval = TimeSpan.FromMilliseconds(1000 / 30);
-            //mouseMoveTimer.Start();
         }
 
         private void SetMenuOrientation()
@@ -106,113 +101,6 @@ namespace FikusIn.Views
 
         private Point? dragStartingPosition;
 
-        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            pnlSubMenu.Visibility = Visibility.Collapsed;
-            //dragStartingPosition = Mouse.GetPosition(this);
-        }
-
-        //private void Window_MouseMove(object sender, MouseEventArgs e)
-        //{
-        //    Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff} Window_MouseMove ===>");
-
-        //    var p = Mouse.GetPosition(gridD3D); //e.GetPosition(gridD3D);
-
-        //    try
-        //    {
-        //        if (canvasSelectionBox.Visibility != Visibility.Collapsed 
-        //            && (dragStartingPosition == null || e.LeftButton == MouseButtonState.Released || e.MiddleButton == MouseButtonState.Pressed || e.RightButton == MouseButtonState.Pressed))
-        //            canvasSelectionBox.Visibility = Visibility.Collapsed;
-
-        //        // No button pressed, we release dragstart and we do just picking/highlighting
-        //        if (e.LeftButton == MouseButtonState.Released && e.MiddleButton == MouseButtonState.Released && e.RightButton == MouseButtonState.Released)
-        //        {
-        //            dragStartingPosition = null;
-        //            DocOCView?.MoveTo((int)p.X, (int)p.Y);
-        //            Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}     Pick ({(int)p.X}, {(int)p.Y})");
-        //            return;
-        //        }
-
-        //        Point dragCurrentPosition = p;
-        //        bool isCtrlDown = Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl);
-
-        //        // Left click: Selection (& box sel)
-        //        if (e.LeftButton == MouseButtonState.Pressed && e.MiddleButton == MouseButtonState.Released && e.RightButton == MouseButtonState.Released)
-        //        {
-        //            if (dragStartingPosition == null)
-        //            {
-        //                dragStartingPosition = p;
-        //                return;
-        //            }
-
-        //            // Box selection
-        //            canvasSelectionBox.Width = Math.Abs(dragStartingPosition.Value.X - dragCurrentPosition.X);
-        //            canvasSelectionBox.Height = Math.Abs(dragStartingPosition.Value.Y - dragCurrentPosition.Y);
-        //            Canvas.SetLeft(canvasSelectionBox, Math.Min(dragStartingPosition.Value.X, dragCurrentPosition.X));
-        //            Canvas.SetTop(canvasSelectionBox, Math.Min(dragStartingPosition.Value.Y, dragCurrentPosition.Y));
-        //            canvasSelectionBox.Visibility = Visibility.Visible;
-
-        //            if (dragCurrentPosition.X > dragStartingPosition.Value.X)
-        //                canvasSelectionBox.StrokeDashArray = new DoubleCollection() { 1, 0 };
-        //            else
-        //                canvasSelectionBox.StrokeDashArray = new DoubleCollection() { 2, 2 };
-
-        //            DocOCView?.MoveTo((int)dragStartingPosition.Value.X, (int)dragStartingPosition.Value.Y, (int)dragCurrentPosition.X, (int)dragCurrentPosition.Y);
-        //            Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}     Select Box ({(int)dragCurrentPosition.X}, {(int)dragCurrentPosition.Y})");
-        //        }
-        //        // Middle click: Pan
-        //        else if (e.LeftButton == MouseButtonState.Released && e.MiddleButton == MouseButtonState.Pressed && e.RightButton == MouseButtonState.Released)
-        //        {
-        //            if (dragStartingPosition != null)
-        //            {
-        //                DocOCView?.Pan(dragCurrentPosition.X - dragStartingPosition.Value.X, dragStartingPosition.Value.Y - dragCurrentPosition.Y);
-        //                Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}     Pan ({(int)dragCurrentPosition.X}, {(int)dragCurrentPosition.Y})");
-        //            }
-
-        //            dragStartingPosition = dragCurrentPosition;
-        //        }
-        //        // Right click: Rotate & Roll
-        //        else if (e.LeftButton == MouseButtonState.Released && e.MiddleButton == MouseButtonState.Released && e.RightButton == MouseButtonState.Pressed)
-        //        {
-        //            if (dragStartingPosition == null)
-        //            {
-        //                dragStartingPosition = p;
-        //                DocOCView?.StartRotation(dragStartingPosition.Value.X, dragStartingPosition.Value.Y, isCtrlDown);
-        //                Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}     Start Rotation ({(int)p.X}, {(int)p.Y})");
-        //            }
-        //            else
-        //            {
-        //                DocOCView?.Rotation(dragCurrentPosition.X, dragCurrentPosition.Y);
-        //                Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}     Rotation ({(int)dragCurrentPosition.X}, {(int)dragCurrentPosition.Y})");
-        //            }
-        //        }
-        //        else
-        //        {
-        //            dragStartingPosition = null;
-        //        }
-        //    }
-        //    finally
-        //    {
-        //        Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff} <=== Window_MouseMove");
-        //        //GetDocument()?.GFX?.TryRender();
-        //        //ImageBrush anImage = new(GetDocument()?.GFX?.Image);
-        //        //gridD3D.Background = anImage;
-        //    }
-        //}
-
-        //System.Windows.Threading.DispatcherTimer mouseMoveTimer;
-        //private Timer? mouseMoveTimer;
-
-
-
-        //private void MouseMoveTimer_Tick(object? sender)
-        //{
-        //    if (!Dispatcher.CheckAccess())
-        //        Dispatcher.Invoke(() => MouseMoveTimer_Tick(sender));
-        //    else
-        //        MouseMove();
-        //}
-
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool GetCursorPos(ref Win32Point pt);
@@ -258,7 +146,6 @@ namespace FikusIn.Views
 
         private void TrackMouseMovement(object? sender, EventArgs e)
         {
-            //var p = Mouse.GetPosition(gridD3D); //e.GetPosition(gridD3D);
             var mp = gridD3D.PointFromScreen(GetMousePosition());
             m_CurrentMousePosition = mp;
             if (mp.X < 0 || mp.Y < 0 || mp.X > gridD3D.ActualWidth || mp.Y > gridD3D.ActualHeight)
@@ -281,7 +168,7 @@ namespace FikusIn.Views
                     Window_MouseLeftButtonUp(this, new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left));
             }
 
-            if(mb != rightButtonDown) 
+            if(mb != middleButtonDown) 
             {
                 middleButtonDown = mb;
                 if (mb)
@@ -401,6 +288,11 @@ namespace FikusIn.Views
             return dragStartingPosition.HasValue && dragStartingPosition.Value.SquareDistance(m_CurrentMousePosition) >= dragThreshold * dragThreshold;
         }
 
+        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            pnlSubMenu.Visibility = Visibility.Collapsed;
+        }
+
         private void Window_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             if (IsDragStarted())
@@ -418,6 +310,15 @@ namespace FikusIn.Views
             }
         }
 
+        private void Window_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+
+        }
+
+        private void Window_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+
+        }
 
         private void Window_MouseWheel(object sender, MouseWheelEventArgs e)
         {
@@ -436,22 +337,7 @@ namespace FikusIn.Views
                     DocOCView?.ZoomOut();
                 else
                     DocOCView?.ZoomIn();
-            }            
-        }
-
-        private void Window_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
-        {
-
-        }
-
-        private void Window_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
-        {
-
-        }
-
-        private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            SetMenuOrientation();
+            }
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -463,19 +349,25 @@ namespace FikusIn.Views
         }
 
 
+        private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            SetMenuOrientation();
+        }
+
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             Document?.GFX?.Resize(Convert.ToInt32(e.NewSize.Width), Convert.ToInt32(e.NewSize.Height));
         }
 
+        private readonly DoubleAnimation m_GridD3DFPSAnimation = new(1.0, 0.99, TimeSpan.FromSeconds(1));
+
         private void gridD3D_MouseEnter(object sender, MouseEventArgs e)
         {
-            var anim = new DoubleAnimation(1.0, 0.99, TimeSpan.FromSeconds(1));
-            anim.AutoReverse = true;
-            anim.RepeatBehavior = RepeatBehavior.Forever;
+            m_GridD3DFPSAnimation.AutoReverse = true;
+            m_GridD3DFPSAnimation.RepeatBehavior = RepeatBehavior.Forever;
+            Timeline.SetDesiredFrameRate(m_GridD3DFPSAnimation, 30);
+            gridD3D.BeginAnimation(UIElement.OpacityProperty, m_GridD3DFPSAnimation);
 
-            Timeline.SetDesiredFrameRate(anim, 30);
-            gridD3D.BeginAnimation(UIElement.OpacityProperty, anim);
             if (Document is var doc && doc != null && doc.GFX is var gfx && gfx != null)
                 gfx.BeginRendering += TrackMouseMovement;
         }
@@ -483,6 +375,11 @@ namespace FikusIn.Views
         private void gridD3D_MouseLeave(object sender, MouseEventArgs e)
         {
             gridD3D.BeginAnimation(UIElement.OpacityProperty, null);
+            m_GridD3DFPSAnimation.AutoReverse = false;
+            m_GridD3DFPSAnimation.RepeatBehavior = new RepeatBehavior(TimeSpan.FromSeconds(1));
+            Timeline.SetDesiredFrameRate(m_GridD3DFPSAnimation, null);
+            gridD3D.BeginAnimation(UIElement.OpacityProperty, m_GridD3DFPSAnimation);
+
             if (Document is var doc && doc != null && doc.GFX is var gfx && gfx != null)
                 gfx.BeginRendering -= TrackMouseMovement;
         }
