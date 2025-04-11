@@ -41,14 +41,29 @@ namespace FikusIn.ViewModel
         public double WindowScale
         {
             get => _windowScale;
-            set 
-            { 
+            set
+            {
                 SetProperty(ref _windowScale, value);
                 foreach (var doc in Documents)
-                    if(doc != null)
-                        doc.WindowScaleInverted = 1.0 / value;
-                Properties.Settings.Default.WindowScale = value; 
-                Properties.Settings.Default.Save(); 
+                    if (doc != null)
+                        doc.WindowScaleInverted = 1.0 / value * _graphicsQuality;
+                Properties.Settings.Default.WindowScale = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        private double _graphicsQuality = Properties.Settings.Default.GraphicsQuality;
+        public double GraphicsQuality
+        {
+            get => _graphicsQuality;
+            set
+            {
+                SetProperty(ref _graphicsQuality, value);
+                foreach (var doc in Documents)
+                    if (doc != null)
+                        doc.WindowScaleInverted = 1.0 / _windowScale * value;
+                Properties.Settings.Default.GraphicsQuality = value;
+                Properties.Settings.Default.Save();
             }
         }
 
@@ -62,7 +77,7 @@ namespace FikusIn.ViewModel
 
         #region Commands
         public ICommand NewDocument => new RelayCommand(
-            (object? obj) => { DocumentManager.NewDocument(_windowScale); },
+            (object? obj) => { DocumentManager.NewDocument(_windowScale, _graphicsQuality); },
             (object? obj) => { return true; }
         );
 
@@ -118,7 +133,7 @@ namespace FikusIn.ViewModel
 
                 if (dlg.ShowDialog() == true)
                     foreach (var path in dlg.FileNames)
-                        DocumentManager.OpenDocument(path, _windowScale);
+                        DocumentManager.OpenDocument(path, _windowScale, _graphicsQuality);
             },
             (object? obj) => { return true; }
         );
@@ -146,6 +161,26 @@ namespace FikusIn.ViewModel
 
         public ICommand SetHugeZoomFactor => new RelayCommand(
             (object? obj) => { WindowScale = WindowZoomFactors[3]; },
+            (object? obj) => { return true; }
+        );
+
+        public ICommand SetLowestGraphicsQuality => new RelayCommand(
+            (object? obj) => { GraphicsQuality = 2.0; },
+            (object? obj) => { return true; }
+        );
+
+        public ICommand SetLowGraphicsQuality => new RelayCommand(
+            (object? obj) => { GraphicsQuality = 1.66; },
+            (object? obj) => { return true; }
+        );
+
+        public ICommand SetMidGraphicsQuality => new RelayCommand(
+            (object? obj) => { GraphicsQuality = 1.33; },
+            (object? obj) => { return true; }
+        );
+
+        public ICommand SetHighGraphicsQuality => new RelayCommand(
+            (object? obj) => { GraphicsQuality = 1.0; },
             (object? obj) => { return true; }
         );
 

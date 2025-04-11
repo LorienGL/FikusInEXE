@@ -22,13 +22,13 @@ namespace FikusIn.Model.Documents
     /// <param name="p_isActive"></param>
     public class Document: ObservableObjectBase
     {
-        public Document(Guid _id, string p_name, string p_path = "", bool p_isActive = true, double p_windowScale = 1)
+        public Document(Guid _id, string p_name, string p_path = "", bool p_isActive = true, double p_windowScale = 1, double p_grapgicsQuality = 1)
         {
             Id = _id;
             _name = p_name;
             Path = p_path;
             _isActive = p_isActive;
-            _windowScaleInverted = 1 / p_windowScale;
+            _windowScaleInverted = 1 / p_windowScale * p_grapgicsQuality;
 
             if (Path == "")
                 m_OCDoc = OCDocument.Create(new OCMessageDelegate(this.OnNewMessage));

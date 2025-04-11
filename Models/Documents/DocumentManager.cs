@@ -69,19 +69,19 @@ namespace FikusIn.Model.Documents
             return jobNumbers.Count != 0 ? jobNumbers.Max() + 1: _documents.Any(d => d.Name == NewJobName)? 2: 0;
         }
 
-        public static Document NewDocument(double windowScale)
+        public static Document NewDocument(double windowScale, double graphicsQuality)
         {
             int njc = GetMaxJobNumber();
-            var res = new Document(Guid.NewGuid(), NewJobName + (njc > 0? $" {njc}": ""), "", false, windowScale);
+            var res = new Document(Guid.NewGuid(), NewJobName + (njc > 0? $" {njc}": ""), "", false, windowScale, graphicsQuality);
 
             AddDocument(res);
 
             return res;
         }
 
-        public static Document? OpenDocument(string path, double windowScale)
+        public static Document? OpenDocument(string path, double windowScale, double graphicsQuality)
         {
-            var res = new Document(Guid.NewGuid(), Path.GetFileNameWithoutExtension(path), path, false, windowScale);
+            var res = new Document(Guid.NewGuid(), Path.GetFileNameWithoutExtension(path), path, false, windowScale, graphicsQuality);
 
             if(res.GetOCDocument() == null)
                 return null;

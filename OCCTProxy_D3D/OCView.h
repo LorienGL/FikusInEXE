@@ -296,13 +296,13 @@ public:
 #pragma region View manipulation
 	void Rotation(double theX, double theY)
 	{
-		myAISContext()->ClearDetected();
+		//myAISContext()->ClearDetected();
 		myView()->Rotation((Standard_Integer)theX, (Standard_Integer)theY);
 	}
 
 	void StartRotation(double theX, double theY, bool theZRotation)
 	{
-		myAISContext()->ClearDetected();
+		//myAISContext()->ClearDetected();
 		myView()->StartRotation((Standard_Integer)theX, (Standard_Integer)theY, theZRotation? 0.001: 0.0);
 		Debug::WriteLine("StartRotation");
 	}

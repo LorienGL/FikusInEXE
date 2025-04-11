@@ -819,6 +819,106 @@
                                                                Margin="0,0,0,0"
                                                                FontSize="20" />
                                                 </Button>
+                                                <Button ToolTip="Graphics Quality: High"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Bottom"
+                                                        Command="{Binding SetHighGraphicsQuality}"
+                                                        Width="28"
+                                                        Height="28"
+                                                        Click="popupSettingsButton_Click">
+                                                    <Button.Style>
+                                                        <Style TargetType="Button"
+                                                               BasedOn="{StaticResource FileToolbarButton}">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding GraphicsQuality}"
+                                                                             Value="1.0">
+                                                                    <Setter Property="Background"
+                                                                            Value="#BBBBBB" />
+                                                                    <Setter Property="TextBlock.Foreground"
+                                                                            Value="#444444" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Button.Style>
+                                                    <TextBlock Text="🖼️"
+                                                               Margin="0,0,0,0"
+                                                               FontSize="20" />
+                                                </Button>
+                                                <Button ToolTip="Graphics Quality: Mid"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Bottom"
+                                                        Command="{Binding SetMidGraphicsQuality}"
+                                                        Width="28"
+                                                        Height="28"
+                                                        Click="popupSettingsButton_Click">
+                                                    <Button.Style>
+                                                        <Style TargetType="Button"
+                                                               BasedOn="{StaticResource FileToolbarButton}">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding GraphicsQuality}"
+                                                                             Value="1.33">
+                                                                    <Setter Property="Background"
+                                                                            Value="#BBBBBB" />
+                                                                    <Setter Property="TextBlock.Foreground"
+                                                                            Value="#444444" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Button.Style>
+                                                    <TextBlock Text="🖼️"
+                                                               Margin="0,0,0,0"
+                                                               FontSize="16.6" />
+                                                </Button>
+                                                <Button ToolTip="Graphics Quality: Low"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Bottom"
+                                                        Command="{Binding SetLowGraphicsQuality}"
+                                                        Width="28"
+                                                        Height="28"
+                                                        Click="popupSettingsButton_Click">
+                                                    <Button.Style>
+                                                        <Style TargetType="Button"
+                                                               BasedOn="{StaticResource FileToolbarButton}">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding GraphicsQuality}"
+                                                                             Value="1.66">
+                                                                    <Setter Property="Background"
+                                                                            Value="#BBBBBB" />
+                                                                    <Setter Property="TextBlock.Foreground"
+                                                                            Value="#444444" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Button.Style>
+                                                    <TextBlock Text="🖼️"
+                                                               Margin="0,0,0,0"
+                                                               FontSize="13.3" />
+                                                </Button>
+                                                <Button ToolTip="Graphics Quality: Lowest"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Bottom"
+                                                        Command="{Binding SetLowestGraphicsQuality}"
+                                                        Width="28"
+                                                        Height="28"
+                                                        Click="popupSettingsButton_Click">
+                                                    <Button.Style>
+                                                        <Style TargetType="Button"
+                                                               BasedOn="{StaticResource FileToolbarButton}">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding GraphicsQuality}"
+                                                                             Value="2.0">
+                                                                    <Setter Property="Background"
+                                                                            Value="#BBBBBB" />
+                                                                    <Setter Property="TextBlock.Foreground"
+                                                                            Value="#444444" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Button.Style>
+                                                    <TextBlock Text="🖼️"
+                                                               Margin="0,0,0,0"
+                                                               FontSize="10" />
+                                                </Button>
                                                 <Button ToolTip="Wireframe"
                                                         Command="{Binding ToggleWireframe}"
                                                         Click="popupSettingsButton_Click">

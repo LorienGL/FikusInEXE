@@ -25,6 +25,34 @@
                                 CenterX=".5"
                                 CenterY=".5" />
             </Grid.LayoutTransform>
+            <Grid.Triggers>
+                <EventTrigger RoutedEvent="Grid.MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard Timeline.DesiredFrameRate="60">
+                            <DoubleAnimation From="1.0"
+                                             To="0.999"
+                                             Storyboard.TargetProperty="Opacity"
+                                             Storyboard.TargetName="gridD3D"
+                                             Duration="0:0:1"
+                                             AutoReverse="True"
+                                             RepeatBehavior="Forever" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Grid.MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard Timeline.DesiredFrameRate="1">
+                            <DoubleAnimation From="1.0"
+                                             To="0.999"
+                                             Storyboard.TargetProperty="Opacity"
+                                             Storyboard.TargetName="gridD3D"
+                                             Duration="0:0:1"
+                                             AutoReverse="False"
+                                             RepeatBehavior="1x" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Grid.Triggers>
 
             <!-- Selection box -->
             <Canvas Height="Auto"

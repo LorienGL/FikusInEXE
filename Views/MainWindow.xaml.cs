@@ -81,7 +81,7 @@ namespace FikusIn.Views
 
         private void wMain_Loaded(object sender, RoutedEventArgs e)
         {
-            DocumentManager.NewDocument(((MainViewModel)DataContext).WindowScale);
+            DocumentManager.NewDocument(((MainViewModel)DataContext).WindowScale, ((MainViewModel)DataContext).GraphicsQuality);
         }
     }
 }

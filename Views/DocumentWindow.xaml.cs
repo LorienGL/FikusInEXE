@@ -359,14 +359,26 @@ namespace FikusIn.Views
             Document?.GFX?.Resize(Convert.ToInt32(e.NewSize.Width), Convert.ToInt32(e.NewSize.Height));
         }
 
-        private readonly DoubleAnimation m_GridD3DFPSAnimation = new(1.0, 0.99, TimeSpan.FromSeconds(1));
+        private readonly DoubleAnimation gridD3DFPSAnimation = new(1.0, 0.99, TimeSpan.FromSeconds(1));
+        private readonly Storyboard gridD3DStoryboard = new Storyboard();
 
         private void gridD3D_MouseEnter(object sender, MouseEventArgs e)
         {
-            m_GridD3DFPSAnimation.AutoReverse = true;
-            m_GridD3DFPSAnimation.RepeatBehavior = RepeatBehavior.Forever;
-            Timeline.SetDesiredFrameRate(m_GridD3DFPSAnimation, 30);
-            gridD3D.BeginAnimation(UIElement.OpacityProperty, m_GridD3DFPSAnimation);
+            //if (!gridD3DStoryboard.Children.Contains(gridD3DFPSAnimation))
+            //{
+            //    gridD3DFPSAnimation.AutoReverse = true;
+            //    gridD3DFPSAnimation.RepeatBehavior = RepeatBehavior.Forever;
+            //    Storyboard.SetTargetProperty(gridD3DFPSAnimation, new PropertyPath(UIElement.OpacityProperty));
+            //    Timeline.SetDesiredFrameRate(gridD3DFPSAnimation, 30);
+            //    gridD3DStoryboard.Children.Add(gridD3DFPSAnimation);
+            //    gridD3D.BeginStoryboard(gridD3DStoryboard, HandoffBehavior.SnapshotAndReplace, true);
+            //    Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff} FPS Animation started for the first time");
+            //}
+            //else
+            //{
+            //    gridD3DStoryboard.Begin(gridD3D, HandoffBehavior.SnapshotAndReplace, true);
+            //    Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff} FPS Animation restarted");
+            //}
 
             if (Document is var doc && doc != null && doc.GFX is var gfx && gfx != null)
                 gfx.BeginRendering += TrackMouseMovement;
@@ -374,11 +386,8 @@ namespace FikusIn.Views
 
         private void gridD3D_MouseLeave(object sender, MouseEventArgs e)
         {
-            gridD3D.BeginAnimation(UIElement.OpacityProperty, null);
-            m_GridD3DFPSAnimation.AutoReverse = false;
-            m_GridD3DFPSAnimation.RepeatBehavior = new RepeatBehavior(TimeSpan.FromSeconds(1));
-            Timeline.SetDesiredFrameRate(m_GridD3DFPSAnimation, null);
-            gridD3D.BeginAnimation(UIElement.OpacityProperty, m_GridD3DFPSAnimation);
+            //gridD3DStoryboard.Stop(gridD3D);
+            //Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff} FPS Animation stoped");
 
             if (Document is var doc && doc != null && doc.GFX is var gfx && gfx != null)
                 gfx.BeginRendering -= TrackMouseMovement;
