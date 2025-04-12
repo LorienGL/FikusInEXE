@@ -34,8 +34,6 @@ namespace FikusIn.Model.Documents
                 _documents[0].Close();
                 _documents.RemoveAt(0);
             }
-
-            RecentDocuments.Add(document, new System.Windows.Media.Imaging.BitmapImage());
         }
 
         private static void RemoveDocument(Document document)

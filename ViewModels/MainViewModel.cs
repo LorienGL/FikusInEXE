@@ -196,7 +196,6 @@ namespace FikusIn.ViewModel
         #endregion
 
 
-
         public MainViewModel() 
         {            
             Documents = DocumentManager.GetDocuments();
@@ -254,7 +253,6 @@ namespace FikusIn.ViewModel
                 if(_SaveDocument(doc) == null)
                     break;
         }
-
 
         private void Documents_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {

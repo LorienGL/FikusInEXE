@@ -14,18 +14,16 @@ namespace FikusIn.Models.Documents
     public class DocumentGFX: IDisposable
     {
         private readonly D3DImage myD3DImage = new();
-        private readonly DispatcherObject myDispatcher;
 
         private nint myColorSurf; // Direct3D color surface pointer
 
         private Document myDoc;
 
-        private System.Windows.Size mySize = new System.Windows.Size(0, 0);
+        private Size mySize = new(0, 0);
 
-        public DocumentGFX(Document p_Doc, DispatcherObject theDispatcher)
+        public DocumentGFX(Document p_Doc)
         {
             myDoc = p_Doc;
-            myDispatcher = theDispatcher;
 
             myD3DImage.IsFrontBufferAvailableChanged
               += new DependencyPropertyChangedEventHandler(OnIsFrontBufferAvailableChanged);
@@ -82,6 +80,7 @@ namespace FikusIn.Models.Documents
         // Ad a OnBeginRendering event & delegate to be able to perform actions before rendering
         public event EventHandler? BeginRendering;
 
+        public event EventHandler? FirstRenderEnded;
 
         private void OnRendering(object? sender, EventArgs e)
         {
@@ -94,6 +93,7 @@ namespace FikusIn.Models.Documents
                 _lastRender = args.RenderingTime;
         }
 
+        private bool _firstRender = true;
         private TimeSpan _lastRender;
         private Stopwatch? totalStopwatch = null;
         private int myFrameCount = 0;
@@ -123,6 +123,12 @@ namespace FikusIn.Models.Documents
 
                 if(myFrameCount % 30 == 0)
                     Debug.WriteLine($"{DateTime.Now:H:mm:ss.fff}:  DocumentGFX.Render() {(int)((double)myFrameCount / totalStopwatch.Elapsed.TotalSeconds)}FPS - {(int)renderSW.Elapsed.TotalMilliseconds}ms");
+
+                if(_firstRender)
+                {
+                    _firstRender = false;
+                    FirstRenderEnded?.Invoke(this, EventArgs.Empty);
+                }
 
                 return true;
             }
@@ -158,10 +164,10 @@ namespace FikusIn.Models.Documents
             StopRenderingScene();
         }
 
-        public void SaveAsPNGFile(string fileName)
+        public PngBitmapEncoder? GetPNG()
         {
             if (myColorSurf == nint.Zero)
-                return;
+                return null;
 
             Image image = new Image();
             image.Source = myD3DImage;
@@ -169,13 +175,7 @@ namespace FikusIn.Models.Documents
             renderTargetBitmap.Render(image);
             PngBitmapEncoder pngBitmapEncoder = new PngBitmapEncoder();
             pngBitmapEncoder.Frames.Add(BitmapFrame.Create(renderTargetBitmap));
-
-            if(File.Exists(fileName))
-                File.Delete(fileName);
-            using (FileStream fileStream = new FileStream(fileName, FileMode.Create))
-            {
-                pngBitmapEncoder.Save(fileStream);
-            }
+            return pngBitmapEncoder;
         }
 
         public D3DImage Image

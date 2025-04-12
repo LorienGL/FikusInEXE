@@ -111,12 +111,12 @@ namespace FikusIn.Model.Documents
 
         public DocumentGFX? GFX { get; private set; }
 
-        public void InitGFX(DispatcherObject dispatcher)
+        public void InitGFX()
         {
             if(GFX != null)
                 return;
 
-            GFX = new DocumentGFX(this, dispatcher);
+            GFX = new DocumentGFX(this);
         }
 
         public static readonly string FikusExtension = ".fikus";
