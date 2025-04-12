@@ -125,9 +125,9 @@ private:
 		myAISContext()->SetIsoNumber(0);
 
 		myAISContext()->SetDisplayMode(AIS_Shaded, Standard_False);
-		myAISContext()->DefaultDrawer()->SetDeviationAngle(2.5 * Math::PI / 180.0);
-		myAISContext()->DefaultDrawer()->SetDeviationCoefficient(0.02);
-		myAISContext()->DefaultDrawer()->SetMaximalChordialDeviation(0.002);
+		myAISContext()->DefaultDrawer()->SetDeviationAngle(1.0 * Math::PI / 180.0);
+		myAISContext()->DefaultDrawer()->SetDeviationCoefficient(0.01);
+		myAISContext()->DefaultDrawer()->SetMaximalChordialDeviation(0.001);
 
 		myAISContext()->DefaultDrawer()->SetIsoOnPlane(Standard_False);
 		myAISContext()->DefaultDrawer()->SetIsoOnTriangulation(Standard_False);

@@ -349,11 +349,7 @@ namespace FikusIn.Views
             if (Document is var doc && doc != null && doc.GFX is var gfx && gfx != null)
                 gfx.FirstRenderEnded += (s, e) =>
                 {
-                    if (Document is var doc && doc != null && doc.GFX is var gfx && gfx != null)
-                    {
-                        var icon = gfx.GetPNG();
-                        RecentDocuments.Add(doc, icon);
-                    }
+                        RecentDocuments.Add(Document, DocumentGFX.GetScreenshot(gridD3D));
                 };
         }
 

@@ -6,6 +6,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace FikusIn.Models.Documents
@@ -13,12 +16,12 @@ namespace FikusIn.Models.Documents
     public class DocumentInfo
     {
         public string Path { get; set; }
-        public BitmapEncoder Icon { get; set; }
+        public Image Thumbnail { get; set; }
 
-        public DocumentInfo(string path, BitmapEncoder icon)
+        public DocumentInfo(string path, Image icon)
         {
             Path = path;
-            Icon = icon;
+            Thumbnail = icon;
         }
     }
 
@@ -26,10 +29,12 @@ namespace FikusIn.Models.Documents
     {
         private static ObservableCollection<DocumentInfo> _recentDocuments = [];
 
-        public static void Add(Document document, BitmapEncoder? icon)
+        public static void Add(Document? document, Image? icon)
         {
             if (document == null || document.Path == "" || icon == null)
                 return;
+
+            Load();
 
             foreach (var di in _recentDocuments)
             {
@@ -44,40 +49,96 @@ namespace FikusIn.Models.Documents
             if (_recentDocuments.Count > 20)
                 _recentDocuments.RemoveAt(20);
 
-            SaveRecentDocuments();
+            Save();
         }
 
-        private static bool _documentsLoaded = false;
-
-        public static ObservableCollection<DocumentInfo> GetRecentDocuments()
+        public static ObservableCollection<DocumentInfo> Get()
         {
-            if (!_documentsLoaded)
-                LoadRecentDocuments();
+            Load();
             return _recentDocuments;
         }
 
-        public static void LoadRecentDocuments()
+        private static readonly string configFileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "FikusIn", "RecentDocuments.txt");
+        private static readonly string imagesPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "FikusIn", "RecentDocumentsImages");
+
+        private static void Load()
         {
+            if (_recentDocuments.Count > 0)
+                return;
+
             // Load recent documents from settings
+            if (!File.Exists(configFileName))
+                return;
+            if (!Directory.Exists(imagesPath))
+                return;
 
-            _documentsLoaded = true;
+            using (StreamReader reader = new StreamReader(configFileName))
+            {
+                string? line;
+                int i = 0;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    if (string.IsNullOrEmpty(line))
+                        continue;
 
+                    var imageFileName = Path.Combine(imagesPath, $"{i++}.png");
+                    if (!File.Exists(imageFileName))
+                        continue;
+
+                    BitmapImage bitmapImage = new BitmapImage();
+                    bitmapImage.BeginInit();
+                    bitmapImage.UriSource = new System.Uri(imageFileName);
+                    bitmapImage.CacheOption = BitmapCacheOption.OnLoad; // Load the full image immediately
+                    bitmapImage.EndInit();
+
+                    if (bitmapImage.PixelWidth == 0 || bitmapImage.PixelHeight == 0)
+                        continue;
+
+                    Image image = new();
+                    image.Source = bitmapImage;                  
+
+                    _recentDocuments.Add(new DocumentInfo(line, image));
+                }
+            }
         }
 
-        private static void SaveRecentDocuments()
+        private static void Save()
         {
+            if (File.Exists(configFileName))
+                File.Delete(configFileName);
             
-            // Save recent documents to settings
-            foreach (var di in _recentDocuments)
-            {
-                // Save di.Path
-                //if (File.Exists(fileName))
-                //    File.Delete(fileName);
-                //using (FileStream fileStream = new FileStream(fileName, FileMode.Create))
-                //{
-                //    pngBitmapEncoder.Save(fileStream);
-                //}
+            if (_recentDocuments.Count == 0)
+                return;
 
+            // Create FinusIn directory if it doesn't exist
+            string? directoryPath = Path.GetDirectoryName(configFileName);
+            if (!string.IsNullOrEmpty(directoryPath) && !Directory.Exists(directoryPath))
+                Directory.CreateDirectory(directoryPath);
+
+            using (StreamWriter writer = new StreamWriter(configFileName))
+            {
+                int i = 0;
+                // Save recent documents to settings
+                foreach (var di in _recentDocuments)
+                {
+                    // Save di.Path
+                    writer.WriteLine(di.Path);
+
+                    var imageFileName = Path.Combine(imagesPath, $"{i++}.png");
+
+                    if (!Directory.Exists(imagesPath))
+                        Directory.CreateDirectory(imagesPath);
+
+                    if (File.Exists(imageFileName))
+                        File.Delete(imageFileName);
+
+                    using (FileStream fileStream = new FileStream(imageFileName, FileMode.Create))
+                    {
+                        PngBitmapEncoder encoder = new PngBitmapEncoder();
+                        encoder.Frames.Add(BitmapFrame.Create(di.Thumbnail.Source as BitmapSource));
+                        encoder.Save(fileStream);
+                    }
+                }
             }
         }
     }

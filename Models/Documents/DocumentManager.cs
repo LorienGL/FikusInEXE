@@ -107,7 +107,7 @@ namespace FikusIn.Model.Documents
 
         public static ObservableCollection<DocumentInfo> GetRecentDocuments()
         {
-            return RecentDocuments.GetRecentDocuments();
+            return RecentDocuments.Get();
         }
 
         public static void CloseDocument(Document? document)
