@@ -280,7 +280,7 @@ namespace FikusIn.ViewModel
 
         private static bool? _SaveDocument(Document? p_Doc)
         {
-            if (p_Doc == null || !p_Doc.IsModified)
+            if (p_Doc == null)
                 return false;
 
             if (p_Doc.Path == "" || !p_Doc.Path.ToLower().EndsWith(Document.FikusExtension))

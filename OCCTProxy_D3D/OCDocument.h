@@ -11,7 +11,8 @@
 #include <Message_Printer.hxx>
 
 #include <STEPCAFControl_ConfigurationNode.hxx>
-
+#include <IGESCAFControl_ConfigurationNode.hxx>
+#include <DEXCAFCascade_ConfigurationNode.hxx>
 
 #include <iostream>
 #include <string>
@@ -27,6 +28,7 @@
 #pragma comment(lib, "TKBinXCAF.lib")
 #pragma comment(lib, "TKXmlXCAF.lib")
 #pragma comment(lib, "TKCDF.lib")
+#pragma comment(lib, "TKDECascade.lib")
 
 
 public enum class OCMessageType
@@ -78,8 +80,24 @@ protected:
 	OCDocument(System::String^ theFileName) : OCDocument()
 	{
 		Handle(DE_Wrapper) aSession = DE_Wrapper::GlobalWrapper();
-		Handle(DE_ConfigurationNode) aNode = new STEPCAFControl_ConfigurationNode();
-		aSession->Bind(aNode);
+		
+		// XBF (native)
+		Handle(DE_ConfigurationNode) aXBFNode = new DEXCAFCascade_ConfigurationNode();
+		aSession->Bind(aXBFNode);
+
+		// STP
+		Handle(DE_ConfigurationNode) aSTPNode = new STEPCAFControl_ConfigurationNode();
+		aSession->Bind(aSTPNode);
+
+		// IGS
+		Handle(DE_ConfigurationNode) aIGSNode = new IGESCAFControl_ConfigurationNode();
+		aSession->Bind(aIGSNode);
+
+		// DWG
+
+		// DXF
+
+
 		if (!aSession->Read(OCUtils::StringToOCAsciiString(theFileName), myDoc()))
 		{
 			Handle(DE_Provider) theProvider;
