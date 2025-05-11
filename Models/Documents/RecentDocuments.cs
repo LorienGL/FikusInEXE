@@ -1,4 +1,5 @@
 ﻿using FikusIn.Model.Documents;
+using FikusIn.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,10 +14,38 @@ using System.Windows.Media.Imaging;
 
 namespace FikusIn.Models.Documents
 {
-    public class DocumentInfo
+    public class DocumentInfo: ObservableObjectBase
     {
-        public string Path { get; set; }
-        public Image Thumbnail { get; set; }
+        private string _path = "";
+        public string Path
+        {
+            get => _path;
+            set 
+            {
+                if (value != null)
+                    Name = System.IO.Path.GetFileNameWithoutExtension(value);
+                SetProperty(ref _path, value);
+            }
+        }
+        private Image _thumbnail = new Image();
+        public Image Thumbnail
+        {
+            get => _thumbnail;
+            set => SetProperty(ref _thumbnail, value);
+        }
+
+        private ImageSource _imageSource;
+        public ImageSource ImageSource
+        {
+            get => Thumbnail.Source;
+        }
+
+        private string _name = "";
+        public string Name
+        {
+            get => _name;
+            set => SetProperty(ref _name, value);
+        }
 
         public DocumentInfo(string path, Image icon)
         {

@@ -58,15 +58,20 @@ namespace FikusIn.Views
             {
                 UIElement tabButtonUIE = (UIElement)tabsItemsControl.ItemContainerGenerator.ContainerFromIndex(i);
 
-                if(sender is Button popupButton && popupButton.CommandParameter != null 
+                if (sender is Button popupButton && popupButton.CommandParameter != null
                     && tabButtonUIE is ContentPresenter tabButton && tabButton.Content != null
-                    && ((Document)popupButton.CommandParameter).Id == ((Document)tabButton.Content).Id) 
+                    && ((Document)popupButton.CommandParameter).Id == ((Document)tabButton.Content).Id)
                 {
                     tabButton.BringIntoView();
 
                     return;
                 }
             }
+        }
+
+        private void popupRecentDocumentListButton_Click(object sender, RoutedEventArgs e)
+        {
+            popupOpen.IsOpen = false;
         }
 
         private void popupSettingsButton_Click(object sender, RoutedEventArgs e)

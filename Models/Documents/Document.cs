@@ -3,6 +3,7 @@ using FikusIn.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,15 +31,16 @@ namespace FikusIn.Model.Documents
             _isActive = p_isActive;
             _windowScaleInverted = 1 / p_windowScale * p_grapgicsQuality;
 
-            if (Path == "")
-                m_OCDoc = OCDocument.Create(new OCMessageDelegate(this.OnNewMessage));
-            else
-                m_OCDoc = OCDocument.Open(Path, new OCMessageDelegate(this.OnNewMessage));
+            m_OCDoc = Load();
         }
 
         public Guid Id { get; private set; }
 
-        public string Path { get; private set; }
+        private string _path = "";
+        public string Path 
+        { get => _path;
+            set => SetProperty(ref _path, value);
+        }
 
         private string _name;
         public string Name 
@@ -120,5 +122,36 @@ namespace FikusIn.Model.Documents
         }
 
         public static readonly string FikusExtension = ".fikus";
+
+        private OCDocument Load()
+        {
+            IsModified = false;
+            
+            if (Path == "")
+                return OCDocument.Create(new OCMessageDelegate(this.OnNewMessage));
+            else if (System.IO.Path.GetExtension(Path).ToLower() != FikusExtension)
+            {
+                IsModified = true; // If the file is not a Fikus file nor a new file, it is modified
+                Name = System.IO.Path.GetFileNameWithoutExtension(Path);
+                return OCDocument.Open(Path, new OCMessageDelegate(this.OnNewMessage));
+            }
+            else 
+            {
+                // Create a document tmp folder
+                var l_TmpFolder = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "FikusIn", Guid.NewGuid().ToString());
+
+                // Unzip the file into the temp folder
+                ZipFile.ExtractToDirectory(Path, l_TmpFolder, true);
+
+                // Load the OC document
+                var l_OCDoc = OCDocument.Open(System.IO.Path.Combine(l_TmpFolder, "document.ocd"), new OCMessageDelegate(this.OnNewMessage));
+
+                // Load the CAM document
+
+                Name = System.IO.Path.GetFileNameWithoutExtension(Path);
+
+                return l_OCDoc;
+            }
+        }
     }
 }

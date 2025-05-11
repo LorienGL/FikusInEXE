@@ -1,6 +1,7 @@
 ﻿using FikusIn.Commands;
 using FikusIn.Model.Documents;
 using FikusIn.Models;
+using FikusIn.Models.Documents;
 using FikusIn.Utils;
 using FikusIn.ViewModels;
 using Microsoft.Win32;
@@ -8,6 +9,7 @@ using System;
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -27,7 +29,8 @@ namespace FikusIn.ViewModel
 
         #region Observed Properties
         public ObservableCollection<Document> Documents { get; private set; }
-        public ObservableCollection<string> SortedDocumentNames { get; private set; }
+        public ObservableCollection<DocumentInfo> RecentDocuments { get; private set; }
+
         public BindingList<Progress> ProgressList { get; private set; }
 
         private MessagesViewModel _messagesViewModel = new MessagesViewModel();
@@ -73,6 +76,19 @@ namespace FikusIn.ViewModel
             get => _wireframe;
             set { SetProperty(ref _wireframe, value); Properties.Settings.Default.Wireframe = value; Properties.Settings.Default.Save(); }
         }
+
+        public int RecentDocumentsColumns
+        {
+            get
+            {
+                if (RecentDocuments.Count <= 4)
+                    return RecentDocuments.Count;
+
+                return 4;
+            }
+        }
+
+
         #endregion
 
         #region Commands
@@ -138,6 +154,19 @@ namespace FikusIn.ViewModel
             (object? obj) => { return true; }
         );
 
+        public ICommand OpenRecentDocument => new RelayCommand(
+            (object? obj) =>
+            {
+                if(obj == null || obj is not DocumentInfo)
+                    return;
+
+                DocumentManager.OpenDocument((obj as DocumentInfo).Path, _windowScale, _graphicsQuality);
+            },
+            (object? obj) => { return true; }
+        );
+
+
+
 
         public static ICommand SetActiveDocument => new RelayCommand(
             (object? obj) => { DocumentManager.SetActiveDocument(obj as Document); },
@@ -201,11 +230,18 @@ namespace FikusIn.ViewModel
             Documents = DocumentManager.GetDocuments();
             Documents.CollectionChanged += Documents_CollectionChanged;
 
+            RecentDocuments = DocumentManager.GetRecentDocuments();
+            RecentDocuments.CollectionChanged += RecentDocuments_CollectionChanged;
+
             var docNames = Documents.Select(d => d.Name).ToList();
             docNames.Sort(StringComparer.CurrentCultureIgnoreCase);
-            SortedDocumentNames = new ObservableCollection<string>(docNames);
 
             ProgressList = Progress.StartProgressList();
+        }
+
+        private void RecentDocuments_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            OnPropertyChanged("RecentDocumentsColumns");
         }
 
         private static bool? _SaveDocumentAs(Document? p_Doc)
@@ -256,11 +292,8 @@ namespace FikusIn.ViewModel
 
         private void Documents_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            var docNames = Documents.Select(d => d.Name).ToList();
-            docNames.Sort(StringComparer.CurrentCultureIgnoreCase);
-            SortedDocumentNames.Clear();
-            foreach (var doc in docNames)
-                SortedDocumentNames.Add(doc);
+            if(DocumentManager.GetDocuments().Count == 0)
+                Application.Current.Shutdown();
         }
     }
 }
