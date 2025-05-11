@@ -1,4 +1,5 @@
-﻿using FikusIn.Models.Documents;
+﻿using FikusIn.Models;
+using FikusIn.Models.Documents;
 using FikusIn.Utils;
 using System;
 using System.Collections.Generic;
@@ -21,8 +22,10 @@ namespace FikusIn.Model.Documents
     /// <param name="_id"></param>
     /// <param name="_name"></param>
     /// <param name="p_isActive"></param>
-    public class Document: ObservableObjectBase
+    public class Document : ObservableObjectBase
     {
+        private readonly OCDocument? m_OCDoc;
+
         public Document(Guid _id, string p_name, string p_path = "", bool p_isActive = true, double p_windowScale = 1, double p_grapgicsQuality = 1)
         {
             Id = _id;
@@ -31,21 +34,22 @@ namespace FikusIn.Model.Documents
             _isActive = p_isActive;
             _windowScaleInverted = 1 / p_windowScale * p_grapgicsQuality;
 
-            m_OCDoc = Load();
+            m_OCDoc = _Load();
         }
 
         public Guid Id { get; private set; }
 
         private string _path = "";
-        public string Path 
-        { get => _path;
+        public string Path
+        {
+            get => _path;
             set => SetProperty(ref _path, value);
         }
 
         private string _name;
-        public string Name 
-        { 
-            get => _name; 
+        public string Name
+        {
+            get => _name;
             set => SetProperty(ref _name, value);
         }
 
@@ -78,33 +82,27 @@ namespace FikusIn.Model.Documents
 
         public bool Save()
         {
-            if (Path == "" || !Path.ToLower().EndsWith(FikusExtension))
+            if (Path == "")
                 return false;
 
-            if (!m_OCDoc.Save())
-                return false;
+            _Save();
 
-            IsModified = false;
             return true;
         }
 
         public bool SaveAs(String p_FileName)
         {
-            if(!m_OCDoc.SaveAs(p_FileName))
-                return false;
-
-            IsModified = false;
             Path = p_FileName;
             Name = System.IO.Path.GetFileNameWithoutExtension(p_FileName);
+
+            _Save();
 
             return true;
         }
 
         public override string ToString() => Name;
 
-        private readonly OCDocument m_OCDoc;
-
-        public OCDocument GetOCDocument() => m_OCDoc;
+        public OCDocument? GetOCDocument() => m_OCDoc;
 
         private void OnNewMessage(OCMessageType p_Type, String p_Msg)
         {
@@ -115,7 +113,7 @@ namespace FikusIn.Model.Documents
 
         public void InitGFX()
         {
-            if(GFX != null)
+            if (GFX != null)
                 return;
 
             GFX = new DocumentGFX(this);
@@ -123,34 +121,102 @@ namespace FikusIn.Model.Documents
 
         public static readonly string FikusExtension = ".fikus";
 
-        private OCDocument Load()
+        private string m_TmpFolder = "";
+        private OCDocument? _Load()
         {
             IsModified = false;
-            
+
+            // Create a document tmp folder
+            m_TmpFolder = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "FikusIn", Id.ToString());
+            System.IO.Directory.CreateDirectory(m_TmpFolder);
+
             if (Path == "")
                 return OCDocument.Create(new OCMessageDelegate(this.OnNewMessage));
-            else if (System.IO.Path.GetExtension(Path).ToLower() != FikusExtension)
+            else
             {
-                IsModified = true; // If the file is not a Fikus file nor a new file, it is modified
                 Name = System.IO.Path.GetFileNameWithoutExtension(Path);
-                return OCDocument.Open(Path, new OCMessageDelegate(this.OnNewMessage));
+
+                if (System.IO.Path.GetExtension(Path).ToLower() != FikusExtension)
+                {
+                    IsModified = true; // If the file is not a Fikus file nor a new file, it is modified
+                    var l_OCDoc = OCDocument.Open(Path, new OCMessageDelegate(this.OnNewMessage));
+
+                    if (l_OCDoc != null)
+                        l_OCDoc.SaveAs(System.IO.Path.Combine(m_TmpFolder, "document.ocd.xbf"));
+
+                    return l_OCDoc;
+                }
+                else
+                {
+                    // Unzip the file into the temp folder
+                    ZipFile.ExtractToDirectory(Path, m_TmpFolder, true);
+
+                    // Load the OC document
+                    var l_OCDoc = OCDocument.Open(System.IO.Path.Combine(m_TmpFolder, "document.ocd.xbf"), new OCMessageDelegate(this.OnNewMessage));
+
+                    // Load the CAM document
+
+                    Name = System.IO.Path.GetFileNameWithoutExtension(Path);
+
+                    return l_OCDoc;
+                }
             }
-            else 
+        }
+
+        public bool _Save()
+        {
+            if (Path == "")
+                return false;
+
+            try
             {
-                // Create a document tmp folder
-                var l_TmpFolder = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "FikusIn", Guid.NewGuid().ToString());
+                if (System.IO.Path.GetExtension(Path).ToLower() != FikusExtension)
+                    Path += FikusExtension;
 
-                // Unzip the file into the temp folder
-                ZipFile.ExtractToDirectory(Path, l_TmpFolder, true);
+                // Save CAD file
+                if (m_OCDoc != null)
+                    m_OCDoc.SaveAs(System.IO.Path.Combine(m_TmpFolder, "document.ocd"));
 
-                // Load the OC document
-                var l_OCDoc = OCDocument.Open(System.IO.Path.Combine(l_TmpFolder, "document.ocd"), new OCMessageDelegate(this.OnNewMessage));
+                // Save CAM file
 
-                // Load the CAM document
+                // Create a zip file with all files in the temp folder
+                var mode = ZipArchiveMode.Create;
+                if (System.IO.File.Exists(Path))
+                    mode = ZipArchiveMode.Update;
+                using (var l_Zip = ZipFile.Open(Path, mode))
+                {
+                    foreach (var l_File in System.IO.Directory.GetFiles(m_TmpFolder))
+                        l_Zip.CreateEntryFromFile(l_File, System.IO.Path.GetFileName(l_File));
+                }
 
-                Name = System.IO.Path.GetFileNameWithoutExtension(Path);
+                IsModified = false;
+                return true;
+            }
+            catch (Exception e)
+            {              
+                Messenger.ShowError("Error saving file: " + e.ToString());
+                return false;
+            }
+        }
 
-                return l_OCDoc;
+        public void Dispose()
+        {
+            GFX?.Dispose();
+            GFX = null;
+            if (m_OCDoc != null)
+            {
+                m_OCDoc?.Dispose();
+            }
+
+            if (m_TmpFolder == "")
+                return;
+            try
+            {
+                System.IO.Directory.Delete(m_TmpFolder, true);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
             }
         }
     }

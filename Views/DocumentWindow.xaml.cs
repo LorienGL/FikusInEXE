@@ -340,6 +340,8 @@ namespace FikusIn.Views
             }
         }
 
+        public static readonly Dictionary<Document, Grid> DocumentsGrid = new Dictionary<Document, Grid>();
+
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             Document?.InitGFX();
@@ -351,7 +353,17 @@ namespace FikusIn.Views
                 {
                         RecentDocuments.Add(Document, DocumentGFX.GetScreenshot(gridD3D));
                 };
+
+            if (Document != null)
+                DocumentsGrid[Document] = gridD3D;
         }
+
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            if (Document != null)
+                DocumentsGrid.Remove(Document);
+        }
+
 
 
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)

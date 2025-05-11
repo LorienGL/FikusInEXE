@@ -21,9 +21,17 @@ namespace FikusIn.Models
 
         public event EventHandler<Message>? MessageReceived;
 
-        public static void Send(string messageText, Message.MessageType messageType)
+        public static void ShowInfo(string messageText)
         {
-            _instance.SendMessage(new Message(messageText, messageType));
+            _instance.SendMessage(new Message(messageText, Message.MessageType.Info));
+        }
+        public static void ShowWarning(string messageText)
+        {
+            _instance.SendMessage(new Message(messageText, Message.MessageType.Warning));
+        }
+        public static void ShowError(string messageText)
+        {
+            _instance.SendMessage(new Message(messageText, Message.MessageType.Error));
         }
 
     }

@@ -675,9 +675,7 @@
                                             Background="#333333"
                                             BorderBrush="#BBBBBB"
                                             Margin="0">
-                                        <ScrollViewer MaxHeight="{Binding ActualHeight, ElementName=gridGraphicMain}"
-                                                      MaxWidth="600"
-                                                      HorizontalScrollBarVisibility="Auto"
+                                        <ScrollViewer HorizontalScrollBarVisibility="Auto"
                                                       VerticalScrollBarVisibility="Auto">
                                             <ItemsControl x:Name="icRecentDocumentsList"
                                                           ItemsSource="{Binding RecentDocuments}"

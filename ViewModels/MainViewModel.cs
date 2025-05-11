@@ -4,6 +4,7 @@ using FikusIn.Models;
 using FikusIn.Models.Documents;
 using FikusIn.Utils;
 using FikusIn.ViewModels;
+using FikusIn.Views;
 using Microsoft.Win32;
 using System;
 using System.CodeDom;
@@ -265,7 +266,12 @@ namespace FikusIn.ViewModel
 
             var res = dlg.ShowDialog();
             if (res == true)
-                return p_Doc.SaveAs(dlg.FileName);
+            {
+                var r = p_Doc.SaveAs(dlg.FileName);
+                if(r)
+                    Models.Documents.RecentDocuments.Add(p_Doc, DocumentGFX.GetScreenshot(DocumentWindow.DocumentsGrid[p_Doc]));
+                return r;
+            }
             else if (res == null)
                 return null;
             else
@@ -280,7 +286,12 @@ namespace FikusIn.ViewModel
             if (p_Doc.Path == "" || !p_Doc.Path.ToLower().EndsWith(Document.FikusExtension))
                 return _SaveDocumentAs(p_Doc);
             else
-                return p_Doc.Save();
+            {
+                var r = p_Doc.Save();
+                if(r)
+                    Models.Documents.RecentDocuments.Add(p_Doc, DocumentGFX.GetScreenshot(DocumentWindow.DocumentsGrid[p_Doc]));
+                return r;
+            }
         }
 
         private static void _SaveAllDocuments()
