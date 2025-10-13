@@ -161,7 +161,7 @@ namespace FikusIn.ViewModel
                 if(obj == null || obj is not DocumentInfo)
                     return;
 
-                DocumentManager.OpenDocument((obj as DocumentInfo).Path, _windowScale, _graphicsQuality);
+                DocumentManager.OpenDocument(((DocumentInfo)obj).Path, _windowScale, _graphicsQuality);
             },
             (object? obj) => { return true; }
         );

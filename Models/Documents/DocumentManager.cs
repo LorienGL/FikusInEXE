@@ -1,4 +1,5 @@
 ﻿using FikusIn.Models.Documents;
+using FikusIn.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -6,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace FikusIn.Model.Documents
 {
@@ -69,12 +71,22 @@ namespace FikusIn.Model.Documents
 
         public static Document NewDocument(double windowScale, double graphicsQuality)
         {
-            int njc = GetMaxJobNumber();
-            var res = new Document(Guid.NewGuid(), NewJobName + (njc > 0? $" {njc}": ""), "", false, windowScale, graphicsQuality);
+            try
+            {
+                int njc = GetMaxJobNumber();
+                var res = new Document(Guid.NewGuid(), NewJobName + (njc > 0 ? $" {njc}" : ""), "", false, windowScale, graphicsQuality);
 
-            AddDocument(res);
+                AddDocument(res);
 
-            return res;
+                return res;
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Can't initialize OCCT, plese ensure product is properly installed.");
+
+                throw;
+            }        
         }
 
         public static Document? OpenDocument(string path, double windowScale, double graphicsQuality)
@@ -116,6 +128,11 @@ namespace FikusIn.Model.Documents
                 return;
 
             RemoveDocument(document);
+        }
+
+        internal static void Load(double windowScale, double graphicsQuality)
+        {
+            NewDocument(windowScale, graphicsQuality);
         }
     }
 }

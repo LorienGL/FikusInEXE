@@ -82,15 +82,15 @@ protected:
 		Handle(DE_Wrapper) aSession = DE_Wrapper::GlobalWrapper();
 		
 		// XBF (native)
-		Handle(DE_ConfigurationNode) aXBFNode = new DEXCAFCascade_ConfigurationNode();
+		Handle(DE_ConfigurationNode) aXBFNode = new DEXCAF_ConfigurationNode();
 		aSession->Bind(aXBFNode);
 
 		// STP
-		Handle(DE_ConfigurationNode) aSTPNode = new STEPCAFControl_ConfigurationNode();
+		Handle(DE_ConfigurationNode) aSTPNode = new DESTEP_ConfigurationNode();
 		aSession->Bind(aSTPNode);
 
 		// IGS
-		Handle(DE_ConfigurationNode) aIGSNode = new IGESCAFControl_ConfigurationNode();
+		Handle(DE_ConfigurationNode) aIGSNode = new DEIGES_ConfigurationNode();
 		aSession->Bind(aIGSNode);
 
 		// DWG
@@ -102,9 +102,9 @@ protected:
 		{
 			Handle(DE_Provider) theProvider;
 			if (!aSession->FindProvider(OCUtils::StringToOCAsciiString(theFileName), Standard_True, theProvider))
-				SendError("Can't find an import provider for the file format");
+				SendError("File format is not supported.\nSupported formats are: STEP, IGES, DWG, DXF and FikusIn");
 			else
-				SendError("File seems corrupt");
+				SendError("File is not readable. Please verify you have rights to read the file and ensure that the file is not corrupt.");
 			if (myDoc()->CanClose() == CDM_CanCloseStatus::CDM_CCS_OK)
 				myDoc()->Close();
 			myDoc().Nullify();

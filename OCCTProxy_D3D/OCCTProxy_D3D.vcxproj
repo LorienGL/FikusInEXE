@@ -75,23 +75,23 @@
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\win32\$(VCVER)\bind\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">obj\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\..\bin64\x64\Release\net8.0-windows7.0\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\..\bin64\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">obj\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkIncremental>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\win32\$(VCVER)\bin\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">obj\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\..\bin64\x64\Release\net8.0-windows7.0\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\..\bin64\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">obj\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>..\..\..\oc\occt-vc143-64\inc;$(IncludePath)</IncludePath>
-    <LibraryPath>..\..\..\OC\occt-vc143-64\win64\vc14\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>..\..\..\oc\occt-vc143-64\inc;..\..\..\OC\occt_vc14-64\inc;$(IncludePath)</IncludePath>
+    <LibraryPath>..\..\..\OC\occt-vc143-64\win64\vc14\lib;..\..\..\OC\occt_vc14-64\win64\vc14\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>..\..\..\oc\occt-vc143-64\inc;$(IncludePath)</IncludePath>
-    <LibraryPath>..\..\..\OC\occt-vc143-64\win64\vc14\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>..\..\..\oc\occt-vc143-64\inc;..\..\..\OC\occt_vc14-64\inc;$(IncludePath)</IncludePath>
+    <LibraryPath>..\..\..\OC\occt-vc143-64\win64\vc14\lib;..\..\..\OC\occt_vc14-64\win64\vc14\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

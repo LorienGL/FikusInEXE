@@ -24,7 +24,7 @@ namespace FikusIn.Models.Documents
             {
                 if (value != null)
                     Name = System.IO.Path.GetFileNameWithoutExtension(value);
-                SetProperty(ref _path, value);
+                SetProperty(ref _path, value ?? string.Empty);
             }
         }
         private Image _thumbnail = new Image();
@@ -34,7 +34,6 @@ namespace FikusIn.Models.Documents
             set => SetProperty(ref _thumbnail, value);
         }
 
-        private ImageSource _imageSource;
         public ImageSource ImageSource
         {
             get => Thumbnail.Source;
