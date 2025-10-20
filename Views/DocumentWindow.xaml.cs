@@ -348,6 +348,7 @@ namespace FikusIn.Views
             ImageBrush anImage = new(Document?.GFX?.Image);
             gridD3D.Background = anImage;
             Document?.GFX?.Resize(Convert.ToInt32(gridD3D.ActualWidth), Convert.ToInt32(gridD3D.ActualHeight));
+
             if (Document is var doc && doc != null && doc.GFX is var gfx && gfx != null)
                 gfx.FirstRenderEnded += (s, e) =>
                 {
